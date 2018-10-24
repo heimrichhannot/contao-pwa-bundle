@@ -1,0 +1,31 @@
+{
+  "name": "heimrichhannot/contao-pwa-bundle",
+  "type": "contao-bundle",
+  "description": "Progressive Web Apps for Contao",
+  "license": "LGPL-3.0-or-later",
+  "require": {
+    "php": "^7.0",
+    "ext-json": "*",
+    "ext-fileinfo": "*",
+    "contao/core-bundle": "^4.4",
+    "heimrichhannot/contao-head-bundle": "^1.1",
+    "menatwork/contao-multicolumnwizard": "^3.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "HeimrichHannot\\ContaoPwaBundle\\": "src/"
+    },
+    "classmap": [
+      "src/"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/config/",
+      "src/Resources/contao/dca/",
+      "src/Resources/contao/languages/",
+      "src/Resources/contao/templates/"
+    ]
+  },
+  "extra": {
+    "contao-manager-plugin": "HeimrichHannot\\ContaoPwaBundle\\ContaoManager\\Plugin"
+  }
+}

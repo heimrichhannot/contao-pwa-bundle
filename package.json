@@ -1,0 +1,11 @@
+{
+  "name": "contao-pwa-bundle",
+  "version": "1.0.0",
+  "description": "Progressive Web Apps for Contao",
+  "main": "index.js",
+  "author": "Heimrich & Hannot GmbH <digitales@heimrich-hannot.de>",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": {
+    "workbox-sw": "^3.6.3"
+  }
+}

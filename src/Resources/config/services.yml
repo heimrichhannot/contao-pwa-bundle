@@ -1,0 +1,31 @@
+services:
+
+  huh.pwa.listener.hook:
+    class: HeimrichHannot\ContaoPwaBundle\EventListener\HookListener
+    public: true
+    autowire: true
+  huh.pwa.datacontainer.page:
+    class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
+    public: true
+    autowire: true
+
+  huh.pwa.generator.manifest:
+    class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator
+    public: true
+    arguments:
+      ['@service_container', '@huh.pwa.generator.icon']
+  HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator: "@huh.pwa.generator.manifest"
+
+  huh.pwa.generator.icon:
+    class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator
+    public: true
+    arguments:
+      ['@contao.image.image_factory', '@contao.image.resizer']
+  HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator: "@huh.pwa.generator.icon"
+
+  huh.head.tag.pwa.link_manifest:
+    class: HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag
+    public: true
+    arguments:
+      ['@huh.head.tag_manager']
+  HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
