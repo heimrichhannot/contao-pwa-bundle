@@ -60,6 +60,7 @@ class ManifestIconGenerator
 	{
 		$icon = new ManifestIcon($sourceIconPath, $applicationAlias, $addDefaultSizes);
 		$icon->setWebRootPath($this->container->getParameter('contao.web_dir'));
+		$icon->setManifestPath('..');
 		return $icon;
 	}
 

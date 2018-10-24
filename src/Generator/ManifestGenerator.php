@@ -14,7 +14,6 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 use Contao\FilesModel;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
-use HeimrichHannot\ContaoPwaBundle\Manifest\ManifestIcon;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 

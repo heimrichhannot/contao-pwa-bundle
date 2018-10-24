@@ -42,9 +42,14 @@ class ManifestIcon
 	protected $iconBasePath = 'assets/heimrichhannotcontaopwa';
 
 	/**
+	 * @var string path from the manifest file to the web root. Leave empty if manifest is in web root.
+	 */
+	protected $manifestPath = '';
+
+	/**
 	 * @var string Absolute path to the web root
 	 */
-	protected $webRootPath = __DIR__;
+	protected $webRootPath = __DIR__.'/../../../../..';
 
 	/**
 	 * @var string
@@ -177,9 +182,14 @@ class ManifestIcon
 	 *
 	 * @return string
 	 */
-	public function getIconsPath(): string
+	public function getIconsPath(string $manifestPath = '') : string
 	{
-		return $this->iconBasePath . '/' . $this->applicationAlias . '/icons/';
+		$basePath = $this->iconBasePath;
+		if (!empty($manifestPath))
+		{
+			$basePath = $manifestPath.'/'.$basePath;
+		}
+		return $basePath . '/' . $this->applicationAlias . '/icons/';
 	}
 
 	/**
@@ -225,7 +235,7 @@ class ManifestIcon
 		{
 			$iconName         = $this->generateIconName($size);
 			$absoluteIconPath = $this->getIconAbsolutePath() . '/' . $iconName;
-			$relativeIconPath = $this->getIconsPath() . '/' . $iconName;
+			$relativeIconPath = $this->getIconsPath($this->manifestPath) . '/' . $iconName;
 
 			if (!file_exists($absoluteIconPath))
 			{
@@ -297,6 +307,24 @@ class ManifestIcon
 	public function setWebRootPath(string $webRootPath): void
 	{
 		$this->webRootPath = $webRootPath;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getManifestPath(): string
+	{
+		return $this->manifestPath;
+	}
+
+	/**
+	 * Set the path from manifest to the web root (Example: '..'). Leave empty if manifest is placed in web root.
+	 *
+	 * @param string $manifestPath
+	 */
+	public function setManifestPath(string $manifestPath): void
+	{
+		$this->manifestPath = $manifestPath;
 	}
 
 
