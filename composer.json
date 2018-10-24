@@ -1,7 +1,7 @@
 {
   "name": "heimrichhannot/contao-pwa-bundle",
   "type": "contao-bundle",
-  "description": "Progressive Web Apps for Contao",
+  "description": "A bundle to provide progressive web app support for contao.",
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": "^7.0",

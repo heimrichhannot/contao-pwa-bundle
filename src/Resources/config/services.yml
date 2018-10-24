@@ -20,7 +20,7 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator
     public: true
     arguments:
-      ['@contao.image.image_factory', '@contao.image.resizer']
+      ['@contao.image.image_factory', '@contao.image.resizer', '@service_container']
   HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator: "@huh.pwa.generator.icon"
 
   huh.head.tag.pwa.link_manifest:

@@ -16,28 +16,51 @@ use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
-use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Manifest\ManifestIcon;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ManifestIconGenerator
 {
 	/**
 	 * @var ImageFactoryInterface
 	 */
-	private $imageFactory;
+	protected $imageFactory;
 	/**
 	 * @var ResizerInterface
 	 */
-	private $resizer;
+	protected $resizer;
+	/**
+	 * @var ContainerInterface
+	 */
+	protected $container;
+	/**
+	 * @var string
+	 */
+	protected $iconBasePath;
 
 
 	/**
 	 * ManifestIconGenerator constructor.
 	 */
-	public function __construct(ImageFactoryInterface $imageFactory, ResizerInterface $resizer)
+	public function __construct(ImageFactoryInterface $imageFactory, ResizerInterface $resizer, ContainerInterface $container)
 	{
 		$this->imageFactory = $imageFactory;
-		$this->resizer = $resizer;
+		$this->resizer      = $resizer;
+		$this->container    = $container;
+	}
+
+	/**
+	 * @param string $sourceIconPath
+	 * @param string $applicationAlias
+	 * @param bool $addDefaultSizes
+	 * @return ManifestIcon
+	 */
+	public function createIconInstance(string $sourceIconPath, string $applicationAlias, bool $addDefaultSizes = false)
+	{
+		$icon = new ManifestIcon($sourceIconPath, $applicationAlias, $addDefaultSizes);
+		$icon->setWebRootPath($this->container->getParameter('contao.web_dir'));
+		return $icon;
 	}
 
 	/**
@@ -45,31 +68,44 @@ class ManifestIconGenerator
 	 *
 	 * @param ManifestIcon $icon
 	 * @param string $appAlias
-	 * @return array
 	 */
-	public function generateIcons(ManifestIcon $icon, string $appAlias)
+	public function generateIcons(ManifestIcon $icon)
 	{
-		$image = $this->imageFactory->create($icon->getSourceIconPath());
-		$config = (new ResizeConfiguration())->setMode(ResizeConfiguration::MODE_PROPORTIONAL);
+		$image   = $this->imageFactory->create($icon->getSourceIconPath());
+		$config  = (new ResizeConfiguration())->setMode(ResizeConfiguration::MODE_PROPORTIONAL);
 		$options = new ResizeOptions();
-		$basePath = $icon->getIconsPath();
-
-		$manifestIcons = [];
 
 		foreach ($icon->getSizes() as $size)
 		{
-			$icon_path = $basePath.$icon->getIconBaseName().'-'.$size['width'].'.'.$icon->getIconExtension();
-			$config->setWidth($size['width']);
-			$config->setHeight($size['height']);
-			$options->setTargetPath(System::getContainer()->getParameter('contao.web_dir').'/'.$icon_path);
-			$this->resizer->resize($image, $config, $options);
-			$manifestIcons[] = [
-				"src" => $icon_path,
-				"type" => mime_content_type($icon_path),
-				"sizes" => $size["width"].'x'.$size['height']
-			];
-		}
+			$iconPath = $icon->generateIconName($size, true);
 
-		return $manifestIcons;
+			if ($size !== 'all')
+			{
+				$sizes = explode('x', $size);
+				$config->setWidth($sizes[0]);
+				$config->setHeight($sizes[1]);
+				$options->setTargetPath($iconPath);
+				$this->resizer->resize($image, $config, $options);
+			}
+			else {
+				copy($icon->getSourceIconPath(), $iconPath);
+			}
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIconBasePath(): string
+	{
+		return $this->iconBasePath;
+	}
+
+	/**
+	 * @param string $iconBasePath
+	 */
+	public function setIconBasePath(string $iconBasePath): void
+	{
+		$this->iconBasePath = $iconBasePath;
 	}
 }

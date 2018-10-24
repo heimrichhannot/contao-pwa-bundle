@@ -16,8 +16,8 @@ class ManifestIcon
 {
 
 	const SIZES_DEFAULT = [
-		['width' => 192, "height" => 192],
-		['width' => 512, "height" => 512],
+		'192x192',
+		'512x512'
 	];
 
 	protected $sizes = [];
@@ -36,7 +36,16 @@ class ManifestIcon
 	 */
 	protected $iconExtension;
 
-	protected $defaultIconPath = 'assets/heimrichhannotcontaopwa';
+	/**
+	 * @var string Relative path from web root to the folder where icons should be stored
+	 */
+	protected $iconBasePath = 'assets/heimrichhannotcontaopwa';
+
+	/**
+	 * @var string Absolute path to the web root
+	 */
+	protected $webRootPath = __DIR__;
+
 	/**
 	 * @var string
 	 */
@@ -71,9 +80,9 @@ class ManifestIcon
 	public function setSourceIconPath(string $sourceIconPath): void
 	{
 		$this->sourceIconPath = $sourceIconPath;
-		$extension = pathinfo($sourceIconPath, PATHINFO_EXTENSION);
-		$this->iconBaseName = basename($sourceIconPath, '.'.$extension);
-		$this->iconExtension = $extension;
+		$extension            = pathinfo($sourceIconPath, PATHINFO_EXTENSION);
+		$this->iconBaseName   = basename($sourceIconPath, '.' . $extension);
+		$this->iconExtension  = $extension;
 	}
 
 	/**
@@ -86,19 +95,65 @@ class ManifestIcon
 
 	/**
 	 * @param array $sizes
+	 * @return bool True if all sizes were valid and added. False, if at least on size was invalid.
 	 */
-	public function setSizes(array $sizes): void
+	public function setSizes(array $sizes): bool
 	{
-		$this->sizes = $sizes;
+		$success = true;
+		foreach ($sizes as $size)
+		{
+			if (!$this->addSize($size))
+			{
+				$success = false;
+			}
+		}
+		return $success;
+	}
+
+	/**
+	 * @param string $size Must be "any" or "[Width]x[Height]
+	 * @return bool True if size was valid and added, false if size was not valid and not added.
+	 */
+	public function addSize(string $size): bool
+	{
+		if (true === $this->validateSize($size))
+		{
+			$this->sizes[] = $size;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Validate if an given string is an valid icon size
+	 *
+	 * @param string $size
+	 * @return bool
+	 */
+	public function validateSize(string $size)
+	{
+		if ('any' === $size)
+		{
+			return true;
+		}
+		$matches = [];
+		if (1 === preg_match('/(\d+)x(\d+)/', $size, $matches))
+		{
+			if ($matches[0] === $size)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
 	 * @param int $width Icon width in pixel
 	 * @param int $height Icon height in pixel
 	 */
-	public function addSize(int $width, int $height)
+	public function addSizePixel(int $width, int $height)
 	{
-		$this->sizes[] = ['width' => $width, "height" => $height];
+		$this->addSize($width . 'x' . $height);
 	}
 
 	/**
@@ -117,9 +172,49 @@ class ManifestIcon
 		return $this->iconExtension;
 	}
 
+	/**
+	 * Relative path to the folder where current icons are stored.
+	 *
+	 * @return string
+	 */
 	public function getIconsPath(): string
 	{
-		return $this->defaultIconPath.'/'.$this->applicationAlias.'/icons/';
+		return $this->iconBasePath . '/' . $this->applicationAlias . '/icons/';
+	}
+
+	/**
+	 * Absolute path to the folder where current icons are stored.
+	 *
+	 * @return string
+	 */
+	public function getIconAbsolutePath(): string
+	{
+		return $this->webRootPath . '/' . $this->getIconsPath();
+	}
+
+	/**
+	 * @param string $size
+	 * @param bool $withAbsolutePath
+	 * @return string
+	 */
+	public function generateIconName(string $size, bool $withAbsolutePath = false)
+	{
+		if (!$this->validateSize($size))
+		{
+			throw new \InvalidArgumentException("Attribute size must be an valid icon size string!");
+		}
+		if ($size != 'any')
+		{
+			$size = (explode('x', $size))[0];
+		}
+		$iconName = $this->iconBaseName . '-' . $size . '.' . $this->iconExtension;
+
+		if ($withAbsolutePath)
+		{
+			$iconName = $this->getIconAbsolutePath() . '/' . $iconName;
+		}
+
+		return $iconName;
 	}
 
 	public function toArray()
@@ -128,18 +223,20 @@ class ManifestIcon
 
 		foreach ($this->sizes as $size)
 		{
-			$icon_path = $this->getIconsPath().$this->iconBaseName.'-'.$size['width'].$this->iconExtension;
+			$iconName         = $this->generateIconName($size);
+			$absoluteIconPath = $this->getIconAbsolutePath() . '/' . $iconName;
+			$relativeIconPath = $this->getIconsPath() . '/' . $iconName;
 
-			if (!file_exists($icon_path))
+			if (!file_exists($absoluteIconPath))
 			{
 				$this->iconFilesMissing = true;
 				continue;
 			}
 
 			$manifestIcons[] = [
-				"src" => $icon_path,
-				"type" => mime_content_type($icon_path),
-				"sizes" => $size["width"].'x'.$size['height']
+				"src"   => $relativeIconPath,
+				"type"  => mime_content_type($absoluteIconPath),
+				"sizes" => $size
 			];
 		}
 
@@ -149,17 +246,17 @@ class ManifestIcon
 	/**
 	 * @return string
 	 */
-	public function getDefaultIconPath(): string
+	public function getIconBasePath(): string
 	{
-		return $this->defaultIconPath;
+		return $this->iconBasePath;
 	}
 
 	/**
-	 * @param string $defaultIconPath
+	 * @param string $iconBasePath
 	 */
-	public function setDefaultIconPath(string $defaultIconPath): void
+	public function setIconBasePath(string $iconBasePath): void
 	{
-		$this->defaultIconPath = $defaultIconPath;
+		$this->iconBasePath = $iconBasePath;
 	}
 
 	/**
@@ -184,6 +281,22 @@ class ManifestIcon
 	public function isIconFilesMissing(): bool
 	{
 		return $this->iconFilesMissing;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getWebRootPath(): string
+	{
+		return $this->webRootPath;
+	}
+
+	/**
+	 * @param string $webRootPath
+	 */
+	public function setWebRootPath(string $webRootPath): void
+	{
+		$this->webRootPath = $webRootPath;
 	}
 
 

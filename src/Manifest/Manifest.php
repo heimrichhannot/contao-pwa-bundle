@@ -95,11 +95,11 @@ class Manifest implements \JsonSerializable
 	 */
 	public $icons;
 	/**
-	 * @var string Color in RGB format
+	 * @var string Valid CSS color. RGB-Colors with # at the beginning
 	 */
 	public $background_color;
 	/**
-	 * @var string Color in RGB format
+	 * @var string Valid CSS color. RGB-Colors with # at the beginning
 	 */
 	public $theme_color;
 	/**
@@ -150,6 +150,8 @@ class Manifest implements \JsonSerializable
 			$manifestProperties['icons'] = $this->icons->toArray();
 		}
 
+
+
 		return json_encode($manifestProperties);
 	}
 
@@ -172,6 +174,4 @@ class Manifest implements \JsonSerializable
 
 		$this->related_applications[] = $application;
 	}
-
-
 }

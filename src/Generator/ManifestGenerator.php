@@ -47,7 +47,7 @@ class ManifestGenerator
 		}
 
 		$filesystem = new Filesystem();
-		$filesystem->dumpFile($path.'/'.$filename, $manifest->jsonSerialize());
+		$filesystem->dumpFile($path.'/'.$filename, $manifestJson);
 	}
 
 	/**
@@ -71,15 +71,14 @@ class ManifestGenerator
 		$manifest->short_name = $page['pwaShortName'];
 		$manifest->display = $page['pwaDisplay'];
 		$manifest->lang = $page['language'];
-		$manifest->background_color = $page['pwaBackgroundColor'];
-		$manifest->theme_color = $page['pwaThemeColor'];
+		$manifest->background_color = '#'.$page['pwaBackgroundColor'];
+		$manifest->theme_color = '#'.$page['pwaThemeColor'];
 
 		$iconModel = FilesModel::findByUuid($page['pwaIcons']);
 		if ($iconModel)
 		{
-			$manifest->icons = new ManifestIcon($iconModel->path, $page['alias'], true);
+			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page['alias'], true);
 		}
-
 		$filename = $page['alias'].'_manifest.json';
 		$this->generateManifest($manifest, $filename, $this->defaultManifestPath);
 	}
