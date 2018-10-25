@@ -1,0 +1,3 @@
+heimrichhannot_contaopwabundle:
+  resource: "@HeimrichHannotContaoPwaBundle/Controller/"
+  type: annotation

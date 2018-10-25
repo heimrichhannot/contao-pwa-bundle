@@ -10,7 +10,7 @@ A bundle to provide progressive web app support for contao.
 * Create and register service worker for each page root (Default service worker currently only works for page with build/manifest.json file in web root (precaches webpack assets)) and page scope `/de/`
 
 ## Todo
-* translations
+* translations 
 * make service worker configurable
 * add push notifications to service worker
 * image size config

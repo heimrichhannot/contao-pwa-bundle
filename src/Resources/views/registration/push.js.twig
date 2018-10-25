@@ -1,0 +1,59 @@
+if (!('serviceWorker' in navigator)) {
+    // Service Worker isn't supported on this browser, disable or hide UI.
+}
+else if (!('PushManager' in window)) {
+    // Push isn't supported on this browser, disable or hide UI.
+} else {
+    navigator.serviceWorker.register('sw_push.js', {
+        scope: '/de/'
+    });
+
+    navigator.serviceWorker.ready
+    .then(function(registration) {
+        return registration.pushManager.getSubscription()
+        .then(async function(subscription) {
+            console.log('[Subscription] Open');
+            if (subscription)
+            {
+                console.log('[Subscription] Existion Subscription ');
+                return subscription;
+            }
+
+            console.log('[Subscription] No existion subscription ');
+            return registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: 'ABCD'
+            });
+
+        }).then(function(subscription) {
+            console.log('[Subscription] Subscribe ');
+            fetch('./api/notifications/subscribe', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    subscription: subscription
+                }),
+            });
+        });
+    });
+}
+
+function askPermission() {
+    {#return new Promise(function(resolve, reject) {#}
+        {#// Fallback for older api versions which taking a callback instead of returning a promise#}
+        {#const permissionResult = Notification.requestPermission(function(result) {#}
+            {#resolve(result);#}
+        {#});#}
+
+        {#if (permissionResult) {#}
+            {#permissionResult.then(resolve, reject);#}
+        {#}#}
+    {#})#}
+    {#.then(function(permissionResult) {#}
+        {#if (permissionResult !== 'granted') {#}
+            {#throw new Error('We weren\'t granted permission.');#}
+        {#}#}
+    {#});#}
+}

@@ -28,21 +28,29 @@ class HookListener
 	 * @var ThemeColorMetaTag
 	 */
 	private $colorMetaTag;
+	/**
+	 * @var \Twig_Environment
+	 */
+	private $twig;
 
 
 	/**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
+		$this->twig = $twig;
 	}
 
 	/**
 	 * @param PageModel $page
 	 * @param LayoutModel $layout
 	 * @param PageRegular $pageRegular
+	 * @throws \Twig_Error_Loader
+	 * @throws \Twig_Error_Runtime
+	 * @throws \Twig_Error_Syntax
 	 */
 	public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
 	{
@@ -55,15 +63,12 @@ class HookListener
 
 			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
 
-			$GLOBALS['TL_HEAD'][] = "<script>
-									// Check that service workers are registered
-									if ('serviceWorker' in navigator) {
-									  // Use the window load event to keep the page load performant
-									  window.addEventListener('load', () => {
-										navigator.serviceWorker.register('".$serviceWorker."', {scope: '/de/'});
-									  });
-									}
-									</script>";
+//			$GLOBALS['TL_HEAD'][] =
+//				"<script>"
+//				.$this->twig->render('@HeimrichHannotContaoPwa/registration/push.js.twig', [
+//					'scriptName' => $serviceWorker,
+//				])
+//				."</script>";
 		}
 	}
 }
