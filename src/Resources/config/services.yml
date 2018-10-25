@@ -23,9 +23,17 @@ services:
       ['@contao.image.image_factory', '@contao.image.resizer', '@service_container']
   HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator: "@huh.pwa.generator.icon"
 
+# Header Tags
+
   huh.head.tag.pwa.link_manifest:
     class: HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag
     public: true
     arguments:
       ['@huh.head.tag_manager']
   HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
+  huh.head.tag.pwa.meta_themecolor:
+    class: HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag
+    public: true
+    arguments:
+      ['@huh.head.tag_manager']
+  HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"

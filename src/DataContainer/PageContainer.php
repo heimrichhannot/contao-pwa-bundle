@@ -34,5 +34,6 @@ class PageContainer
 	public function oncreateVersionCallback($table, $pid, $version, $row)
 	{
 		$this->manifestGenerator->generatePageManifest($row);
+
 	}
 }

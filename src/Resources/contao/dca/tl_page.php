@@ -105,16 +105,8 @@ $fields = [
 	],
 	'pwaStartUrl'                 => [
 		'label'      => &$GLOBALS['TL_LANG']['tl_page']['pwaStartUrl'],
-		'inputType'  => 'pageTree',
-		'foreignKey' => 'tl_page.title',
-		'relation'   => [
-			'type' => 'hasOne',
-			'load' => 'lazy'
-		],
-		'eval'       => [
-			'fieldType' => 'radio',
-			'tl_class'  => 'w50 clr',
-		],
+		'inputType'  => 'text',
+		'eval'       => ['tl_class'  => 'w50 clr'],
 		'sql'        => "varchar(255) NOT NULL default ''",
 	],
 	'pwaScope'                    => [
