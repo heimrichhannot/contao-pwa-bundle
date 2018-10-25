@@ -53,12 +53,14 @@ class HookListener
 			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$rootPage->pwaThemeColor);
 
+			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
+
 			$GLOBALS['TL_HEAD'][] = "<script>
 									// Check that service workers are registered
 									if ('serviceWorker' in navigator) {
 									  // Use the window load event to keep the page load performant
 									  window.addEventListener('load', () => {
-										navigator.serviceWorker.register('sw.js', {scope: '/de/'});
+										navigator.serviceWorker.register('".$serviceWorker."', {scope: '/de/'});
 									  });
 									}
 									</script>";

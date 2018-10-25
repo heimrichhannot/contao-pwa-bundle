@@ -50,11 +50,15 @@ class PageContainer
 
 	public function oncreateVersionCallback($table, $pid, $version, $row)
 	{
+		if ($row['type'] !== 'root' || !$row['addPwa'])
+		{
+			return;
+		}
+
 		$this->manifestGenerator->generatePageManifest($row);
 
-//		$swPath = $this->fileLocator->locate('@HeimrichHannotContaoPwaBundle/Resources/public/js/sw.js');
 		file_put_contents(
-			$this->container->getParameter('contao.web_dir') . '/sw.js',
+			$this->container->getParameter('contao.web_dir') . '/sw_'.$row['alias'].'.js',
 			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker.js.twig')
 		);
 	}
