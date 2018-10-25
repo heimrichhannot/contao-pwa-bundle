@@ -74,8 +74,12 @@ class ManifestIcon
 	/**
 	 * @return string
 	 */
-	public function getSourceIconPath(): string
+	public function getSourceIconPath(bool $absolutePath = false): string
 	{
+		if ($absolutePath)
+		{
+			return $this->webRootPath.'/'.$this->sourceIconPath;
+		}
 		return $this->sourceIconPath;
 	}
 

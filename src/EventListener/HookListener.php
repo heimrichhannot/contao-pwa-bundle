@@ -53,8 +53,6 @@ class HookListener
 			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$rootPage->pwaThemeColor);
 
-			$serviceWorkerPath = 'sw.js';
-
 			$GLOBALS['TL_HEAD'][] = "<script>
 									// Check that service workers are registered
 									if ('serviceWorker' in navigator) {

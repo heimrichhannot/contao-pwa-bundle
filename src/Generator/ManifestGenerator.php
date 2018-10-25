@@ -68,16 +68,28 @@ class ManifestGenerator
 		$manifest = new Manifest();
 		$manifest->name = $page['pageTitle'];
 		$manifest->short_name = $page['pwaShortName'];
+		$manifest->description = $page['pwaDescription'];
+		$manifest->theme_color = '#'.$page['pwaThemeColor'];
+		$manifest->background_color = '#'.$page['pwaBackgroundColor'];
 		$manifest->display = $page['pwaDisplay'];
 		$manifest->lang = $page['language'];
-		$manifest->background_color = '#'.$page['pwaBackgroundColor'];
-		$manifest->theme_color = '#'.$page['pwaThemeColor'];
+		$manifest->dir = $page['pwaDirection'];
+		$manifest->orientation = $page['pwaOrientation'];
+		$manifest->start_url = $page['pwaStartUrl'];
+		$manifest->scope = $page['pwaScope'];
+		$manifest->prefer_related_applications = $page['pwaPreferRelatedApplication'] ? true : false;
 
 		$iconModel = FilesModel::findByUuid($page['pwaIcons']);
 		if ($iconModel)
 		{
 			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page['alias'], true);
 		}
+		$applications = deserialize($page['pwaRelatedApplications']);
+		foreach ($applications as $application)
+		{
+			$manifest->addRelatedApplication($application['plattform'], $application['url'], $application['id']);
+		}
+
 		$filename = $page['alias'].'_manifest.json';
 		$this->generateManifest($manifest, $filename, $this->defaultManifestPath);
 	}

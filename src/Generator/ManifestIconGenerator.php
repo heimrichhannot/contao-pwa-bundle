@@ -17,6 +17,11 @@ use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
 use HeimrichHannot\ContaoPwaBundle\Manifest\ManifestIcon;
+use Imagine\Exception\InvalidArgumentException;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
+use Imagine\Image\Point;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -83,6 +88,7 @@ class ManifestIconGenerator
 			if ($size !== 'all')
 			{
 				$sizes = explode('x', $size);
+
 				$config->setWidth($sizes[0]);
 				$config->setHeight($sizes[1]);
 				$options->setTargetPath($iconPath);

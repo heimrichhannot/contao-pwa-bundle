@@ -1,9 +1,11 @@
 let CACHE = 'test-cache';
 
+{% set debug = false %}
+
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE).then(function(cache) {
-            console.log('[Install] Cache open');
+            {% if debug %}console.log('[Install] Cache open');{% endif %}
             // Fetch webpack manifest file
             return fetch('/build/manifest.json').then(function(responce) {
                 return responce.json();
@@ -29,7 +31,7 @@ self.addEventListener('install', function(e) {
 });
 
 self.addEventListener('fetch', function(evt) {
-    console.log('[Fetch] Event');
+    {% if debug %}console.log('[Fetch] Event');{% endif %}
     evt.respondWith(fromNetwork(evt.request, 600).catch(function () {
         console.log('[Fetch] Catch error with cache');
         return fromCache(evt.request).catch(function() {

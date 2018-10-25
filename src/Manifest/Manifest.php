@@ -163,15 +163,31 @@ class Manifest implements \JsonSerializable
 		return $this->related_applications;
 	}
 
-	public function addRelatedApplication(string $plattform, string $url = null, ?string $id = null, ?string $min_version = null, ?string $sequence = null)
+	/**
+	 * @param string $plattform
+	 * @param string|null $url
+	 * @param null|string $id
+	 * @param null|string $min_version
+	 * @param array|null $fingerprints
+	 * @return bool
+	 */
+	public function addRelatedApplication(string $plattform, string $url = null, ?string $id = null, ?string $min_version = null, ?array $fingerprints = null)
 	{
+		if (empty($plattform))
+		{
+			return false;
+		}
+		if (empty($url) && empty($id))
+		{
+			return false;
+		}
 		$application = [];
 		$application['plattform'] = $plattform;
 		if ($url) $application['url'] = $url;
 		if ($id) $application['id'] = $id;
 		if ($min_version) $application['min_version'] = $min_version;
-		if ($sequence) $application['sequence'] = $sequence;
-
+		if ($fingerprints) $application['fingerprints'] = $fingerprints;
 		$this->related_applications[] = $application;
+		return true;
 	}
 }

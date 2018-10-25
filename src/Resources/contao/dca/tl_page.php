@@ -88,7 +88,7 @@ $fields = [
 		'eval'      => [
 			'files'      => true,
 			'filesOnly'  => true,
-			'extensions' => 'jpg,png,gif,svg',
+			'extensions' => 'jpg,png,gif',
 			'fieldType'  => 'radio',
 			'tl_class'   => 'clr',
 		],
