@@ -1,13 +1,34 @@
 {% extends "@ContaoCore/Backend/be_page.html.twig" %}
 
 {% block headline %}
-    Not only the content of the `title`-tag but also the title of the content section.
-{% endblock %}
-
-{% block error %}
-    Will be placed within the error block.
+    {% trans %}huh.pwa.backend.headline{% endtrans %}
 {% endblock %}
 
 {% block main %}
-    Main Content.
+    <div class="tl_listing_container">
+        <h2>Authentifizierung (VAPID-Keys)</h2>
+        {% if vapidkeys|default %}
+            <table class="">
+                <tbody>
+                <tr class="odd">
+                    <td class="">Public: </td>
+                    <td class="">{{ vapidkeys.public }}</td>
+                </tr>
+                <tr class="even">
+                    <td class="">Private: </td>
+                    <td class="">{{ vapidkeys.private }}</td>
+                </tr>
+                </tbody>
+            </table>
+            {#<p>#}
+                {#Public: {{ vapidkeys.public }}<br>#}
+                {#Private: {{ vapidkeys.private }}#}
+            {#</p>#}
+        {% else %}
+            <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
+            <p>
+                Public: {{ generatedKeys.publicKey }}<br>
+                Private: {{ generatedKeys.privateKey }}</p>
+        {% endif %}
+    </div>
 {% endblock %}

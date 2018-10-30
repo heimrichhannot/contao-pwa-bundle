@@ -21,6 +21,8 @@ use Contao\Model;
  * @property int $tstamp
  * @property int $dateAdded
  * @property string $endpoint
+ * @property string $publicKey
+ * @property string $authToken
  */
 class PwaSubscriberModel extends Model
 {

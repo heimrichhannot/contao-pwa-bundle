@@ -46,11 +46,12 @@ class UserNavigationListener
 			'title' => 'A backend route test module',
 			'label' => 'Test',
 			'class' => 'navigation test',
-			'href'  => $this->router->generate('huh.pwa')
+			'href'  => $this->router->generate('huh.pwa.backend')
 		];
 
-		if ($this->requestStack->getCurrentRequest()->attributes->get('_backend_module') === 'test') {
-			$modules['system']['modules']['huh_pwa']['class'] .= ' active';
+		if ($this->requestStack->getCurrentRequest()->attributes->get('_backend_module') === 'huh_pwa') {
+			$modules['system']['modules']['huh_pwa']['class'] .= ' active'; // altes BE Theme
+			$modules['system']['modules']['huh_pwa']['isActive'] = true;    // neues BE Theme
 		}
 
 		return $modules;

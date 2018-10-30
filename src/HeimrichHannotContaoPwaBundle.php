@@ -12,9 +12,14 @@
 namespace HeimrichHannot\ContaoPwaBundle;
 
 
+use HeimrichHannot\ContaoPwaBundle\DependencyInjection\PwaExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class HeimrichHannotContaoPwaBundle extends Bundle
 {
+	public function getContainerExtension()
+	{
+		return new PwaExtension();
+	}
 
 }

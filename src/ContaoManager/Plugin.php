@@ -19,6 +19,7 @@ use Contao\ManagerPlugin\Bundle\Config\ConfigInterface;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
+use HeimrichHannot\ContaoPwaBundle\DependencyInjection\Configuration;
 use HeimrichHannot\ContaoPwaBundle\HeimrichHannotContaoPwaBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
@@ -56,7 +57,6 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 	 *
 	 * @param LoaderResolverInterface $resolver
 	 * @param KernelInterface $kernel
-	 * @return void
 	 * @throws \Exception
 	 */
 	public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)

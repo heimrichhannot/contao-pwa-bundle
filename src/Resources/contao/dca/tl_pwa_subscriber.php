@@ -81,5 +81,17 @@ $GLOBALS['TL_DCA']['tl_pwa_subscriber'] = [
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(255) NOT NULL default ''",
 		],
+		'publicKey'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+			'inputType'  => 'text',
+			'eval'       => ['tl_class'  => 'w50'],
+			'sql'        => "varchar(128) NOT NULL default ''",
+		],
+		'authToken'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+			'inputType'  => 'text',
+			'eval'       => ['tl_class'  => 'w50'],
+			'sql'        => "varchar(128) NOT NULL default ''",
+		],
 	],
 ];
