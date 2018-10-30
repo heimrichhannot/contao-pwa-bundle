@@ -9,7 +9,10 @@
     "ext-fileinfo": "*",
     "contao/core-bundle": "^4.4",
     "heimrichhannot/contao-head-bundle": "^1.1",
-    "menatwork/contao-multicolumnwizard": "^3.3"
+    "menatwork/contao-multicolumnwizard": "^3.3",
+    "heimrichhannot/contao-utils-bundle": "^2.0",
+    "minishlink/web-push": "^4.0",
+    "sensio/framework-extra-bundle": "^5.0"
   },
   "autoload": {
     "psr-4": {

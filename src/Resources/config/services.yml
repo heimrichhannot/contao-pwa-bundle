@@ -4,6 +4,10 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\HookListener
     public: true
     autowire: true
+  huh.pwa.listener.usernavigation:
+    class: HeimrichHannot\ContaoPwaBundle\EventListener\UserNavigationListener
+    arguments:
+      ['@request_stack', '@router']
   huh.pwa.datacontainer.page:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
     public: true

@@ -9,6 +9,15 @@ A bundle to provide progressive web app support for contao.
 * Create and register manifest file for each page root
 * Create and register service worker for each page root (Default service worker currently only works for page with build/manifest.json file in web root (precaches webpack assets)) and page scope `/de/`
 
+## Setup
+
+### Prerequisites
+
+* PHP >= 7.1
+* PHP GNU Multiple Precision extension needed due some dependencies
+* Contao >=4.4 
+
+
 ## Todo
 * translations 
 * make service worker configurable
