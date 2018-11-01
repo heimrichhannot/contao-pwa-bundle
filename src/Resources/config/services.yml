@@ -13,13 +13,14 @@ services:
     public: true
     autowire: true
 
+# Generators
+
   huh.pwa.generator.manifest:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator
     public: true
     arguments:
       ['@service_container', '@huh.pwa.generator.icon']
   HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator: "@huh.pwa.generator.manifest"
-
   huh.pwa.generator.icon:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator
     public: true
@@ -41,3 +42,11 @@ services:
     arguments:
       ['@huh.head.tag_manager']
   HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"
+
+# Sender
+
+  huh.pwa.sender.pushnotification:
+    class: HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender
+    public: true
+    arguments:
+      ['%huh.pwa%']

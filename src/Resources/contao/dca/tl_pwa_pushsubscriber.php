@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['TL_DCA']['tl_pwa_subscriber'] = [
+$GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	'config'   => [
 		'dataContainer'     => 'Table',
 		'enableVersioning'  => true,
@@ -34,24 +34,24 @@ $GLOBALS['TL_DCA']['tl_pwa_subscriber'] = [
 		],
 		'operations'        => [
 			'edit'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_subscriber']['edit'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['edit'],
 				'href'  => 'act=edit',
 				'icon'  => 'edit.gif',
 			],
 			'copy'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_subscriber']['copy'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['copy'],
 				'href'  => 'act=copy',
 				'icon'  => 'copy.gif',
 			],
 			'delete' => [
-				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_subscriber']['delete'],
+				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
 				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
 					. '\'))return false;Backend.getScrollOffset()"',
 			],
 			'show'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_subscriber']['show'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['show'],
 				'href'  => 'act=show',
 				'icon'  => 'show.gif',
 			],

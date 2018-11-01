@@ -193,7 +193,7 @@ class ManifestIcon
 		{
 			$basePath = $manifestPath.'/'.$basePath;
 		}
-		return $basePath . '/' . $this->applicationAlias . '/icons/';
+		return $basePath . '/' . $this->applicationAlias . '/icons';
 	}
 
 	/**

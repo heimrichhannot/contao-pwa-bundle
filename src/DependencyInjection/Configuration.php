@@ -31,10 +31,11 @@ class Configuration implements ConfigurationInterface
 		$rootNode = $treeBuilder->root(PwaExtension::ALIAS);
 
 		$rootNode->children()
-			->arrayNode('vapid_keys')
+			->arrayNode('vapid')
 				->children()
-					->scalarNode('public')->defaultNull()->end()
-					->scalarNode('private')->defaultNull()->end()
+					->scalarNode('subject')->defaultNull()->end()
+					->scalarNode('publicKey')->defaultNull()->end()
+					->scalarNode('privateKey')->defaultNull()->end()
 				->end()
 			->end()
 		->end();

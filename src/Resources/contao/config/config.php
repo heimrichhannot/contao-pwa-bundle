@@ -4,7 +4,7 @@
  * Backend modules
  */
 $GLOBALS['BE_MOD']['system']['huh_pwa'] = [
-	'tables' => ['tl_pwa_subscriber']
+	'tables' => ['tl_pwa_pushsubscriber']
 ];
 
 
@@ -18,7 +18,7 @@ $GLOBALS['TL_HOOKS']['getUserNavigation'][]     = ['huh.pwa.listener.usernavigat
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_pwa_subscriber'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaSubscriberModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_pushsubscriber'] = \HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel::class;
 
 /**
  * Content Elements

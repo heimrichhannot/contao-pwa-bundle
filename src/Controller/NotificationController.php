@@ -13,7 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaSubscriberModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -42,9 +42,9 @@ class NotificationController extends Controller
 		}
 		$endpoint = $data['subscription']['endpoint'];
 
-		if (!$user = PwaSubscriberModel::findByEndpoint($endpoint))
+		if (!$user = PushSubscriberModel::findByEndpoint($endpoint))
 		{
-			$user = new PwaSubscriberModel();
+			$user = new PushSubscriberModel();
 			$user->dateAdded = $user->tstamp = time();
 			$user->endpoint = $data['subscription']['endpoint'];
 			$user->publicKey = $data['subscription']['keys']['p256dh'];
@@ -68,8 +68,8 @@ class NotificationController extends Controller
 		}
 		$endpoint = $data['subscription']['endpoint'];
 
-		/** @var PwaSubscriberModel|Collection|null $user */
-		if ($user = PwaSubscriberModel::findByEndpoint($endpoint))
+		/** @var PushSubscriberModel|Collection|null $user */
+		if ($user = PushSubscriberModel::findByEndpoint($endpoint))
 		{
 			if ($user instanceof Collection)
 			{
@@ -97,7 +97,7 @@ class NotificationController extends Controller
 	public function sendAction(Request $request, string $payload)
 	{
 		$this->container->get('contao.framework')->initialize();
-		$subscribers = PwaSubscriberModel::findAll();
+		$subscribers = PushSubscriberModel::findAll();
 		if (!$subscribers)
 		{
 			return new Response("No subscribers found.", 404);
@@ -108,13 +108,15 @@ class NotificationController extends Controller
 		}
 
 		$auth = [
-			'subject' => 'mailto:t.koerner@heimrich-hannot.de', //$request->getSchemeAndHttpHost(),
-			'publicKey' => $publicKey,
-			'privateKey' => $this->container->getParameter('huh.pwa')['vapid_keys']['private']
+			'VAPID' => [
+				'subject' => 'mailto:t.koerner@heimrich-hannot.de',
+				'publicKey' => $publicKey,
+				'privateKey' => $this->container->getParameter('huh.pwa')['vapid']['privateKey']
+			],
 		];
 
 		$webPush = new WebPush($auth);
-		/** @var PwaSubscriberModel $subscriber */
+		/** @var PushSubscriberModel $subscriber */
 		foreach ($subscribers as $subscriber)
 		{
 
@@ -123,10 +125,8 @@ class NotificationController extends Controller
 				$payload
 			);
 		}
-//		$response = $webPush->flush();
-		dump($webPush->flush());
-		die();
-//		return new (print_r($webPush->flush()), 200);
+		$webPush->flush();
+		return new Response("Payload sent", 200);
 	}
 
 	/**
@@ -147,10 +147,10 @@ class NotificationController extends Controller
 	protected function getPublicKey()
 	{
 		$config = $this->getParameter("huh.pwa");
-		if (!isset($config['vapid_keys']) || !isset($config['vapid_keys']['public']))
+		if (!isset($config['vapid']) || !isset($config['vapid']['publicKey']))
 		{
 			return false;
 		}
-		return $config['vapid_keys']['public'];
+		return $config['vapid']['publicKey'];
 	}
 }
