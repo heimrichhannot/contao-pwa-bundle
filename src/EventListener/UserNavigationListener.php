@@ -44,8 +44,8 @@ class UserNavigationListener
 	{
 		$modules['system']['modules']['huh_pwa'] = [
 			'title' => 'A backend route test module',
-			'label' => 'Test',
-			'class' => 'navigation test',
+			'label' => 'PWA Overview',
+			'class' => '',
 			'href'  => $this->router->generate('huh.pwa.backend')
 		];
 

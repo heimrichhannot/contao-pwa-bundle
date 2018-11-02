@@ -12,8 +12,10 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 
@@ -48,18 +50,39 @@ class PageContainer
 		$this->twig = $twig;
 	}
 
-	public function oncreateVersionCallback($table, $pid, $version, $row)
+	public function onCreateVersionCallback($table, $pid, $version, $row)
 	{
 		if ($row['type'] !== 'root' || !$row['addPwa'])
 		{
 			return;
 		}
 
-		$this->manifestGenerator->generatePageManifest($row);
+		$page = PageModel::findByPk($row['id']);
+		if (!$page)
+		{
+			return;
+		}
+
+		$this->manifestGenerator->generatePageManifest($page);
 
 		file_put_contents(
-			$this->container->getParameter('contao.web_dir') . '/sw_'.$row['alias'].'.js',
+			$this->container->getParameter('contao.web_dir') . '/sw_'.$page->alias.'.js',
 			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker.js.twig')
 		);
+	}
+
+	public function getPwaConfigurationsAsOptions()
+	{
+		$configs = PwaConfigurationsModel::findAll();
+		if (!$configs)
+		{
+			return [];
+		}
+		$list = [];
+		foreach ($configs as $config)
+		{
+			$list[$config->id] = $config->title;
+		}
+		return $list;
 	}
 }

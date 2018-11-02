@@ -4,9 +4,6 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	'config'   => [
 		'dataContainer'     => 'Table',
 		'enableVersioning'  => true,
-		'onsubmit_callback' => [
-			['huh.utils.dca', 'setDateAdded'],
-		],
 		'sql'               => [
 			'keys' => [
 				'id' => 'primary',
@@ -34,17 +31,17 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 		],
 		'operations'        => [
 			'edit'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['edit'],
+				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
 				'href'  => 'act=edit',
 				'icon'  => 'edit.gif',
 			],
 			'copy'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['copy'],
+				'label' => &$GLOBALS['TL_LANG']['MSC']['copy'],
 				'href'  => 'act=copy',
 				'icon'  => 'copy.gif',
 			],
 			'delete' => [
-				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['delete'],
+				'label'      => &$GLOBALS['TL_LANG']['MSC']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
 				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']

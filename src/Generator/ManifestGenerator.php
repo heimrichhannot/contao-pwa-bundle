@@ -14,6 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 use Contao\FilesModel;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -54,43 +55,54 @@ class ManifestGenerator
 	 *
 	 * @param PageModel|array $page
 	 */
-	public function generatePageManifest($page)
+	public function generatePageManifest(PageModel $page)
 	{
-		if ($page instanceof PageModel)
+		if (!$page->addPwa || $page->pwaConfiguration)
 		{
-			$page = $page->row();
+			return;
 		}
-		if (!is_array($page))
+		if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
 		{
-			throw new \InvalidArgumentException("Page Manifest could only be generated from PageModel or PageModel row array!");
+			return;
 		}
 
 		$manifest = new Manifest();
-		$manifest->name = $page['pageTitle'];
-		$manifest->short_name = $page['pwaShortName'];
-		$manifest->description = $page['pwaDescription'];
-		$manifest->theme_color = '#'.$page['pwaThemeColor'];
-		$manifest->background_color = '#'.$page['pwaBackgroundColor'];
-		$manifest->display = $page['pwaDisplay'];
-		$manifest->lang = $page['language'];
-		$manifest->dir = $page['pwaDirection'];
-		$manifest->orientation = $page['pwaOrientation'];
-		$manifest->start_url = $page['pwaStartUrl'];
-		$manifest->scope = $page['pwaScope'];
-		$manifest->prefer_related_applications = $page['pwaPreferRelatedApplication'] ? true : false;
+		switch ($config->pwaName)
+		{
+			case PwaConfigurationsModel::PWA_NAME_CUSTOM:
+				$manifest->name = $config->pwaCustomName;
+				break;
+			case PwaConfigurationsModel::PWA_NAME_META_PAGETITLE:
+				$manifest->name = $page->pageTitle;
+				break;
+			default:
+				$manifest->name = $page->title;
+		}
 
-		$iconModel = FilesModel::findByUuid($page['pwaIcons']);
+		$manifest->short_name = $config->pwaShortName;
+		$manifest->description = $config->pwaDescription;
+		$manifest->theme_color = '#'.$config->pwaThemeColor;
+		$manifest->background_color = '#'.$config->pwaBackgroundColor;
+		$manifest->display = $config->pwaDisplay;
+		$manifest->lang = $page->language;
+		$manifest->dir = $config->pwaDirection;
+		$manifest->orientation = $config->pwaOrientation;
+		$manifest->start_url = $config->pwaStartUrl;
+		$manifest->scope = $config->pwaScope;
+		$manifest->prefer_related_applications = $config->pwaPreferRelatedApplication ? true : false;
+
+		$iconModel = FilesModel::findByUuid($config->pwaIcons);
 		if ($iconModel)
 		{
 			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page['alias'], true);
 		}
-		$applications = deserialize($page['pwaRelatedApplications']);
+		$applications = deserialize($config->pwaRelatedApplications);
 		foreach ($applications as $application)
 		{
 			$manifest->addRelatedApplication($application['plattform'], $application['url'], $application['id']);
 		}
 
-		$filename = $page['alias'].'_manifest.json';
+		$filename = $page->alias.'_manifest.json';
 		$this->generateManifest($manifest, $filename, $this->defaultManifestPath);
 	}
 }

@@ -1,0 +1,44 @@
+pushSubscription = new PushNotificationSubscription();
+
+{% if debug|default(false) %}
+    pushSubscription.debug = true;
+{% endif %}
+
+if (!('serviceWorker' in navigator)) {
+    pushSubscription.hide();
+}
+else {
+    {% if debug|default(false) %}console.log("[Registration] Register service worker");{% endif %}
+    navigator.serviceWorker.register('{{ serviceWorkerPath }}', {
+        scope: '/'
+    });
+
+    if (('PushManager' in window)) {
+        {% if debug == true %}console.log("[Subscription] Push supported");{% endif %}
+
+        navigator.serviceWorker.ready
+        .then(function(registration) {
+            {% if debug|default(false) %}console.log("[Subscription] Service worker registered");{% endif %}
+            return registration.pushManager.getSubscription();
+        }).then(function(subscription) {
+            if (subscription)
+            {
+                {% if debug|default(false) %}console.log('[Subscription] Already subscribed');{% endif %}
+                pushSubscription.setUnsubscribe();
+            }
+            else
+            {
+                {% if debug|default(false) %}console.log('[Subscription] Not subscribed');{% endif %}
+                pushSubscription.setSubscribe();
+            }
+        });
+    }
+    else {
+        pushSubscription.hide();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    pushSubscription.collectElementsToUpdate();
+});
+

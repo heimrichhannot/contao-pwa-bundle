@@ -14,8 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 use Contao\Model\Collection;
 use HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel;
-use Minishlink\WebPush\Subscription;
-use Minishlink\WebPush\WebPush;
+use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,37 +95,14 @@ class NotificationController extends Controller
 	 */
 	public function sendAction(Request $request, string $payload)
 	{
-		$this->container->get('contao.framework')->initialize();
-		$subscribers = PushSubscriberModel::findAll();
-		if (!$subscribers)
-		{
-			return new Response("No subscribers found.", 404);
-		}
-		if (!$publicKey = $this->getPublicKey())
-		{
-			return new Response("No public key available", 404);
-		}
-
-		$auth = [
-			'VAPID' => [
-				'subject' => 'mailto:t.koerner@heimrich-hannot.de',
-				'publicKey' => $publicKey,
-				'privateKey' => $this->container->getParameter('huh.pwa')['vapid']['privateKey']
-			],
-		];
-
-		$webPush = new WebPush($auth);
-		/** @var PushSubscriberModel $subscriber */
-		foreach ($subscribers as $subscriber)
-		{
-
-			$webPush->sendNotification(
-				new Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
-				$payload
-			);
-		}
-		$webPush->flush();
-		return new Response("Payload sent", 200);
+		$this->get('contao.framework')->initialize();
+		$notification = new DefaultNotification();
+		$notification->setTitle('HuH Pwa Bundle');
+		$notification->setBody($payload);
+		$notification->setIcon('images/icons/icon-128x128.png');
+		$result = $this->get('huh.pwa.sender.pushnotification')->send($notification);
+		dump($result);
+		die();
 	}
 
 	/**

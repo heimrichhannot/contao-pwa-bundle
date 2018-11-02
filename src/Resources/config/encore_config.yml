@@ -1,0 +1,4 @@
+huh_encore:
+  encore:
+    entries:
+      - { name: "ContaoProgressiveWebAppBundle", requireCss: true, file:"vendor/heimrichhannot/contao-pwa-bundle/src/Resources/assets/js/contaoPwaBundle.es6.js"}

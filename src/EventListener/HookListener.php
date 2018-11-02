@@ -17,6 +17,8 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class HookListener
 {
@@ -32,16 +34,21 @@ class HookListener
 	 * @var \Twig_Environment
 	 */
 	private $twig;
+	/**
+	 * @var KernelInterface
+	 */
+	private $kernel;
 
 
 	/**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, KernelInterface $kernel)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
+		$this->kernel = $kernel;
 	}
 
 	/**
@@ -56,19 +63,28 @@ class HookListener
 	{
 		$rootPage = PageModel::findByPk($page->rootId);
 
-		if ($rootPage->addPwa)
+		if ($rootPage->addPwa && $rootPage->pwaConfiguration)
 		{
+			$config = PwaConfigurationsModel::findByPk($rootPage->pwaConfiguration);
+			if (!$config)
+			{
+				return;
+			}
+
 			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
-			$this->colorMetaTag->setContent('#'.$rootPage->pwaThemeColor);
+			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
+//			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
+			$serviceWorker = 'sw_push.js';
 
-//			$GLOBALS['TL_HEAD'][] =
-//				"<script>"
-//				.$this->twig->render('@HeimrichHannotContaoPwa/registration/push.js.twig', [
-//					'scriptName' => $serviceWorker,
-//				])
-//				."</script>";
+			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/pushNotificationSubscription.js"></script>';
+			$GLOBALS['TL_HEAD'][] =
+				"<script type='text/javascript'>"
+				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
+					'serviceWorkerPath' => $serviceWorker,
+					'debug' => $this->kernel->isDebug(),
+				])
+				."</script>";
 		}
 	}
 }
