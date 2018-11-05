@@ -63,11 +63,19 @@ class PageContainer
 			return;
 		}
 
-		$this->manifestGenerator->generatePageManifest($page);
+		if (!$pwaConfig = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
+		{
+			return;
+		}
+
+		$manifest = $this->manifestGenerator->generatePageManifest($page);
 
 		file_put_contents(
 			$this->container->getParameter('contao.web_dir') . '/sw_'.$page->alias.'.js',
-			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker.js.twig')
+			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker.js.twig', [
+				'supportPush' => true,
+				'pageTitle' => $manifest->name
+			])
 		);
 	}
 

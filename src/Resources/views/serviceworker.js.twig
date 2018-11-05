@@ -1,4 +1,4 @@
-let CACHE = 'test-cache';
+let CACHE = 'cache-sw-{{ alias }}';
 
 {% set debug = false %}
 
@@ -30,15 +30,33 @@ self.addEventListener('install', function(e) {
     );
 });
 
-self.addEventListener('fetch', function(evt) {
+self.addEventListener('fetch', function(event) {
+    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: '.event.request.url);{% endif %}
+    var url = new URL(event.request.url);
+
+    // don't cache backend or dev routes
+    if (url.pathname.match('^\/contao') || url.pathname.match('^\/_contao') || url.pathname.match('^\/app_dev.php')) {
+        {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');{% endif %}
+        return false;
+    }
+
     {% if debug %}console.log('[Fetch] Event');{% endif %}
-    evt.respondWith(fromNetwork(evt.request, 600).catch(function () {
-        console.log('[Fetch] Catch error with cache');
-        return fromCache(evt.request).catch(function() {
+    event.respondWith(fromNetwork(event.request, 600).catch(function () {
+        console.log('[Serviceworker] Fetch: Catch error with cache');
+        return fromCache(event.request).catch(function() {
             return useFallback();
         });
     }));
 });
+
+{% if supportPush|default(false) %}
+self.addEventListener('push', function(event) {
+    let payload = event.data ? event.data.text() : "No payload";
+    event.waitUntil(
+        self.registration.showNotification("{{ pageTitle }}", JSON.parse(payload))
+    );
+});
+{% endif %}
 
 function fromNetwork(request, timeout) {
     console.log('[Network] Function');
@@ -82,7 +100,7 @@ function useFallback() {
 }
 
 self.addEventListener('activate', function(event) {
-    console.log('[activate] Activating service worker!');
+    console.log('[Serviceworker] Activating service worker!');
     // console.log('[activate] Claiming this service worker!');
     // event.waitUntil(self.clients.claim());
 });

@@ -74,13 +74,14 @@ class HookListener
 			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-//			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
-			$serviceWorker = 'sw_push.js';
+			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
+//			$serviceWorker = 'sw_push.js';
 
 			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/pushNotificationSubscription.js"></script>';
 			$GLOBALS['TL_HEAD'][] =
 				"<script type='text/javascript'>"
 				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
+					'alias' => $rootPage->alias,
 					'serviceWorkerPath' => $serviceWorker,
 					'debug' => $this->kernel->isDebug(),
 				])

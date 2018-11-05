@@ -54,16 +54,17 @@ class ManifestGenerator
 	 * Generate an manifest out of an page
 	 *
 	 * @param PageModel|array $page
+	 * @return bool|Manifest Manifest object or false, if failure.
 	 */
 	public function generatePageManifest(PageModel $page)
 	{
 		if (!$page->addPwa || $page->pwaConfiguration)
 		{
-			return;
+			return false;
 		}
 		if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
 		{
-			return;
+			return false;
 		}
 
 		$manifest = new Manifest();
@@ -104,5 +105,6 @@ class ManifestGenerator
 
 		$filename = $page->alias.'_manifest.json';
 		$this->generateManifest($manifest, $filename, $this->defaultManifestPath);
+		return $manifest;
 	}
 }
