@@ -18,6 +18,7 @@ use Contao\Model;
  * @package HeimrichHannot\ContaoPwaBundle\Model
  *
  * @property int $id
+ * @property int $pid
  * @property int $tstamp
  * @property int $dateAdded
  * @property string $endpoint

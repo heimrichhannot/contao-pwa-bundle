@@ -1,11 +1,21 @@
 <?php
+/**
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
+ *
+ * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ */
 
-$GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
+$table = 'tl_pwa_pushnotifications';
+
+$GLOBALS['TL_DCA'][$table] = [
 	'config'   => [
-		'dataContainer'     => 'Table',
+		'dataContainer'    => 'Table',
 		'ptable'           => 'tl_pwa_configurations',
-		'enableVersioning'  => true,
-		'sql'               => [
+		'enableVersioning' => true,
+		'sql'              => [
 			'keys' => [
 				'id' => 'primary',
 			],
@@ -13,14 +23,14 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['endpoint'],
+			'fields' => ['title'],
 			'format' => '%s',
 		],
 		'sorting'           => [
-			'mode'         => 2,
-			'fields'       => ['dateAdded'],
+			'mode'         => 1,
+			'fields'       => ['title'],
+			'headerFields' => ['title'],
 			'panelLayout'  => 'filter;search,limit',
-//			'disableGrouping' => true,
 		],
 		'global_operations' => [
 			'all' => [
@@ -78,23 +88,41 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
 			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		],
-		'endpoint'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['endpoint'],
+		'title'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['title'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(255) NOT NULL default ''",
 		],
-		'publicKey'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+		'body'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['body'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(128) NOT NULL default ''",
 		],
-		'authToken'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+		'icon'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['icon'],
+			'inputType' => 'fileTree',
+			'eval'      => [
+				'files'      => true,
+				'filesOnly'  => true,
+				'extensions' => 'jpg,png,gif',
+				'fieldType'  => 'radio',
+				'tl_class'   => 'clr',
+			],
+			'sql'       => "blob NULL",
+		],
+		'sendDate' => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sendDate'],
 			'inputType'  => 'text',
-			'eval'       => ['tl_class'  => 'w50'],
-			'sql'        => "varchar(128) NOT NULL default ''",
+			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
+			'sql'     => "int(10) unsigned NOT NULL default '0'",
+		],
+		'sent' => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
+			'inputType'  => 'checkbox',
+			'eval'    => [],
+			'sql'     => "char(1) NOT NULL default ''",
 		],
 	],
 ];

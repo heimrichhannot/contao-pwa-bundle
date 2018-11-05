@@ -13,7 +13,6 @@ namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
 use Contao\PageModel;
-use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,6 +20,10 @@ use Symfony\Component\HttpKernel\Config\FileLocator;
 
 class PageContainer
 {
+	const ADD_PWA_NO = 'no';
+	const ADD_PWA_YES = 'yes';
+	const ADD_PWA_INHERIT = 'inherit';
+
 	/**
 	 * @var ManifestGenerator
 	 */
@@ -52,13 +55,12 @@ class PageContainer
 
 	public function onCreateVersionCallback($table, $pid, $version, $row)
 	{
-		if ($row['type'] !== 'root' || !$row['addPwa'])
+		if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES )
 		{
 			return;
 		}
 
-		$page = PageModel::findByPk($row['id']);
-		if (!$page)
+		if (!$page = PageModel::findByPk($row['id']))
 		{
 			return;
 		}
@@ -72,9 +74,10 @@ class PageContainer
 
 		file_put_contents(
 			$this->container->getParameter('contao.web_dir') . '/sw_'.$page->alias.'.js',
-			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker.js.twig', [
+			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker/serviceworker_default.js.twig', [
 				'supportPush' => true,
-				'pageTitle' => $manifest->name
+				'pageTitle' => $manifest->name,
+				'version' => date('YmdHis')
 			])
 		);
 	}
@@ -92,5 +95,26 @@ class PageContainer
 			$list[$config->id] = $config->title;
 		}
 		return $list;
+	}
+
+	public function getInheritPwaPageConfigOptions()
+	{
+		$pages = PageModel::findBy('addPwa', PageContainer::ADD_PWA_YES);
+		if (!$pages)
+		{
+			return [];
+		}
+		$options = [];
+		/** @var PageModel $page */
+		foreach ($pages as $page)
+		{
+			$pwaConfig = PwaConfigurationsModel::findByPk($pages->pwaConfiguration);
+			if (!$pwaConfig)
+			{
+				continue;
+			}
+			$options[$page->id] = $page->title.' ('.$pwaConfig->title.')';
+		}
+		return $options;
 	}
 }

@@ -14,6 +14,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	'config'   => [
 		'dataContainer'     => 'Table',
 		'enableVersioning'  => true,
+		'ctable'            => 'tl_pwa_pushsubscriber',
 		'onsubmit_callback' => [
 			['huh.utils.dca', 'setDateAdded'],
 		],
@@ -43,10 +44,15 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 		],
 		'operations'        => [
-			'edit'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
-				'href'  => 'act=edit',
-				'icon'  => 'edit.gif',
+//			'edit'   => [
+//				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
+//				'href'  => 'table=tl_pwa_pushsubscriber',
+//				'icon'  => 'edit.gif',
+//			],
+			'editheader' => [
+				'label'           => &$GLOBALS['TL_LANG']['MSC']['editheader'],
+				'href'            => 'act=edit',
+				'icon'            => 'header.svg',
 			],
 			'copy'   => [
 				'label' => &$GLOBALS['TL_LANG']['MSC']['copy'],
@@ -61,9 +67,19 @@ $GLOBALS['TL_DCA'][$table] = [
 					. '\'))return false;Backend.getScrollOffset()"',
 			],
 			'show'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['show'],
+				'label' => &$GLOBALS['TL_LANG']['MSC']['show'],
 				'href'  => 'act=show',
 				'icon'  => 'show.gif',
+			],
+			'subscriber'   => [
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['subscriber'],
+				'href'  => 'table=tl_pwa_pushsubscriber',
+				'icon'  => 'mgroup.svg',
+			],
+			'pushNotifications'   => [
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['pushNotifications'],
+				'href'  => 'table=tl_pwa_pushnotifications',
+				'icon'  => 'news.svg',
 			],
 		],
 	],
@@ -182,7 +198,6 @@ $GLOBALS['TL_DCA'][$table] = [
 				'tl_class'   => 'clr',
 			],
 			'sql'       => "blob NULL",
-
 		],
 		'pwaOrientation'              => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaOrientation'],

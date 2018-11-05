@@ -1,4 +1,4 @@
-let CACHE = 'cache-sw-{{ alias }}';
+let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 
 {% set debug = false %}
 
@@ -15,7 +15,6 @@ self.addEventListener('install', function(e) {
                 let files = Object.keys(json).map(function(key) {
                     return json[key];
                 });
-                files.push('/de/');
                 // Cache webpack assets from generated file list
                 return cache.addAll(files);
             }).then(function() {
@@ -40,7 +39,6 @@ self.addEventListener('fetch', function(event) {
         return false;
     }
 
-    {% if debug %}console.log('[Fetch] Event');{% endif %}
     event.respondWith(fromNetwork(event.request, 600).catch(function () {
         console.log('[Serviceworker] Fetch: Catch error with cache');
         return fromCache(event.request).catch(function() {
@@ -59,7 +57,7 @@ self.addEventListener('push', function(event) {
 {% endif %}
 
 function fromNetwork(request, timeout) {
-    console.log('[Network] Function');
+    console.log('[Serviceworker] Fetch: Try fetch from network');
     return new Promise(function (fulfill, reject) {
         var timeoutId = setTimeout(reject, timeout);
         fetch(request).then(function (response) {
@@ -75,7 +73,7 @@ function fromNetwork(request, timeout) {
 }
 
 function fromCache(request) {
-    console.log('[Cache] Cache open');
+    console.log('[Serviceworker] Fetch: Try fetch from cache');
     return caches.open(CACHE).then(function (cache) {
         console.log('[Cache] Return cache if matching');
         return cache.match(request).then(function (matching) {

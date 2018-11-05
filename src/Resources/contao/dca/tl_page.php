@@ -14,22 +14,41 @@ $dca['config']['oncreate_version_callback'][] = ['huh.pwa.datacontainer.page', '
 
 $dca['palettes']['__selector__'][] = 'addPwa';
 $dca['palettes']['root']           = str_replace('{publish_legend', '{pwa_legend},addPwa;{publish_legend', $dca['palettes']['root']);
-$dca['subpalettes']['addPwa']      = 'pwaConfiguration';
+$dca['subpalettes']['addPwa_yes']      = 'pwaConfiguration';
+$dca['subpalettes']['addPwa_inherit']      = 'pwaParent';
 
 $fields = [
-	'addPwa'                      => [
+	'addPwa'           => [
 		'label'     => &$GLOBALS['TL_LANG']['tl_page']['addPwa'],
 		'exclude'   => true,
-		'inputType' => 'checkbox',
-		'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
-		'sql'       => "char(1) NOT NULL default ''"
-	],
-	'pwaConfiguration'              => [
-		'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaConfiguration'],
 		'inputType' => 'select',
-		'options_callback'   => ['huh.pwa.datacontainer.page', 'getPwaConfigurationsAsOptions'],
-		'eval'      => ['tl_class' => 'w50 clr','includeBlankOption' => true,],
-		'sql'       => "int(10) unsigned NOT NULL default '0'",
+		'options'   => [
+			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_NO,
+			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_YES,
+			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_INHERIT
+		],
+		"reference" => &$GLOBALS['TL_LANG']['tl_page']['addPwa'],
+		'eval'      => [
+			'tl_class' => 'w50 clr',
+			'submitOnChange' => true,
+			"default" => \HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_NO,
+			"includeBlankOption" => false,
+		],
+		'sql'       => "varchar(10) NOT NULL default ''"
+	],
+	'pwaConfiguration' => [
+		'label'            => &$GLOBALS['TL_LANG']['tl_page']['pwaConfiguration'],
+		'inputType'        => 'select',
+		'options_callback' => ['huh.pwa.datacontainer.page', 'getPwaConfigurationsAsOptions'],
+		'eval'             => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
+		'sql'              => "int(10) unsigned NOT NULL default '0'",
+	],
+	'pwaParent'        => [
+		'label'            => &$GLOBALS['TL_LANG']['tl_page']['pwaParent'],
+		'inputType'        => 'select',
+		'options_callback' => ['huh.pwa.datacontainer.page', 'getInheritPwaPageConfigOptions'],
+		'eval'             => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
+		'sql'              => "int(10) unsigned NOT NULL default '0'",
 	],
 ];
 

@@ -19,6 +19,7 @@ use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class HookListener
 {
@@ -38,17 +39,22 @@ class HookListener
 	 * @var KernelInterface
 	 */
 	private $kernel;
+	/**
+	 * @var RouterInterface
+	 */
+	private $router;
 
 
 	/**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, KernelInterface $kernel)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, KernelInterface $kernel, RouterInterface $router)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
 		$this->kernel = $kernel;
+		$this->router = $router;
 	}
 
 	/**
@@ -75,14 +81,15 @@ class HookListener
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
 			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
-//			$serviceWorker = 'sw_push.js';
 
-			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/pushNotificationSubscription.js"></script>';
+			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
 			$GLOBALS['TL_HEAD'][] =
 				"<script type='text/javascript'>"
 				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
 					'alias' => $rootPage->alias,
 					'serviceWorkerPath' => $serviceWorker,
+					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
+					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
 					'debug' => $this->kernel->isDebug(),
 				])
 				."</script>";

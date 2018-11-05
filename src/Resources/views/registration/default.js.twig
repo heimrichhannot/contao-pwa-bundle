@@ -1,4 +1,4 @@
-pushSubscription = new PushNotificationSubscription();
+pushSubscription = new PushNotificationSubscription('{{ subscribePath }}', '{{ unsubscribePath }}');
 
 {% if debug|default(false) %}
     pushSubscription.debug = true;

@@ -13,12 +13,15 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
 use Contao\Model\Collection;
+use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminal42\FolderpageBundle\DataContainer\Page;
 
 /**
  * Class NotificationController
@@ -29,11 +32,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class NotificationController extends Controller
 {
 	/**
-	 * @Route("/subscribe", name="push_notification_subscription", methods={"POST"})
+	 * @Route("/subscribe/{config}", name="push_notification_subscription", methods={"POST"})
 	 */
-	public function subscribeAction(Request $request)
+	public function subscribeAction(Request $request, $config)
 	{
 		$this->container->get('contao.framework')->initialize();
+
+		/** @var PwaConfigurationsModel $pwaConfig */
+		$pwaConfig = PwaConfigurationsModel::findByPk($config);
+		if (!$pwaConfig)
+		{
+			return new Response("No valid subscription id!", 400);
+		}
+
+
 		$data = json_decode($request->getContent(), true);
 		if (!isset($data['subscription']) || !isset($data['subscription']['endpoint']))
 		{
@@ -48,6 +60,7 @@ class NotificationController extends Controller
 			$user->endpoint = $data['subscription']['endpoint'];
 			$user->publicKey = $data['subscription']['keys']['p256dh'];
 			$user->authToken = $data['subscription']['keys']['auth'];
+			$user->pid = $pwaConfig->id;
 			$user->save();
 			return new Response("Subscription successful!", 200);
 		}
