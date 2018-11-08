@@ -82,17 +82,17 @@ class HookListener
 
 			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
 
-			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
-			$GLOBALS['TL_HEAD'][] =
-				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
-					'alias' => $rootPage->alias,
-					'serviceWorkerPath' => $serviceWorker,
-					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-					'debug' => $this->kernel->isDebug(),
-				])
-				."</script>";
+//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
+//			$GLOBALS['TL_HEAD'][] =
+//				"<script type='text/javascript'>"
+//				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
+//					'alias' => $rootPage->alias,
+//					'serviceWorkerPath' => $serviceWorker,
+//					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
+//					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
+//					'debug' => $this->kernel->isDebug(),
+//				])
+//				."</script>";
 		}
 	}
 }

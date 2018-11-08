@@ -8,8 +8,16 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\UserNavigationListener
     arguments:
       ['@request_stack', '@router']
+  huh.pwa.listener.commandscheduler:
+    class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener
+    arguments:
+      ['@huh.pwa.sender.pushnotification']
   huh.pwa.datacontainer.page:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
+    public: true
+    autowire: true
+  huh.pwa.datacontainer.pwapushnotification:
+    class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer
     public: true
     autowire: true
 

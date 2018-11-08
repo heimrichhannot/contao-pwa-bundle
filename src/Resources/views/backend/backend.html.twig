@@ -30,5 +30,24 @@
                 Public: {{ generatedKeys.publicKey }}<br>
                 Private: {{ generatedKeys.privateKey }}</p>
         {% endif %}
+
+        <h2>Notifications</h2>
+        <p><button id="huhPwaSendPushNotificationButton">Send unsend push notifications</button></p>
+        <div id="huhPwaSendPushNotificationStatus"></div>
     </div>
+
+    <script rel="script">
+        window.addEvent('domready', function() {
+            if (null != (sendButton = document.querySelector('#huhPwaSendPushNotificationButton')))
+            {
+                console.log("Found button");
+                sendButton.addEventListener('click', function(event) {
+                    let button = event.srcElement;
+                    HuhPwaBackend.unsentCountRoute = '{{ unsentNotificationRoute }}';
+                    HuhPwaBackend.sendNotificationRoute = '{{ sendNotificationRoute }}';
+                    HuhPwaBackend.sendPushNotifications(button);
+                })
+            }
+        });
+    </script>
 {% endblock %}

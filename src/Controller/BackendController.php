@@ -12,9 +12,13 @@
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use Minishlink\WebPush\VAPID;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,7 +37,7 @@ class BackendController extends Controller
 	/**
 	 * @Route("/pwa", name="huh.pwa.backend")
 	 */
-	public function testAction()
+	public function testAction(Request $request)
 	{
 		$this->container->get('contao.framework')->initialize();
 
@@ -47,12 +51,69 @@ class BackendController extends Controller
 			$generatedKeys = VAPID::createVapidKeys();
 		}
 
+		$params = [];
+		$params['rt'] = $this->get('security.csrf.token_manager')->getToken($this->getParameter('contao.csrf_token_name'))->getValue();
+		$params['ref'] =  $request->get('_contao_referer_id');
+
+		$unsentNotificationRoute = $this->get('router')->generate('huh_pwa_backend_pushnotification_find_unsent', $params);
+		$sendNotificationRoute = $this->get('router')->generate('huh_pwa_backend_pushnotification_send', $params);
+
 		$content = $this->container->get('twig')->render("@HeimrichHannotContaoPwa/backend/backend.html.twig", [
 			"vapidkeys" => $keys,
 			"generatedKeys" => $generatedKeys,
 			"content" => "Content",
+			"unsentNotificationRoute" => $unsentNotificationRoute,
+			"sendNotificationRoute" => $sendNotificationRoute
 		]);
 
 		return new Response($content);
+	}
+
+	/**
+	 * @Route("/pwa/pushnotification/unsent", name="huh_pwa_backend_pushnotification_find_unsent")
+	 */
+	public function findUnsentNotificationAction()
+	{
+		$notifications = PwaPushNotificationsModel::findUnsentNotifications();
+		if (!$notifications)
+		{
+			return new JsonResponse(['count' => 0]);
+		}
+		$response = [];
+		$response['count'] = $notifications->count();
+
+		foreach ($notifications as $notification)
+		{
+			$response['notifications'][] = $notification->id;
+		}
+		return new JsonResponse($response);
+	}
+
+	/**
+	 * @Route("/pwa/pushnotification/send", name="huh_pwa_backend_pushnotification_send", methods={"POST"})
+	 */
+	public function sendNotificationAction(Request $request)
+	{
+		$id = $request->get('notificationId');
+		$notification = PwaPushNotificationsModel::findUnsentNotificationById($id);
+		if (!$notification) {
+			return new JsonResponse([
+				"success" => false,
+				"message" => "No unsent notification for given Id found!",
+				"id" => $id,
+			], 404);
+		}
+
+		if(!$config = PwaConfigurationsModel::findByPk($notification->pid))
+		{
+			return new JsonResponse([
+				"success" => false,
+				"message" => "No parent configuration for notification found!",
+				"id" => $id,
+				"parentId" => $notification->pid,
+			], 404);
+		}
+
+		return new JsonResponse($this->get('huh.pwa.sender.pushnotification')->send($notification->getDefaultNotification(), $config));
 	}
 }

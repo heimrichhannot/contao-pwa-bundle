@@ -25,7 +25,7 @@ use Contao\Model;
  * @property string $publicKey
  * @property string $authToken
  */
-class PushSubscriberModel extends Model
+class PwaPushSubscriberModel extends Model
 {
 	protected static $strTable = 'tl_pwa_pushsubscriber';
 }

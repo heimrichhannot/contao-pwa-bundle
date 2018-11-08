@@ -23,14 +23,19 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['title'],
+			'fields' => ['title','sendDate', 'sent'],
 			'format' => '%s',
+			'label_callback' => ['huh.pwa.datacontainer.pwapushnotification','onLabelCallback'],
 		],
 		'sorting'           => [
-			'mode'         => 1,
-			'fields'       => ['title'],
-			'headerFields' => ['title'],
-			'panelLayout'  => 'filter;search,limit',
+			'mode'         => 4,
+			'fields'       => ['sendDate DESC'],
+			'panelLayout'  => 'filter;sort,search,limit',
+			'flat' => 6,
+
+			'headerFields'            => ['title'],
+			'child_record_callback'   => ['huh.pwa.datacontainer.pwapushnotification','onLabelCallback'],
+//			'child_record_class'      => 'no_padding'
 		],
 		'global_operations' => [
 			'all' => [
@@ -66,7 +71,7 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 	],
 	'palettes' => [
-		'default' => '{general_legend},type;',
+		'default' => '{message_legend},title,body,icon;{send_legend},sendDate;',
 	],
 	'fields'   => [
 		'id'        => [
@@ -113,16 +118,26 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "blob NULL",
 		],
 		'sendDate' => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sendDate'],
-			'inputType'  => 'text',
-			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
-			'sql'     => "int(10) unsigned NOT NULL default '0'",
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sendDate'],
+			'inputType' => 'text',
+			'default'   => time(),
+			'eval'      => ['rgxp' => 'datim', 'doNotCopy' => true, 'tl_class' => 'w50', 'datepicker' => true],
+			'sql'       => "int(10) unsigned NOT NULL default '0'",
+			'flag'      => 8,
 		],
-		'sent' => [
+		'sent'     => [
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
+			'inputType' => 'checkbox',
+			'filter'    => true,
+			'eval'      => [],
+			'sql'       => "char(1) NOT NULL default ''",
+
+		],
+		'receiverCount' => [
 			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
 			'inputType'  => 'checkbox',
 			'eval'    => [],
-			'sql'     => "char(1) NOT NULL default ''",
+			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		],
 	],
 ];

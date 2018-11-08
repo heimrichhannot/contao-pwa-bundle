@@ -1,0 +1,6 @@
+huh.pwa:
+  tl_pwa_pushnotifications:
+    label:
+      sent: "Sent at"
+      sendAt: "Send at"
+      dateFormat: "Y-m-d H:i"

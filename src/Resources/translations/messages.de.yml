@@ -1,0 +1,6 @@
+huh.pwa:
+  tl_pwa_pushnotifications:
+    label:
+      sent: "Gesendet am"
+      sendAt: "Wird gesendet am "
+      dateFormat: "d.m.Y H:i"

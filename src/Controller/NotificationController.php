@@ -14,7 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 use Contao\Model\Collection;
 use Contao\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -33,8 +33,12 @@ class NotificationController extends Controller
 {
 	/**
 	 * @Route("/subscribe/{config}", name="push_notification_subscription", methods={"POST"})
+	 *
+	 * @param Request $request
+	 * @param int $config
+	 * @return Response
 	 */
-	public function subscribeAction(Request $request, $config)
+	public function subscribeAction(Request $request, int $config)
 	{
 		$this->container->get('contao.framework')->initialize();
 
@@ -53,9 +57,9 @@ class NotificationController extends Controller
 		}
 		$endpoint = $data['subscription']['endpoint'];
 
-		if (!$user = PushSubscriberModel::findByEndpoint($endpoint))
+		if (!$user = PwaPushSubscriberModel::findByEndpoint($endpoint))
 		{
-			$user = new PushSubscriberModel();
+			$user = new PwaPushSubscriberModel();
 			$user->dateAdded = $user->tstamp = time();
 			$user->endpoint = $data['subscription']['endpoint'];
 			$user->publicKey = $data['subscription']['keys']['p256dh'];
@@ -68,11 +72,23 @@ class NotificationController extends Controller
 	}
 
 	/**
-	 * @Route("/unsubscribe", name="push_notification_unsubscription", methods={"POST"})
+	 * @Route("/unsubscribe/{config}", name="push_notification_unsubscription", methods={"POST"})
+	 *
+	 * @param Request $request
+	 * @param int $config
+	 * @return Response
 	 */
-	public function unsubscribeAction(Request $request)
+	public function unsubscribeAction(Request $request, int $config)
 	{
 		$this->container->get('contao.framework')->initialize();
+
+		/** @var PwaConfigurationsModel $pwaConfig */
+		$pwaConfig = PwaConfigurationsModel::findByPk($config);
+		if (!$pwaConfig)
+		{
+			return new Response("No valid subscription id!", 400);
+		}
+
 		$data = json_decode($request->getContent(), true);
 		if (!isset($data['subscription']) || !isset($data['subscription']['endpoint']))
 		{
@@ -80,8 +96,8 @@ class NotificationController extends Controller
 		}
 		$endpoint = $data['subscription']['endpoint'];
 
-		/** @var PushSubscriberModel|Collection|null $user */
-		if ($user = PushSubscriberModel::findByEndpoint($endpoint))
+		/** @var PwaPushSubscriberModel|Collection|null $user */
+		if ($user = PwaPushSubscriberModel::findBy(['endpoint=?','pid=?'],[$endpoint, $pwaConfig->id]))
 		{
 			if ($user instanceof Collection)
 			{
@@ -99,21 +115,27 @@ class NotificationController extends Controller
 	}
 
 	/**
-	 * @Route("/send/{payload}", name="send_notification")
+	 * @Route("/send/{config}/{payload}", name="send_notification")
 	 *
 	 * @param Request $request
 	 * @param string $payload
 	 * @return Response
 	 * @throws \ErrorException
 	 */
-	public function sendAction(Request $request, string $payload)
+	public function sendAction(Request $request, int $config, string $payload)
 	{
 		$this->get('contao.framework')->initialize();
+
+		if (!$pwaConfig = PwaConfigurationsModel::findByPk($config))
+		{
+			return new Response("No configuration found. Could not send payload.", 404);
+		}
+
 		$notification = new DefaultNotification();
 		$notification->setTitle('HuH Pwa Bundle');
 		$notification->setBody($payload);
 		$notification->setIcon('images/icons/icon-128x128.png');
-		$result = $this->get('huh.pwa.sender.pushnotification')->send($notification);
+		$result = $this->get('huh.pwa.sender.pushnotification')->send($notification, $pwaConfig);
 		dump($result);
 		die();
 	}

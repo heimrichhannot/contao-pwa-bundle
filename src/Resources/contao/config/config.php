@@ -22,8 +22,9 @@ $GLOBALS['TL_HOOKS']['getUserNavigation'][]     = ['huh.pwa.listener.usernavigat
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_pwa_pushsubscriber'] = \HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel::class;
 $GLOBALS['TL_MODELS']['tl_pwa_configurations'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_pushsubscriber'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_pushnotifications'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel::class;
 
 /**
  * Content Elements
@@ -35,3 +36,16 @@ $GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\Subsc
  */
 
 $GLOBALS['TL_JAVASCRIPT']['huh_pwa_pushNotificationSubscription']        = 'bundles/heimrichhannotcontaopwa/js/pushNotificationSubscription.js|static';
+if (TL_MODE == 'BE') {
+	$GLOBALS['TL_JAVASCRIPT']['filecredits-be'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
+}
+
+/**
+ * Cronjobs
+ */
+
+//$GLOBALS['TL_CRON']['monthly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'monthly'];
+//$GLOBALS['TL_CRON']['weekly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'weekly'];
+//$GLOBALS['TL_CRON']['daily'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'daily'];
+//$GLOBALS['TL_CRON']['hourly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'hourly'];
+//$GLOBALS['TL_CRON']['minutely'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'minutely'];

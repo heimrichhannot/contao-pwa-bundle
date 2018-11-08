@@ -12,7 +12,10 @@
 namespace HeimrichHannot\ContaoPwaBundle\Sender;
 
 
-use HeimrichHannot\ContaoPwaBundle\Model\PushSubscriberModel;
+use Contao\Model\Collection;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
@@ -37,23 +40,25 @@ class PushNotificationSender
 	 * Send the notification to all recipients or a list of given recipients.
 	 *
 	 * @param AbstractNotification $notification
-	 * @param array|PushSubscriberModel[]|null $subscribers
+	 * @param PwaConfigurationsModel $config
+	 * @param array|PwaPushSubscriberModel[]|null $subscribers
 	 * @return array|bool
 	 * @throws \ErrorException
 	 */
-	public function send(AbstractNotification $notification, ?array $subscribers = null)
+	public function send(AbstractNotification $notification, PwaConfigurationsModel $config, ?array $subscribers = null)
 	{
 
 		if (!$subscribers)
 		{
-			if (!$subscribers = PushSubscriberModel::findAll()) {
-				return [["success" => false, "message"=> "No subscribers"]];
+			/** @var PwaPushSubscriberModel[]|PwaPushSubscriberModel|Collection|null */
+			if (!$subscribers = PwaPushSubscriberModel::findByPid($config->id)) {
+				return ["success" => false, "message"=> "No subscribers"];
 			}
 		}
 
 		if (!$this->bundleConfig || !isset($this->bundleConfig['vapid']['subject']) || !isset($this->bundleConfig['vapid']['publicKey']) && !isset($this->bundleConfig['vapid']['privateKey']))
 		{
-			return [["success" => false, "message" => "Bundle config not complete. Set vapid keys to use Push Notifications."]];
+			return ["success" => false, "message" => "Bundle config not complete. Set vapid keys to use Push Notifications."];
 		}
 
 		$auth = [
@@ -69,7 +74,7 @@ class PushNotificationSender
 			$webPush = new WebPush($auth);
 		} catch (\ErrorException $e)
 		{
-			return [["success" => false, "message" => $e->getMessage()]];
+			return ["success" => false, "message" => $e->getMessage()];
 		}
 
 		try
@@ -77,15 +82,17 @@ class PushNotificationSender
 			$payload = $notification->jsonSerialize();
 		} catch (\ReflectionException $e)
 		{
-			return [["sucess" => false, "message" => "Could not serialize notification. Error message: ".$e->getMessage()]];
+			return ["sucess" => false, "message" => "Could not serialize notification. Error message: ".$e->getMessage()];
 		}
 
-		/** @var PushSubscriberModel $subscriber */
+		$validSubscribers = 0;
+
+		/** @var PwaPushSubscriberModel $subscriber */
 		foreach ($subscribers as $subscriber)
 		{
-			if (!$subscriber instanceof PushSubscriberModel)
+			if (!$subscriber instanceof PwaPushSubscriberModel)
 			{
-				return [["success" => false, "message" => "Only subscribers of typ PushSubscriberModel are allowed."]];
+				return ["success" => false, "message" => "Only subscribers of typ PushSubscriberModel are allowed."];
 			}
 			try
 			{
@@ -93,11 +100,24 @@ class PushNotificationSender
 					new Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
 					$payload
 				);
+				$validSubscribers++;
 			} catch (\ErrorException $e)
 			{
-				return [["success" => false, "message" => $e->getMessage()]];
+				return ["success" => false, "message" => $e->getMessage()];
 			}
 		}
-		return $webPush->flush();
+
+		$result = $webPush->flush();
+
+		return [
+			'success' => true,
+			'sentCount' => $validSubscribers,
+			'result' => $result,
+		];
+	}
+
+	public function findUnsendNotifications()
+	{
+		return PwaPushNotificationsModel::findBySent('');
 	}
 }
