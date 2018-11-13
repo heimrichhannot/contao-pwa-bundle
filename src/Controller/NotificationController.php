@@ -13,7 +13,6 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
 use Contao\Model\Collection;
-use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
@@ -21,7 +20,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Terminal42\FolderpageBundle\DataContainer\Page;
 
 /**
  * Class NotificationController

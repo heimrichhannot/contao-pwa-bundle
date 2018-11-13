@@ -6,7 +6,7 @@ let HuhPwaBackend = {
             url: url,
             method: 'get',
             onSuccess: (response) => {
-                HuhPwaBackend.addLogEntry('Found ' + response.count);
+                HuhPwaBackend.addLogEntry('Found ' + response.count + ' unsent notification');
                 // return response;
             },
             onFailure: () => {
@@ -25,7 +25,7 @@ let HuhPwaBackend = {
             url: url,
             method: 'post',
             onSuccess: (response) => {
-                HuhPwaBackend.addLogEntry('Found ' + response.count);
+                // HuhPwaBackend.addLogEntry('Found ' + response.count);
                 // return response;
             },
             onFailure: (xhr) => {
@@ -63,10 +63,15 @@ let HuhPwaBackend = {
                            });
                            this.addLogEntry("Sent notification with id " + notification + ": Sent " + sendResponse.json.sentCount + " messages, got " + failCount + " errors.");
                        });
+                   }).then(() => {
+                       this.addLogEntry("Finished");
                    });
+
+               }
+               else {
+                   this.addLogEntry("Finished");
                }
            });
-           this.addLogEntry("Finished");
 
             // var node = document.createElement('span');
             //
@@ -81,7 +86,7 @@ let HuhPwaBackend = {
                 this.logger = logger;
             }
         }
-        let node = document.createElement('span');
+        let node = document.createElement('div');
         let textNode = document.createTextNode(text);
         node.appendChild(textNode);
         this.logger.appendChild(node);

@@ -116,6 +116,9 @@ class PushNotificationSender
 		];
 	}
 
+	/**
+	 * @return PwaPushNotificationsModel[]|Collection|PwaPushNotificationsModel|null
+	 */
 	public function findUnsendNotifications()
 	{
 		return PwaPushNotificationsModel::findBySent('');

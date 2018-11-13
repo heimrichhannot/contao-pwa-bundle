@@ -77,7 +77,8 @@ class PageContainer
 			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker/serviceworker_default.js.twig', [
 				'supportPush' => true,
 				'pageTitle' => $manifest->name,
-				'version' => date('YmdHis')
+				'version' => date('YmdHis'),
+				'alias' => $page->alias,
 			])
 		);
 	}
