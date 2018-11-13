@@ -11,7 +11,7 @@ services:
   huh.pwa.listener.commandscheduler:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener
     arguments:
-      ['@huh.pwa.sender.pushnotification']
+      ['@huh.pwa.sender.pushnotification', '@logger']
   huh.pwa.datacontainer.page:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
     public: true
@@ -29,6 +29,7 @@ services:
     arguments:
       ['@service_container', '@huh.pwa.generator.icon']
   HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator: "@huh.pwa.generator.manifest"
+
   huh.pwa.generator.icon:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator
     public: true
@@ -36,7 +37,14 @@ services:
       ['@contao.image.image_factory', '@contao.image.resizer', '@service_container']
   HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator: "@huh.pwa.generator.icon"
 
-# Header Tags
+  huh.pwa.generator.serviceworker:
+    class: HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator
+    public: true
+    arguments:
+      ['%contao.web_dir%', '@twig', '@logger']
+  HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
+
+  # Header Tags
 
   huh.head.tag.pwa.link_manifest:
     class: HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag

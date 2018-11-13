@@ -34,8 +34,6 @@ $GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\Subsc
 /**
  * Assets
  */
-
-$GLOBALS['TL_JAVASCRIPT']['huh_pwa_pushNotificationSubscription']        = 'bundles/heimrichhannotcontaopwa/js/pushNotificationSubscription.js|static';
 if (TL_MODE == 'BE') {
 	$GLOBALS['TL_JAVASCRIPT']['filecredits-be'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
 }

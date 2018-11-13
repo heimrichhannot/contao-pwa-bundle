@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 use Contao\FilesModel;
 use Contao\PageModel;
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -40,7 +41,7 @@ class ManifestGenerator
 	public function generateManifest(Manifest $manifest, string $filename, string $path)
 	{
 		$manifestJson = $manifest->jsonSerialize();
-		if ($manifest->icons->isIconFilesMissing())
+		if ($manifest->icons && $manifest->icons->isIconFilesMissing())
 		{
 			$this->iconGenerator->generateIcons($manifest->icons, $manifest->icons->getApplicationAlias());
 			$manifestJson = $manifest->jsonSerialize();
@@ -58,7 +59,7 @@ class ManifestGenerator
 	 */
 	public function generatePageManifest(PageModel $page)
 	{
-		if (!$page->addPwa || $page->pwaConfiguration)
+		if (!$page->addPwa|| !$page->pwaConfiguration)
 		{
 			return false;
 		}

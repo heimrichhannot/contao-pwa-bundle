@@ -5,28 +5,29 @@ let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE).then(function(cache) {
-            {% if debug %}console.log('[Install] Cache open');{% endif %}
+            {% if debug %}console.log('[Serviceworker] Install: Cache open');{% endif %}
             // Fetch webpack manifest file
             return fetch('/build/manifest.json').then(function(responce) {
                 return responce.json();
             }).then(function(json) {
-                console.log('[Install] Fetch json');
+                console.log('[Serviceworker] Install: Fetched manifest');
                 // Create an array with only file paths
                 let files = Object.keys(json).map(function(key) {
                     return json[key];
                 });
                 // Cache webpack assets from generated file list
                 return cache.addAll(files);
-            }).then(function() {
-                console.log('[Install] Add current page to cache');
-                //Cache current page
-                // return cache.addAll(['/']);
             });
         }).then(function() {
             console.log('[Install] Skip waiting');
             return self.skipWaiting();
-        }),
+        })
     );
+});
+
+self.addEventListener('activate', function(event) {
+    console.log('[Serviceworker] Activate event!');
+    event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', function(event) {
@@ -57,7 +58,7 @@ self.addEventListener('push', function(event) {
 {% endif %}
 
 function fromNetwork(request, timeout) {
-    console.log('[Serviceworker] Fetch: Try fetch from network');
+    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from network'); {% endif %}
     return new Promise(function (fulfill, reject) {
         var timeoutId = setTimeout(reject, timeout);
         fetch(request).then(function (response) {
@@ -96,9 +97,3 @@ function useFallback() {
             'Content-Type': 'image/svg+xml'
         }}));
 }
-
-self.addEventListener('activate', function(event) {
-    console.log('[Serviceworker] Activating service worker!');
-    // console.log('[activate] Claiming this service worker!');
-    // event.waitUntil(self.clients.claim());
-});

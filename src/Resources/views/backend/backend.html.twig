@@ -34,6 +34,12 @@
         <h2>Notifications</h2>
         <p><button id="huhPwaSendPushNotificationButton">Send unsend push notifications</button></p>
         <div id="huhPwaSendPushNotificationStatus"></div>
+
+        <h2>Files</h2>
+        <p>Rebuild manifest and serviceworker files</p>
+        <p><button id="huhPwaRebuildFilesButton">Rebuild files</button></p>
+        <div id="huhPwaRebuildFilesStatus"></div>
+
     </div>
 
     <script rel="script">
@@ -46,6 +52,15 @@
                     HuhPwaBackend.unsentCountRoute = '{{ unsentNotificationRoute }}';
                     HuhPwaBackend.sendNotificationRoute = '{{ sendNotificationRoute }}';
                     HuhPwaBackend.sendPushNotifications(button);
+                })
+            }
+            if (null != (button = document.querySelector('#huhPwaRebuildFilesButton')))
+            {
+                console.log("Found button");
+                button.addEventListener('click', function(event) {
+                    HuhPwaBackend.findPagesRoute = '{{ findPagesRoute }}';
+                    HuhPwaBackend.updatePageRoute = '{{ updatePageRoute }}';
+                    HuhPwaBackend.rebuildFiles();
                 })
             }
         });

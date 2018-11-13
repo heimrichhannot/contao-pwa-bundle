@@ -1,6 +1,8 @@
 let HuhPwaBackend = {
-    unsentCountRoute: './pwa/pushnotification/unsent',
-    sendNotificationRoute: './pwa/pushnotification/send',
+    unsentCountRoute: './contao/pwa/pushnotification/unsent',
+    sendNotificationRoute: './contao/pwa/pushnotification/send',
+    findPagesRoute: './contao/pwa/pages',
+    updatePageRoute: '',
     unsentNotificationRequest: (url) => {
         return new Request.JSON({
             url: url,
@@ -29,7 +31,7 @@ let HuhPwaBackend = {
                 // return response;
             },
             onFailure: (xhr) => {
-                console.log("Error", xhr);
+                console.log('Error', xhr);
                 HuhPwaBackend.addLogEntry('Error sending notification: ' + xhr);
             },
             onCancel: () => {
@@ -40,67 +42,105 @@ let HuhPwaBackend = {
             },
         });
     },
-    sendPushNotifications: function (button) {
+    sendPushNotifications: function(button) {
         this.button = button;
-        // button.disabled = true;
-        if (null != (logger = document.querySelector('#huhPwaSendPushNotificationStatus')))
-        {
-           let request = this.unsentNotificationRequest(this.unsentCountRoute);
-           request.send(this.unsentCountRoute).then((response) => {
-               console.log(response);
-               console.log("Response succeeded");
-               if (response.json.count > 0)
-               {
-                   response.json.notifications.forEach((notification) => {
-                       let sendRequest = this.sendNotificationRequest(this.sendNotificationRoute);
-                       sendRequest.post("notificationId=" + notification).then((sendResponse) => {
-                           let failCount = 0;
-                           sendResponse.json.result.forEach((element) => {
-                               if (element.success === false)
-                               {
-                                   failCount++;
-                               }
-                           });
-                           this.addLogEntry("Sent notification with id " + notification + ": Sent " + sendResponse.json.sentCount + " messages, got " + failCount + " errors.");
-                       });
-                   }).then(() => {
-                       this.addLogEntry("Finished");
-                   });
+        this.button.disabled = true;
+        this.logger = document.querySelector('#huhPwaSendPushNotificationStatus');
+        this.logger.innerHTML = '';
+        let request = this.unsentNotificationRequest(this.unsentCountRoute);
+        request.send(this.unsentCountRoute).then((response) => {
+            console.log(response);
+            console.log('Response succeeded');
+            if (response.json.count > 0) {
+                response.json.notifications.forEach((notification) => {
+                    let sendRequest = this.sendNotificationRequest(this.sendNotificationRoute);
+                    sendRequest.post('notificationId=' + notification).then((sendResponse) => {
+                        let failCount = 0;
+                        sendResponse.json.result.forEach((element) => {
+                            if (element.success === false) {
+                                failCount++;
+                            }
+                        });
+                        this.addLogEntry('Sent notification with id ' + notification + ': Sent ' + sendResponse.json.sentCount + ' messages, got ' + failCount + ' errors.');
+                    });
+                }).then(() => {
+                    this.addLogEntry('Finished');
+                    this.button.disabled = false;
+                });
 
-               }
-               else {
-                   this.addLogEntry("Finished");
-               }
-           });
+            }
+            else {
+                this.addLogEntry('Finished');
+                this.button.disabled = false;
+            }
+        });
+    },
+    rebuildFiles: function() {
+        this.logger = document.querySelector('#huhPwaRebuildFilesStatus');
+        this.logger.innerHTML = '';
+        url = this.findPagesRoute;
+        let request = new Request.JSON({
+            url: url,
+            method: 'get',
+            onFailure: () => {
+                HuhPwaBackend.addLogEntry('findPages failure');
+            },
+            onCancel: () => {
+                HuhPwaBackend.addLogEntry('findPages cancel');
+            },
+            onException: (headerName, value) => {
+                HuhPwaBackend.addLogEntry('findPages Exception: ' + headerName);
+            },
+        });
+        request.send(this.findPagesRoute).then((response) => {
 
-            // var node = document.createElement('span');
-            //
-            // logger.appendChild().
-        }
+            if (response.json.length < 1)
+            {
+                HuhPwaBackend.addLogEntry('No pages with PWA configuration found.');
+                return;
+            }
+            HuhPwaBackend.addLogEntry('Found ' + response.json.length + ' page(s)').then(() => {
+                let updateRequest = new Request.JSON({
+                    url: this.updatePageRoute,
+                    method: 'post',
+                    onFailure: (xhr) => {
+                        console.log('Error', xhr);
+                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr);
+                    },
+                    onCancel: () => {
+                        HuhPwaBackend.addLogEntry('Update page files canceled');
+                    },
+                    onException: (headerName, value) => {
+                        HuhPwaBackend.addLogEntry('Exception while update page files: ' + headerName);
+                    },
+                });
+
+                let promises = [];
+                response.json.forEach((page) => {
+                    promises.push(updateRequest.post('pageId=' + page.id).then(() => {
+                        return HuhPwaBackend.addLogEntry("Updated manifest and serviceworker for page '" + page.name + "' (ID: " + page.id + ")");
+                    }));
+                });
+                Promise.all(promises).then(() =>{
+                    return HuhPwaBackend.addLogEntry("Finished generating page files.");
+                });
+            });
+        });
     },
     addLogEntry: function(text) {
-        if (null == this.logger)
-        {
-            if (null != (logger = document.querySelector('#huhPwaSendPushNotificationStatus')))
-            {
-                this.logger = logger;
-            }
-        }
-        let node = document.createElement('div');
-        let textNode = document.createTextNode(text);
-        node.appendChild(textNode);
-        this.logger.appendChild(node);
-        console.log('[PWA BACKEND] addLogEntry: ' + text);
-    }
-};
+        return new Promise((resolve, reject) => {
+            if (null == this.logger) {
+                console.log("No logger defined.");
+                console.log('[PWA BACKEND] addLogEntry: ' + text);
 
-// window.addEvent('domready', function() {
-//     if (null != (sendButton = document.querySelector('#huhPwaSendPushNotificationButton')))
-//     {
-//         console.log("Found button");
-//         sendButton.addEventListener('click', function(event) {
-//             let button = event.srcElement;
-//             HuhPwaBackend.sendPushNotifications(button);
-//         })
-//     }
-// });
+            }
+            else {
+                let node = document.createElement('div');
+                let textNode = document.createTextNode(text);
+                node.appendChild(textNode);
+                this.logger.appendChild(node);
+            }
+            resolve();
+        });
+    },
+};
