@@ -18,6 +18,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
 use Model\Collection;
+use Symfony\Bridge\Monolog\Logger;
 
 class CronjobListener
 {
@@ -25,15 +26,20 @@ class CronjobListener
 	 * @var PushNotificationSender
 	 */
 	private $notificationSender;
+	/**
+	 * @var Logger
+	 */
+	private $logger;
 
 
 	/**
 	 * CommandSchedulerListener constructor.
 	 * @param PushNotificationSender $notificationSender
 	 */
-	public function __construct(PushNotificationSender $notificationSender)
+	public function __construct(PushNotificationSender $notificationSender, Logger $logger)
 	{
 		$this->notificationSender = $notificationSender;
+		$this->logger = $logger;
 	}
 
 	public function minutely()
@@ -59,6 +65,24 @@ class CronjobListener
 
 	private function sendPushNotifications(string $interval)
 	{
+		$notifications = $this->notificationSender->findUnsendNotifications();
+		foreach ($notifications as $notification)
+		{
+			$configuration = PwaConfigurationsModel::findByPk($notification->pid);
+			if (!$configuration)
+			{
+				$this->logger->error('No PWA confiration found for notification with id '.$notification->id,
+				[
+					'trace' => debug_backtrace(),
+				]);
+				continue;
+			}
+			$pushNotification = new DefaultNotification($notification);
+			$this->notificationSender->send($pushNotification, $configuration);
+		}
+
+
+
 		$pushConfigurations = PwaConfigurationsModel::findAll();
 		/** @var PwaConfigurationsModel $configuration */
 		foreach ($pushConfigurations as $configuration)
@@ -84,7 +108,7 @@ class CronjobListener
 				$pushNotification = new DefaultNotification();
 				$pushNotification->setTitle($notification->title);
 				$pushNotification->setBody($notification->body);
-				$this->notificationSender->send($notification, $configuration);
+				$this->notificationSender->send($pushNotification, $configuration);
 			}
 
 		}

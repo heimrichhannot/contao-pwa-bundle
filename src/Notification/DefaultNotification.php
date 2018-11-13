@@ -12,11 +12,28 @@
 namespace HeimrichHannot\ContaoPwaBundle\Notification;
 
 
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+
 class DefaultNotification extends AbstractNotification
 {
 	protected $title;
 	protected $body;
 	protected $icon;
+	protected $source;
+
+	/**
+	 * DefaultNotification constructor.
+	 * @param PwaPushNotificationsModel|null $notificationsModel
+	 */
+	public function __construct(?PwaPushNotificationsModel $notificationsModel = null)
+	{
+		if ($notificationsModel)
+		{
+			 $this->setSource($notificationsModel);
+			 $this->setTitle($notificationsModel->title);
+			 $this->setBody($notificationsModel->body);
+		}
+	}
 
 	/**
 	 * @return mixed
@@ -64,5 +81,18 @@ class DefaultNotification extends AbstractNotification
 	public function setIcon($icon): void
 	{
 		$this->icon = $icon;
+	}
+
+	function getSource(): ?PwaPushNotificationsModel
+	{
+		return $this->source;
+	}
+
+	/**
+	 * @param mixed $source
+	 */
+	public function setSource($source): void
+	{
+		$this->source = $source;
 	}
 }

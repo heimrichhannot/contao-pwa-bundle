@@ -14,6 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use Minishlink\WebPush\VAPID;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -114,6 +115,7 @@ class BackendController extends Controller
 			], 404);
 		}
 
-		return new JsonResponse($this->get('huh.pwa.sender.pushnotification')->send($notification->getDefaultNotification(), $config));
+		$pushNotification = new DefaultNotification($notification);
+		return new JsonResponse($this->get('huh.pwa.sender.pushnotification')->send($pushNotification, $config));
 	}
 }

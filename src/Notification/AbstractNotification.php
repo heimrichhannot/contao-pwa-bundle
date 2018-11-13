@@ -12,8 +12,12 @@
 namespace HeimrichHannot\ContaoPwaBundle\Notification;
 
 
-class AbstractNotification implements \JsonSerializable
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+
+abstract class AbstractNotification implements \JsonSerializable
 {
+
+	abstract function getSource(): ?PwaPushNotificationsModel;
 
 	/**
 	 * Specify data which should be serialized to JSON

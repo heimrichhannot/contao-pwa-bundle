@@ -80,9 +80,7 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 				$io->progressAdvance();
 				continue;
 			}
-			$pushNotification = new DefaultNotification();
-			$pushNotification->setTitle($notification->title);
-			$pushNotification->setBody($notification->body);
+			$pushNotification = new DefaultNotification($notification);
 			if (!$this->dryRun)
 			{
 				try

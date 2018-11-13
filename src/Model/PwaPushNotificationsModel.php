@@ -54,19 +54,4 @@ class PwaPushNotificationsModel extends Model
 		$t = static::$strTable;
 		return static::findOneBy(["$t.id=?", "$t.sent=?"],[$id, ""]);
 	}
-
-	/**
-	 * Generate a Default Notification out of model instance
-	 *
-	 * @return DefaultNotification
-	 *
-	 * @todo generate Icon
-	 */
-	public function getDefaultNotification()
-	{
-		$notification = new DefaultNotification();
-		$notification->setTitle($this->title);
-		$notification->setBody($this->body);
-		return $notification;
-	}
 }
