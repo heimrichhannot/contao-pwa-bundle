@@ -8,22 +8,23 @@
     <div class="tl_listing_container">
         <h2>Authentifizierung (VAPID-Keys)</h2>
         {% if vapidkeys|default %}
-            <table class="">
-                <tbody>
-                <tr class="odd">
-                    <td class="">Public: </td>
-                    <td class="">{{ vapidkeys.public }}</td>
-                </tr>
-                <tr class="even">
-                    <td class="">Private: </td>
-                    <td class="">{{ vapidkeys.private }}</td>
-                </tr>
-                </tbody>
-            </table>
-            {#<p>#}
-                {#Public: {{ vapidkeys.public }}<br>#}
-                {#Private: {{ vapidkeys.private }}#}
-            {#</p>#}
+            <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
+            {#<table class="">#}
+                {#<tbody>#}
+                {#<tr class="odd">#}
+                    {#<td class="">Public: </td>#}
+                    {#<td class="">{{ vapidkeys.publicKey }}</td>#}
+                {#</tr>#}
+                {#<tr class="even">#}
+                    {#<td class="">Private: </td>#}
+                    {#<td class="">{{ vapidkeys.privateKey }}</td>#}
+                {#</tr>#}
+                {#</tbody>#}
+            {#</table>#}
+            <p>
+                Public: {{ vapidkeys.publicKey }}<br>
+                Private: {{ vapidkeys.privateKey }}
+            </p>
         {% else %}
             <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
             <p>

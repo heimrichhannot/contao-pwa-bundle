@@ -37,6 +37,5 @@ huh_pwa:
 ## Todo
 * translations 
 * make service worker configurable
-* add push notifications to service worker
 * image size config
 * support svg icons

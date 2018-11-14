@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 class BackendController extends Controller
 {
 	/**
-	 * @Route("/pwa", name="huh.pwa.backend")
+	 * @Route("/pwa/control", name="huh_pwa_backend_control")
 	 */
 	public function testAction(Request $request)
 	{
@@ -46,7 +46,7 @@ class BackendController extends Controller
 
 		$config = $this->container->getParameter('huh.pwa');
 
-		$keys = isset($config["vapid_keys"]) ? $config['vapid_keys'] : null;
+		$keys = isset($config["vapid"]) ? $config['vapid'] : null;
 		$generatedKeys = null;
 
 		if (!$keys)

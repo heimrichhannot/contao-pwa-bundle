@@ -4,10 +4,6 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\HookListener
     public: true
     autowire: true
-  huh.pwa.listener.usernavigation:
-    class: HeimrichHannot\ContaoPwaBundle\EventListener\UserNavigationListener
-    arguments:
-      ['@request_stack', '@router']
   huh.pwa.listener.commandscheduler:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener
     arguments:
@@ -20,8 +16,12 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer
     public: true
     autowire: true
+  huh.pwa.datacontainer.pwaconfigurations:
+    class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaConfigurationContainer
+    public: true
+    autowire: true
 
-# Generators
+  # Generators
 
   huh.pwa.generator.manifest:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator

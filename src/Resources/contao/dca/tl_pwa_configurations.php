@@ -42,6 +42,14 @@ $GLOBALS['TL_DCA'][$table] = [
 				'class'      => 'header_edit_all',
 				'attributes' => 'onclick="Backend.getScrollOffset();"',
 			],
+			'control' => [
+				'label'           => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['control'],
+				'href'            => 'huh_pwa_backend_control',
+				'attributes'      => 'onclick="Backend.getScrollOffset();"',
+				'class'           => 'header_icon',
+				'icon'            => 'wrench.svg',
+				'button_callback' => ['huh.pwa.datacontainer.pwaconfigurations', 'onControlActionButtonCallback']
+			],
 		],
 		'operations'        => [
 //			'edit'   => [

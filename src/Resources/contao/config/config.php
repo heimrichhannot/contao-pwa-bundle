@@ -3,9 +3,9 @@
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['system']['huh_pwa'] = [
-	'tables' => ['tl_pwa_pushsubscriber']
-];
+//$GLOBALS['BE_MOD']['system']['huh_pwa'] = [
+//	'tables' => ['tl_pwa_pushsubscriber']
+//];
 $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 	'tables' => ['tl_pwa_configurations']
 ];
@@ -21,7 +21,6 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 	'huh.pwa',
 	['huh.pwa.listener.hook', 'onGeneratePage']
 );
-$GLOBALS['TL_HOOKS']['getUserNavigation'][]     = ['huh.pwa.listener.usernavigation', 'onGetUserNavigation'];
 
 /**
  * Models

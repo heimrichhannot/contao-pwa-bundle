@@ -23,18 +23,18 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['title','sendDate', 'sent'],
-			'format' => '%s',
-			'label_callback' => ['huh.pwa.datacontainer.pwapushnotification','onLabelCallback'],
+			'fields'         => ['title', 'sendDate', 'sent'],
+			'format'         => '%s',
+			'label_callback' => ['huh.pwa.datacontainer.pwapushnotification', 'onLabelCallback'],
 		],
 		'sorting'           => [
-			'mode'         => 4,
-			'fields'       => ['sendDate DESC'],
-			'panelLayout'  => 'filter;sort,search,limit',
-			'flat' => 6,
+			'mode'        => 4,
+			'fields'      => ['sendDate DESC'],
+			'panelLayout' => 'filter;sort,search,limit',
+			'flat'        => 6,
 
-			'headerFields'            => ['title'],
-			'child_record_callback'   => ['huh.pwa.datacontainer.pwapushnotification','onLabelCallback'],
+			'headerFields'          => ['title'],
+			'child_record_callback' => ['huh.pwa.datacontainer.pwapushnotification', 'onLabelCallback'],
 //			'child_record_class'      => 'no_padding'
 		],
 		'global_operations' => [
@@ -71,42 +71,42 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 	],
 	'palettes' => [
-		'default' => '{message_legend},title,body,icon;{send_legend},sendDate;',
+		'default' => '{message_legend},title,body,icon,iconSize;{send_legend},sendDate;',
 	],
 	'fields'   => [
-		'id'        => [
+		'id'            => [
 			'sql' => "int(10) unsigned NOT NULL auto_increment",
 		],
-		'pid'                    => [
+		'pid'           => [
 			'foreignKey' => 'tl_pwa_configurations.title',
 			'sql'        => "int(10) unsigned NOT NULL default '0'",
 			'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
 		],
-		'tstamp'    => [
+		'tstamp'        => [
 			'label' => &$GLOBALS['TL_LANG']['tl_cleaner']['tstamp'],
 			'sql'   => "int(10) unsigned NOT NULL default '0'",
 		],
-		'dateAdded' => [
+		'dateAdded'     => [
 			'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
 			'sorting' => true,
 			'flag'    => 6,
 			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
 			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		],
-		'title'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['title'],
-			'inputType'  => 'text',
-			'eval'       => ['tl_class'  => 'w50'],
-			'sql'        => "varchar(255) NOT NULL default ''",
+		'title'         => [
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['title'],
+			'inputType' => 'text',
+			'eval'      => ['tl_class' => 'w50'],
+			'sql'       => "varchar(255) NOT NULL default ''",
 		],
-		'body'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['body'],
-			'inputType'  => 'text',
-			'eval'       => ['tl_class'  => 'w50'],
-			'sql'        => "varchar(128) NOT NULL default ''",
+		'body'          => [
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['body'],
+			'inputType' => 'text',
+			'eval'      => ['tl_class' => 'w50'],
+			'sql'       => "varchar(128) NOT NULL default ''",
 		],
-		'icon'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['icon'],
+		'icon'          => [
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['icon'],
 			'inputType' => 'fileTree',
 			'eval'      => [
 				'files'      => true,
@@ -117,7 +117,18 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'sql'       => "blob NULL",
 		],
-		'sendDate' => [
+		'iconSize'      => [
+			'label'            => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['iconSize'],
+			'exclude'          => true,
+			'inputType'        => 'imageSize',
+			'reference'        => &$GLOBALS['TL_LANG']['MSC'],
+			'eval'             => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
+			'options_callback' => function () {
+				return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+			},
+			'sql'              => "varchar(64) NOT NULL default ''"
+		],
+		'sendDate'      => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sendDate'],
 			'inputType' => 'text',
 			'default'   => time(),
@@ -125,7 +136,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "int(10) unsigned NOT NULL default '0'",
 			'flag'      => 8,
 		],
-		'sent'     => [
+		'sent'          => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
 			'inputType' => 'checkbox',
 			'filter'    => true,
@@ -134,10 +145,10 @@ $GLOBALS['TL_DCA'][$table] = [
 
 		],
 		'receiverCount' => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
-			'inputType'  => 'checkbox',
-			'eval'    => [],
-			'sql'     => "int(10) unsigned NOT NULL default '0'",
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
+			'inputType' => 'checkbox',
+			'eval'      => [],
+			'sql'       => "int(10) unsigned NOT NULL default '0'",
 		],
 	],
 ];

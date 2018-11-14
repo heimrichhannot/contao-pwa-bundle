@@ -27,6 +27,7 @@ use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
  * @property string $title
  * @property string $body
  * @property string $icon
+ * @property string $iconSize
  * @property string $sendDate
  * @property string $sent
  * @property int $receiverCount
