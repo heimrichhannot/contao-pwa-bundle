@@ -71,7 +71,11 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 	],
 	'palettes' => [
-		'default' => '{message_legend},title,body,icon,iconSize;{send_legend},sendDate;',
+		'__selector__' => ['clickEvent'],
+		'default' => '{message_legend},title,body,icon,iconSize,clickEvent;{send_legend},sendDate;',
+	],
+	'subpalettes' => [
+		'clickEvent_'.\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
 	],
 	'fields'   => [
 		'id'            => [
@@ -150,5 +154,23 @@ $GLOBALS['TL_DCA'][$table] = [
 			'eval'      => [],
 			'sql'       => "int(10) unsigned NOT NULL default '0'",
 		],
+		'clickEvent'    => [
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickEvent'],
+			'inputType' => 'select',
+			'options'   => [
+				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE,
+			],
+			'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],
+			'sql'       => "varchar(255) NOT NULL default ''",
+		],
+		'clickJumpTo'   => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickJumpTo'],
+			'exclude'    => true,
+			'inputType'  => 'pageTree',
+			'foreignKey' => 'tl_page.title',
+			'eval'       => ['fieldType' => 'radio'],
+			'sql'        => "int(10) unsigned NOT NULL default '0'",
+			'relation'   => ['type' => 'hasOne', 'load' => 'eager']
+		]
 	],
 ];

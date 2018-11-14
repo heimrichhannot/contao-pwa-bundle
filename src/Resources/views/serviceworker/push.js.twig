@@ -1,6 +1,0 @@
-self.addEventListener('push', function(event) {
-    let payload = event.data ? event.data.text() : "No payload";
-    event.waitUntil(
-        self.registration.showNotification("Example Page", JSON.parse(payload))
-    );
-});

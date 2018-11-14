@@ -17,17 +17,20 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 abstract class AbstractNotification implements \JsonSerializable
 {
 
+	/**
+	 * Return the source object or null, if not set
+	 *
+	 * @return PwaPushNotificationsModel|null
+	 */
 	abstract function getSource(): ?PwaPushNotificationsModel;
 
 	/**
-	 * Specify data which should be serialized to JSON
-	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
+	 *
+	 *
+	 * @return array
 	 * @throws \ReflectionException
 	 */
-	public function jsonSerialize()
+	public function toArray()
 	{
 		$reflectionClass = new \ReflectionClass($this);
 
@@ -48,7 +51,19 @@ abstract class AbstractNotification implements \JsonSerializable
 				$properties[lcfirst(substr($method->getName(),3))] = $value;
 			}
 		}
+		return $properties;
+	}
 
-		return json_encode($properties);
+	/**
+	 * Specify data which should be serialized to JSON
+	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 * @throws \ReflectionException
+	 */
+	public function jsonSerialize()
+	{
+		return json_encode($this->toArray());
 	}
 }

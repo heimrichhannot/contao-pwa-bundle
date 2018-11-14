@@ -13,7 +13,6 @@ namespace HeimrichHannot\ContaoPwaBundle\Notification;
 
 
 use Contao\FilesModel;
-use Contao\Image;
 use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 
@@ -23,6 +22,7 @@ class DefaultNotification extends AbstractNotification
 	protected $body;
 	protected $icon;
 	protected $source;
+
 
 	/**
 	 * DefaultNotification constructor.
@@ -35,7 +35,10 @@ class DefaultNotification extends AbstractNotification
 			 $this->setSource($notificationsModel);
 			 $this->setTitle($notificationsModel->title);
 			 $this->setBody($notificationsModel->body);
-			 $this->setIconFromSource($notificationsModel->icon, $notificationsModel->iconSize);
+			 if ($notificationsModel->icon)
+			 {
+				 $this->setIconFromSource($notificationsModel->icon, $notificationsModel->iconSize);
+			 }
 		}
 	}
 
@@ -105,12 +108,17 @@ class DefaultNotification extends AbstractNotification
 	 *
 	 * @param string $icon Icon Uuid
 	 * @param string|null $iconSize Serialized size array
+	 *
+	 * @todo Refactor this out to a factory class
 	 */
 	public function setIconFromSource(string $icon, string $iconSize = null)
 	{
-		$size = deserialize($iconSize);
+		if ($iconSize)
+		{
+			$iconSize = deserialize($iconSize);
+		}
 		$file = FilesModel::findByUuid($icon);
-		$image = System::getContainer()->get('contao.image.image_factory')->create($file->path, $size);
+		$image = System::getContainer()->get('contao.image.image_factory')->create($file->path, $iconSize);
 		$this->setIcon($image->getUrl(System::getContainer()->getParameter('kernel.project_dir')));
 	}
 }

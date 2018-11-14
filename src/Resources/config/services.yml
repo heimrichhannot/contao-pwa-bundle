@@ -65,4 +65,4 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender
     public: true
     arguments:
-      ['%huh.pwa%']
+      ['%huh.pwa%', '@huh.pwa.datacontainer.pwapushnotification']

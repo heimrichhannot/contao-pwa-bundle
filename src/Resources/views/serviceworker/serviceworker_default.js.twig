@@ -50,10 +50,28 @@ self.addEventListener('fetch', function(event) {
 
 {% if supportPush|default(false) %}
 self.addEventListener('push', function(event) {
-    let payload = event.data ? event.data.text() : "No payload";
+    let payload = event.data ? event.data.text() : false;
+    if (false === payload)
+    {
+        console.log("A push notification sent from {{ pageTitle }} without any content.");
+        return;
+    }
+    console.log("Payload: ", payload);
+    payload = JSON.parse(payload);
+
     event.waitUntil(
-        self.registration.showNotification("{{ pageTitle }}", JSON.parse(payload))
+        self.registration.showNotification("{{ pageTitle }}", payload)
     );
+});
+
+self.addEventListener('notificationclick', function(event) {
+    if (event.notification.data.clickJumpTo !== undefined)
+    {
+        event.notification.close();
+        event.waitUntil(
+            clients.openWindow(event.notification.data.clickJumpTo)
+        );
+    }
 });
 {% endif %}
 

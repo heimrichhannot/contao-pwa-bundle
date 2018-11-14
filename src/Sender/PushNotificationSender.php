@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Sender;
 
 
 use Contao\Model\Collection;
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
@@ -26,14 +27,19 @@ class PushNotificationSender
 	 * @var array|null
 	 */
 	private $bundleConfig;
+	/**
+	 * @var PwaPushNotificationContainer
+	 */
+	private $notificationContainer;
 
 	/**
 	 * PushNotificationSender constructor.
 	 */
-	public function __construct(?array $bundleConfig)
+	public function __construct(?array $bundleConfig, PwaPushNotificationContainer $notificationContainer)
 	{
 
 		$this->bundleConfig = $bundleConfig;
+		$this->notificationContainer = $notificationContainer;
 	}
 
 	/**
@@ -77,12 +83,18 @@ class PushNotificationSender
 			return ["success" => false, "message" => $e->getMessage()];
 		}
 
+		$payload = [];
 		try
 		{
-			$payload = $notification->jsonSerialize();
+			$payload = $notification->toArray();
 		} catch (\ReflectionException $e)
 		{
 			return ["sucess" => false, "message" => "Could not serialize notification. Error message: ".$e->getMessage()];
+		}
+
+		if ($notificationsModel = $notification->getSource())
+		{
+			$this->notificationContainer->notificationClickEvent($notificationsModel, $payload);
 		}
 
 		$validSubscribers = 0;
@@ -98,7 +110,7 @@ class PushNotificationSender
 			{
 				$webPush->sendNotification(
 					new Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
-					$payload
+					json_encode($payload)
 				);
 				$validSubscribers++;
 			} catch (\ErrorException $e)
@@ -110,9 +122,9 @@ class PushNotificationSender
 		$result = $webPush->flush();
 		if ($notification->getSource())
 		{
-			$notification->getSource()->sent = "1";
-			$notification->getSource()->sendDate = time();
-			$notification->getSource()->save();
+//			$notification->getSource()->sent = "1";
+//			$notification->getSource()->sendDate = time();
+//			$notification->getSource()->save();
 		}
 
 		return [

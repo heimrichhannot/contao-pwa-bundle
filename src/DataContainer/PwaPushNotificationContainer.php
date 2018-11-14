@@ -12,10 +12,14 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\PageModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class PwaPushNotificationContainer
 {
+	const CLICKEVENT_OPEN_PAGE = 'openPage';
+
 	/**
 	 * @var TranslatorInterface
 	 */
@@ -47,4 +51,26 @@ class PwaPushNotificationContainer
 		$label .= ')</span>';
 		return $label;
 	}
+
+	/**
+	 *
+	 *
+	 * @param $notificationsModel
+	 * @param $payload
+	 */
+	public function notificationClickEvent(PwaPushNotificationsModel $notificationsModel, array &$payload): void
+	{
+		switch ($notificationsModel->clickEvent)
+		{
+			case static::CLICKEVENT_OPEN_PAGE:
+				$page = PageModel::findByPk($notificationsModel->clickJumpTo);
+				if ($page)
+				{
+					$payload['data']['clickJumpTo'] = $page->getAbsoluteUrl();
+				}
+				break;
+		}
+	}
+
+
 }

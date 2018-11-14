@@ -31,6 +31,8 @@ use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
  * @property string $sendDate
  * @property string $sent
  * @property int $receiverCount
+ * @property string $clickEvent
+ * @property string $clickJumpTo
  */
 class PwaPushNotificationsModel extends Model
 {
