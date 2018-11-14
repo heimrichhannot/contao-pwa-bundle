@@ -15,9 +15,13 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['generatePage']['huh.pwa'] = ['huh.pwa.listener.hook', 'onGeneratePage'];
+\HeimrichHannot\UtilsBundle\Arrays\ArrayUtil::insertBeforeKey(
+	$GLOBALS['TL_HOOKS']['generatePage'],
+	'huh.head-bundle',
+	'huh.pwa',
+	['huh.pwa.listener.hook', 'onGeneratePage']
+);
 $GLOBALS['TL_HOOKS']['getUserNavigation'][]     = ['huh.pwa.listener.usernavigation', 'onGetUserNavigation'];
-
 
 /**
  * Models

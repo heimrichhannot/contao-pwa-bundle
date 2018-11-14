@@ -24,8 +24,7 @@ $fields = [
 		'inputType' => 'select',
 		'options'   => [
 			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_NO,
-			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_YES,
-			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_INHERIT
+			\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::ADD_PWA_YES
 		],
 		"reference" => &$GLOBALS['TL_LANG']['tl_page']['addPwa'],
 		'eval'      => [

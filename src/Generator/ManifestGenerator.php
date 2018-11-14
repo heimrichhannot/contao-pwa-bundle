@@ -96,7 +96,7 @@ class ManifestGenerator
 		$iconModel = FilesModel::findByUuid($config->pwaIcons);
 		if ($iconModel)
 		{
-			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page['alias'], true);
+			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);
 		}
 		$applications = deserialize($config->pwaRelatedApplications);
 		foreach ($applications as $application)

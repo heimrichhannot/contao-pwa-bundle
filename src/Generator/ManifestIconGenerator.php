@@ -78,25 +78,12 @@ class ManifestIconGenerator
 	 */
 	public function generateIcons(ManifestIcon $icon)
 	{
-//		$image   = $this->imageFactory->create($icon->getSourceIconPath());
-//		$config  = (new ResizeConfiguration())->setMode(ResizeConfiguration::MODE_BOX);
-//		$options = new ResizeOptions();
-
 		$filesystem = new Filesystem();
 		if (!$filesystem->exists($icon->getIconsPath()))
 		{
 			$filesystem->mkdir($icon->getIconsPath());
 		}
-
 		$imagine = new Imagine();
-//		$sourceImage = $imagine->open($icon->getSourceIconPath());
-
-
-
-
-
-//		$image = $imagine->open($icon->getSourceIconPath());
-
 		foreach ($icon->getSizes() as $size)
 		{
 
@@ -108,7 +95,7 @@ class ManifestIconGenerator
 
 				$mask = $imagine->create(new Box($sizes[0], $sizes[1]));
 
-				$image = $imagine->open($icon->getSourceIconPath());
+				$image = $imagine->open($icon->getSourceIconPath(true));
 				$thumb = $image->thumbnail(new Box($sizes[0], $sizes[1]), ImageInterface::THUMBNAIL_INSET);
 
 				$posX = 0;
@@ -125,28 +112,6 @@ class ManifestIconGenerator
 					$posY = (($sizes[1]- $iconHeigth) / 2);
 				}
 				$mask->paste($thumb, new Point($posX, $posY))->save($iconPath);
-
-
-//				$thumb = $image->thumbnail(new Box($sizes[0], $sizes[1]), ImageInterface::THUMBNAIL_INSET)->save($iconPath);
-//				$thumb->thumbnail(new Box($sizes[0], $sizes[1]), ImageInterface::THUMBNAIL_OUTBOUND)->save($iconPath);
-
-
-
-
-//				$mask->applyMask($thumb)->save($iconPath);
-
-
-//				$image->resize(new Box($sizes[0], $sizes[1])->cr, ImageInterface::)->save($iconPath);
-//				$size = $image->getSize();
-
-
-
-
-
-//				$config->setWidth($sizes[0]);
-//				$config->setHeight($sizes[1]);
-//				$options->setTargetPath($iconPath);
-//				$this->resizer->resize($image, $config, $options);
 			}
 			else {
 				copy($icon->getSourceIconPath(), $iconPath);

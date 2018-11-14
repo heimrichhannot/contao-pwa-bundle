@@ -31,8 +31,8 @@ let HuhPwaBackend = {
                 // return response;
             },
             onFailure: (xhr) => {
-                console.log('Error', xhr);
-                HuhPwaBackend.addLogEntry('Error sending notification: ' + xhr);
+                console.log('Error: ', xhr);
+                HuhPwaBackend.addLogEntry('Error sending notification: ' + xhr.statusText);
             },
             onCancel: () => {
                 HuhPwaBackend.addLogEntry('Sending Notification canceled');
@@ -104,8 +104,8 @@ let HuhPwaBackend = {
                     url: this.updatePageRoute,
                     method: 'post',
                     onFailure: (xhr) => {
-                        console.log('Error', xhr);
-                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr);
+                        console.log('Error: ', xhr);
+                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr.statusText);
                     },
                     onCancel: () => {
                         HuhPwaBackend.addLogEntry('Update page files canceled');
