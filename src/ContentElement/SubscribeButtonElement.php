@@ -57,7 +57,7 @@ class SubscribeButtonElement extends ContentElement
 		{
 			$this->Template->button = $this->twig->render($templatePath);
 		} catch (\Twig_Error $e){
-			$this->Template->button = '<button class="huhPwaWebSubscription" disabled="disabled"><span class="label">Notification</span></button>';
+			$this->Template->button = '<button class="huhPwaWebSubscription" disabled="disabled"><span class="label">Push Notifications</span></button>';
 		}
 
 		return $this->Template->parse();
