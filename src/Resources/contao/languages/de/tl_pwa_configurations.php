@@ -7,6 +7,8 @@ $lang = &$GLOBALS['TL_LANG']['tl_pwa_configurations'];
  */
 $lang['title'] = ["Titel","Name der Konfiguration"];
 $lang['addDebugLog'] = ["Debug-Ausgabe aktivieren","Wenn aktiviert, werden umfangreiche Debug-Ausgaben in der Browserkonsole ausgegeben. Achtung: Der Serviceworker muss dazu neu erzeugt werden!"];
+$lang['sendWithCron'] = ["Benachrichtigungen automatisch per Cron senden","Wenn aktiviert, werden Push-Benachrichtigungen automatisch per Cronjob im festgelegten Interval sendet"];
+$lang['cronIntervall'] = ["Sende-Intervall","Intervall in welchem nach ungesendeten Push-Benachrichtigungen gesucht und diese gesendet werden sollen."];
 $lang['pwaName'] = ["Name der Webanwendung","Wählen Sie hier aus, wie der Name der Webanwendung erzeugt werden soll. "];
 $lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_PAGETITLE] = "Seitenname";
 $lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_META_PAGETITLE] = "Seitentitel (Metadaten)";

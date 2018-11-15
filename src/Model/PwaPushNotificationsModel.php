@@ -47,6 +47,15 @@ class PwaPushNotificationsModel extends Model
 	}
 
 	/**
+	 * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
+	 */
+	public static function findUnsentNotificationsByPid(int $id)
+	{
+		$t = static::$strTable;
+		return static::findBy(["$t.pid=?", "$t.sent=?"],[$id, ""]);
+	}
+
+	/**
 	 * Find an unsent notification by id
 	 *
 	 * @param int $id

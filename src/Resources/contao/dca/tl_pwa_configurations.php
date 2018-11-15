@@ -87,12 +87,13 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 	],
 	'palettes' => [
-		'__selector__' => ['pwaName'],
-		'default' => '{general_legend},title,addDebugLog;'
+		'__selector__' => ['pwaName','sendWithCron'],
+		'default' => '{general_legend},title,sendWithCron,addDebugLog;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
 	'subpalettes' => [
 		'pwaName_custom' => 'pwaCustomName',
+		'sendWithCron' => 'cronIntervall'
 	],
 	'fields'   => [
 		'id'        => [
@@ -123,8 +124,26 @@ $GLOBALS['TL_DCA'][$table] = [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['addDebugLog'],
 			'inputType' => 'checkbox',
 			'filter'    => true,
-			'eval'      => ['tl_class'  => 'w50'],
+			'eval'      => ['tl_class'  => 'w50 clr'],
 			'sql'       => "char(1) NOT NULL default ''",
+		],
+		'sendWithCron' => [
+			'label'     => &$GLOBALS['TL_LANG'][$table]['sendWithCron'],
+			'inputType' => 'checkbox',
+			'filter'    => true,
+			'eval'      => ['tl_class'  => 'w50 clr', 'submitOnChange' => true],
+			'sql'       => "char(1) NOT NULL default ''",
+		],
+		'cronIntervall'=> [
+			'label'     => &$GLOBALS['TL_LANG'][$table]['cronIntervall'],
+			'inputType' => 'select',
+			'options'   => ['minutely','hourly','daily','weekly','monthly'],
+			'eval'      => [
+				'tl_class'  => 'w50',
+				'includeBlankOption' => false,
+				'default' => 'hourly'
+			],
+			'sql'       => "varchar(10) NOT NULL default ''",
 		],
 		'pwaName' => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaName'],

@@ -43,8 +43,8 @@ if (TL_MODE == 'BE') {
  * Cronjobs
  */
 
-//$GLOBALS['TL_CRON']['monthly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'monthly'];
-//$GLOBALS['TL_CRON']['weekly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'weekly'];
-//$GLOBALS['TL_CRON']['daily'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'daily'];
-//$GLOBALS['TL_CRON']['hourly'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'hourly'];
-//$GLOBALS['TL_CRON']['minutely'][]    = ['HeimrichHannot\ContaoNewsAlertBundle\Components\Cronjob', 'minutely'];
+$GLOBALS['TL_CRON']['monthly'][]    = ['huh.pwa.listener.commandscheduler', 'monthly'];
+$GLOBALS['TL_CRON']['weekly'][]    = ['huh.pwa.listener.commandscheduler', 'weekly'];
+$GLOBALS['TL_CRON']['daily'][]    = ['huh.pwa.listener.commandscheduler', 'daily'];
+$GLOBALS['TL_CRON']['hourly'][]    = ['huh.pwa.listener.commandscheduler', 'hourly'];
+$GLOBALS['TL_CRON']['minutely'][]    = ['huh.pwa.listener.commandscheduler', 'minutely'];

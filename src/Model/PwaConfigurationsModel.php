@@ -23,6 +23,8 @@ use Contao\Model;
  * @property int $dateAdded
  * @property string $title
  * @property string $addDebugLog
+ * @property string $sendWithCron
+ * @property string $cronIntervall
  * @property string $pwaName
  * @property string $pwaCustomName
  * @property string $pwaShortName

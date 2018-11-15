@@ -12,6 +12,7 @@
 namespace HeimrichHannot\ContaoPwaBundle\EventListener;
 
 
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
@@ -65,50 +66,37 @@ class CronjobListener
 
 	private function sendPushNotifications(string $interval)
 	{
-		$notifications = $this->notificationSender->findUnsendNotifications();
-		foreach ($notifications as $notification)
+		/** @var PwaConfigurationsModel[]|Collection|null $configurations */
+		$configurations = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'],["1",$interval]);
+		if (!$configurations)
 		{
-			$configuration = PwaConfigurationsModel::findByPk($notification->pid);
-			if (!$configuration)
-			{
-				$this->logger->error('No PWA confiration found for notification with id '.$notification->id,
-				[
-					'trace' => debug_backtrace(),
-				]);
-				continue;
-			}
-			$pushNotification = new DefaultNotification($notification);
-			$this->notificationSender->send($pushNotification, $configuration);
+			return;
 		}
 
-
-
-		$pushConfigurations = PwaConfigurationsModel::findAll();
-		/** @var PwaConfigurationsModel $configuration */
-		foreach ($pushConfigurations as $configuration)
+		foreach ($configurations as $configuration)
 		{
-			/** @var PwaPushNotificationsModel[]|Collection|PwaPushNotificationsModel|null $notifications */
-			if (!$notifications = PwaPushNotificationsModel::findBy(['pid=?','sent=?'],[$configuration->id, '']))
+			$notifications = PwaPushNotificationsModel::findUnsentNotificationsByPid($configuration->id);
+			if (!$notifications)
 			{
 				continue;
 			}
-			if (!$subscribers = PwaPushSubscriberModel::findByPid($configuration->id))
-			{
-				foreach ($notifications as $notification)
-				{
-					$notification->receiverCount = 0;
-					$notification->sent = "1";
-					$notification->save();
-				}
-				continue;
-			}
-
 			foreach ($notifications as $notification)
 			{
-				$pushNotification = new DefaultNotification();
-				$pushNotification->setTitle($notification->title);
-				$pushNotification->setBody($notification->body);
-				$this->notificationSender->send($pushNotification, $configuration);
+				$pushNotification = new DefaultNotification($notification);
+				try
+				{
+					$this->notificationSender->send($pushNotification, $configuration);
+				} catch (\ErrorException $e)
+				{
+					$this->logger->error("Error while sending Push notifications 
+										(Notification ID: " .$notification->id.", Configuration: ".$configuration->id."): ".$e->getMessage(),
+						[
+							'trace' => $e->getTraceAsString(),
+							'file' => $e->getFile(),
+							'line' => $e->getLine(),
+						]);
+					continue;
+				}
 			}
 
 		}
