@@ -5,8 +5,12 @@
 {% endblock %}
 
 {% block main %}
+    <div id="tl_buttons">
+        <a href="{{ backendBackRoute }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
+    </div>
     <div class="tl_listing_container">
-        <p><h2>Authentifizierung (VAPID-Keys)</h2></p>
+        <h2 class="tl_header pwaBackend">Authentifizierung (VAPID-Keys)</h2>
+        <p></p>
         {% if vapidkeys|default %}
             <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
             <p>
@@ -20,11 +24,11 @@
                 Private: {{ generatedKeys.privateKey }}</p>
         {% endif %}
 
-        <p><h2>Notifications</h2></p>
+        <h2 class="tl_header pwaBackend">Notifications</h2>
         <p><button id="huhPwaSendPushNotificationButton">Send unsend push notifications</button></p>
         <p id="huhPwaSendPushNotificationStatus"></p>
 
-        <p><h2>Files</h2></p>
+        <h2 class="tl_header pwaBackend">Files</h2>
         <p>Rebuild manifest and serviceworker files</p>
         <p><button id="huhPwaRebuildFilesButton">Rebuild files</button></p>
         <p id="huhPwaRebuildFilesStatus"></p>

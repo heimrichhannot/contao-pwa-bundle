@@ -40,7 +40,7 @@ class BackendController extends Controller
 	/**
 	 * @Route("/pwa/control", name="huh_pwa_backend_control")
 	 */
-	public function testAction(Request $request)
+	public function huhBackendControlAction(Request $request)
 	{
 		$this->container->get('contao.framework')->initialize();
 
@@ -58,15 +58,18 @@ class BackendController extends Controller
 		$params['rt'] = $this->get('security.csrf.token_manager')->getToken($this->getParameter('contao.csrf_token_name'))->getValue();
 		$params['ref'] =  $request->get('_contao_referer_id');
 
+		$backendBackRoute = $this->get('huh.utils.routing')->generateBackendRoute(['do' => 'huh_pwa_configurations']);
 		$unsentNotificationRoute = $this->get('router')->generate('huh_pwa_backend_pushnotification_find_unsent', $params);
 		$sendNotificationRoute = $this->get('router')->generate('huh_pwa_backend_pushnotification_send', $params);
 		$findPagesRoute = $this->get('router')->generate('huh_pwa_backend_pages', $params);
 		$updatePageRoute = $this->get('router')->generate('huh_pwa_backend_page_update', $params);
 
+
 		$content = $this->container->get('twig')->render("@HeimrichHannotContaoPwa/backend/backend.html.twig", [
 			"vapidkeys" => $keys,
 			"generatedKeys" => $generatedKeys,
 			"content" => "Content",
+			"backendBackRoute" => $backendBackRoute,
 			"unsentNotificationRoute" => $unsentNotificationRoute,
 			"sendNotificationRoute" => $sendNotificationRoute,
 			"findPagesRoute" => $findPagesRoute,

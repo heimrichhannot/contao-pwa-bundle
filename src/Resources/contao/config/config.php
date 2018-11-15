@@ -36,7 +36,8 @@ $GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\Subsc
  * Assets
  */
 if (TL_MODE == 'BE') {
-	$GLOBALS['TL_JAVASCRIPT']['filecredits-be'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
+	$GLOBALS['TL_JAVASCRIPT']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
+	$GLOBALS['TL_CSS']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/css/huhPwaBackend.css';
 }
 
 /**
