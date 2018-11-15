@@ -11,7 +11,7 @@
 $table = 'tl_pwa_pushnotifications';
 
 $GLOBALS['TL_DCA'][$table] = [
-	'config'   => [
+	'config'      => [
 		'dataContainer'    => 'Table',
 		'ptable'           => 'tl_pwa_configurations',
 		'enableVersioning' => true,
@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 		],
 	],
-	'list'     => [
+	'list'        => [
 		'label'             => [
 			'fields'         => ['title', 'sendDate', 'sent'],
 			'format'         => '%s',
@@ -35,7 +35,6 @@ $GLOBALS['TL_DCA'][$table] = [
 
 			'headerFields'          => ['title'],
 			'child_record_callback' => ['huh.pwa.datacontainer.pwapushnotification', 'onLabelCallback'],
-//			'child_record_class'      => 'no_padding'
 		],
 		'global_operations' => [
 			'all' => [
@@ -47,37 +46,37 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 		'operations'        => [
 			'edit'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['edit'],
 				'href'  => 'act=edit',
 				'icon'  => 'edit.gif',
 			],
 			'copy'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['copy'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['copy'],
 				'href'  => 'act=copy',
 				'icon'  => 'copy.gif',
 			],
 			'delete' => [
-				'label'      => &$GLOBALS['TL_LANG']['MSC']['delete'],
+				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
 				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
 					. '\'))return false;Backend.getScrollOffset()"',
 			],
 			'show'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['show'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['show'],
 				'href'  => 'act=show',
 				'icon'  => 'show.gif',
 			],
 		],
 	],
-	'palettes' => [
+	'palettes'    => [
 		'__selector__' => ['clickEvent'],
-		'default' => '{message_legend},title,body,icon,iconSize,clickEvent;{send_legend},sendDate;',
+		'default'      => '{message_legend},title,body,icon,iconSize;{behavior_legend},clickEvent;{send_legend},sendDate;',
 	],
 	'subpalettes' => [
-		'clickEvent_'.\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
+		'clickEvent_' . \HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
 	],
-	'fields'   => [
+	'fields'      => [
 		'id'            => [
 			'sql' => "int(10) unsigned NOT NULL auto_increment",
 		],
@@ -106,7 +105,7 @@ $GLOBALS['TL_DCA'][$table] = [
 		'body'          => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['body'],
 			'inputType' => 'text',
-			'eval'      => ['tl_class' => 'w50'],
+			'eval'      => ['tl_class' => 'clr'],
 			'sql'       => "varchar(128) NOT NULL default ''",
 		],
 		'icon'          => [
@@ -160,6 +159,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'options'   => [
 				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE,
 			],
+			'reference' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickEvent'],
 			'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],
 			'sql'       => "varchar(255) NOT NULL default ''",
 		],

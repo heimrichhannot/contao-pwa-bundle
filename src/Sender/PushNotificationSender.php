@@ -120,6 +120,7 @@ class PushNotificationSender
 		}
 
 		$result = $webPush->flush();
+
 		if ($notification->getSource())
 		{
 //			$notification->getSource()->sent = "1";
