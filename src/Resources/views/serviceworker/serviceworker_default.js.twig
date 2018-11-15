@@ -79,10 +79,8 @@ function fromNetwork(request, timeout) {
     return new Promise(function (fulfill, reject) {
         var timeoutId = setTimeout(reject, timeout);
         fetch(request).then(function (response) {
-            console.log('[Fetch] Fetch');
             clearTimeout(timeoutId);
             caches.open(CACHE).then(function(cache){
-                console.log('[Fetch] Add request to cache');
                 cache.put(request, response.clone());
                 fulfill(response);
             });
@@ -93,8 +91,8 @@ function fromNetwork(request, timeout) {
 function fromCache(request) {
     {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from cache');{% endif %}
     return caches.open(CACHE).then(function (cache) {
-        console.log('[Cache] Return cache if matching');
         return cache.match(request).then(function (matching) {
+            {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Return result from cache');{% endif %}
             return matching || Promise.reject('no-match');
         });
     });
@@ -109,7 +107,7 @@ var FALLBACK =
     '</svg>';
 
 function useFallback() {
-    console.log('[Serviceworker] Fetch: Use Fallback');
+    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Use Fallback');{% endif %}
     return Promise.resolve(new Response(FALLBACK, { headers: {
             'Content-Type': 'image/svg+xml'
         }}));

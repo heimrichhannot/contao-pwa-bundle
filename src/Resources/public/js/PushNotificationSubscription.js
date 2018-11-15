@@ -7,7 +7,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
     };
     this.subscribe = () => {
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Subscribe');
         }
         navigator.serviceWorker.ready.then(async (registration) => {
@@ -18,7 +18,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
                 userVisibleOnly: true,
                 applicationServerKey: this.urlBase64ToUint8Array(publicKey),
             }).then((subscription) => {
-                if (true === this.debug) {
+                if (this.debug) {
                     console.log('[Push Notification Subscription] Subscribed');
                 }
                 fetch(this.subscribePath, {
@@ -34,14 +34,14 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         });
     };
     this.unsubscribe = () => {
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Unsubscribe');
         }
         navigator.serviceWorker.ready.then((registration) => {
             return registration.pushManager.getSubscription();
         }).then((subscription) => {
             return subscription.unsubscribe().then(() => {
-                if (true === this.debug) {
+                if (this.debug) {
                     console.log('[Push Notification Subscription] Unsubscribed', subscription.endpoint);
                 }
                 return fetch(this.unsubscribePath, {
@@ -60,7 +60,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         if (!this.checkPermission()) {
             return;
         }
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Update Button to "Subscribe"');
         }
         this.buttons.forEach((button) => {
@@ -76,7 +76,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         if (!this.checkPermission()) {
             return;
         }
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Update Button to "Unsubscribe"');
         }
         this.buttons.forEach((button) => {
@@ -90,7 +90,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
     };
     this.checkPermission = () => {
         if (Notification.permission === 'denied') {
-            if (true === this.debug) {
+            if (this.debug) {
                 console.log('[Push Notification Subscription] Permission denied');
             }
             this.buttons.forEach((button) => {
@@ -105,7 +105,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         return true;
     };
     this.hide = () => {
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Hide Subscription Elements');
         }
         this.buttons.forEach((button) => {
@@ -114,7 +114,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         });
     };
     this.show = () => {
-        if (true === this.debug) {
+        if (this.debug) {
             console.log('[Push Notification Subscription] Show Subscription Elements');
         }
         this.buttons.forEach((button) => {
