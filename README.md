@@ -2,14 +2,16 @@
 
 A bundle to provide progressive web app support for contao.
 
-> This bundle is currently in progress an not ready for production.
+> This bundle is still in beta. Use at your own risk! Precaching currently only works for Webpack/Encore enabled pages. 
 
 This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-push-php) to provide push notifications. 
 
 ## Features
 
 * Create and register manifest file for each page root
-* Create and register service worker for each page root (Default service worker currently only works for page with build/manifest.json file in web root (precaches webpack assets)) and page scope `/de/`
+* Create and register service worker for each page root
+* Subscribe to Push Notifications button as Content Element
+* send custom push notifications from backend
 
 ## Setup
 
@@ -35,7 +37,5 @@ huh_pwa:
 
 
 ## Todo
-* translations 
-* make service worker configurable
 * image size config
 * support svg icons
