@@ -17,11 +17,11 @@ use Contao\ContentElement;
 use Contao\ContentModel;
 use Contao\System;
 
-class SubscribeButtonElement extends ContentElement
+class PushSubscriptionElement extends ContentElement
 {
-	const TYPE = 'subscriptionLinkButton';
+	const TYPE = 'pushsubscription';
 
-	protected $strTemplate = 'ce_subscribelinkbutton';
+	protected $strTemplate = 'ce_pushsubscription_default';
 	protected $scopeMatcher;
 	protected $request;
 	protected $twig;

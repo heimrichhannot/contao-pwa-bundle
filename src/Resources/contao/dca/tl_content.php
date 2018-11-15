@@ -1,8 +1,8 @@
 <?php
 
-$dc = &$GLOBALS['TL_DCA']['tl_content'];
-$dc['palettes'][\HeimrichHannot\ContaoPwaBundle\ContentElement\SubscribeButtonElement::TYPE] =
-	'{type_legend},type,headline;{template_legend:hide},pwaSubscribeButtonTemplate;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
+$dc                                                                                           = &$GLOBALS['TL_DCA']['tl_content'];
+$dc['palettes'][\HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::TYPE] =
+	'{type_legend},type,headline;{template_legend:hide},pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
 
 $dc['fields']['pwaSubscribeButtonTemplate'] = [
 	'label'            => &$GLOBALS['TL_LANG']['tl_content']['pwaSubscribeButtonTemplate'],

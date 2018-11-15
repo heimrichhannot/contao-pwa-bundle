@@ -30,7 +30,7 @@ $GLOBALS['TL_MODELS']['tl_pwa_pushnotifications'] = \HeimrichHannot\ContaoPwaBun
 /**
  * Content Elements
  */
-$GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\SubscribeButtonElement::TYPE] = \HeimrichHannot\ContaoPwaBundle\ContentElement\SubscribeButtonElement::class;
+$GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::TYPE] = \HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::class;
 
 /**
  * Assets
