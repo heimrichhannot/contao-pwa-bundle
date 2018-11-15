@@ -88,7 +88,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'palettes' => [
 		'__selector__' => ['pwaName','sendWithCron'],
-		'default' => '{general_legend},title,sendWithCron,addDebugLog;'
+		'default' => '{general_legend},title,supportPush,sendWithCron,addDebugLog;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
 	'subpalettes' => [
@@ -286,6 +286,13 @@ $GLOBALS['TL_DCA'][$table] = [
 				],
 			],
 			'sql'       => 'blob NULL',
+		],
+		'supportPush'          => [
+			'label'     => &$GLOBALS['TL_LANG'][$table]['supportPush'],
+			'inputType' => 'checkbox',
+			'filter'    => true,
+			'eval'      => ['tl_class'  => 'w50 clr'],
+			'sql'       => "char(1) NOT NULL default ''",
 		],
 	],
 ];

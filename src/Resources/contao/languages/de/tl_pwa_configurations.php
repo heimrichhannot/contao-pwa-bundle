@@ -6,6 +6,7 @@ $lang = &$GLOBALS['TL_LANG']['tl_pwa_configurations'];
  * Fields
  */
 $lang['title'] = ["Titel","Name der Konfiguration"];
+$lang['supportPush'] = ["Push-Benachrichtigungen unterstützen","Aktivieren Sie die Unterstützung für Push-Benachrichtigungen für Ihre Webanwendung."];
 $lang['addDebugLog'] = ["Debug-Ausgabe aktivieren","Wenn aktiviert, werden umfangreiche Debug-Ausgaben in der Browserkonsole ausgegeben. Achtung: Der Serviceworker muss dazu neu erzeugt werden!"];
 $lang['sendWithCron'] = ["Benachrichtigungen automatisch per Cron senden","Wenn aktiviert, werden Push-Benachrichtigungen automatisch per Cronjob im festgelegten Interval sendet"];
 $lang['cronIntervall'] = ["Sende-Intervall","Intervall in welchem nach ungesendeten Push-Benachrichtigungen gesucht und diese gesendet werden sollen."];

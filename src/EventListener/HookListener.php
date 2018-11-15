@@ -90,6 +90,7 @@ class HookListener
 					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
 					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
 					'debug' => (bool) $config->addDebugLog,
+					'supportPush' => (bool) $config->supportPush,
 				])
 				."</script>";
 		}

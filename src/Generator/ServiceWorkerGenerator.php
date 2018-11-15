@@ -81,7 +81,7 @@ class ServiceWorkerGenerator
 			return (bool)file_put_contents(
 				$this->webDir . '/sw_' . $page->alias . '.js',
 				$this->twig->render($this->serviceWorkerTemplate, [
-					'supportPush' => true,
+					'supportPush' => (bool) $config->supportPush,
 					'pageTitle'   => $title,
 					'version'     => date('YmdHis'),
 					'alias'       => $page->alias,
