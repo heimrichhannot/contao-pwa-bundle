@@ -15,6 +15,7 @@ namespace HeimrichHannot\ContaoPwaBundle\EventListener;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
@@ -64,7 +65,7 @@ class HookListener
 	{
 		$rootPage = PageModel::findByPk($page->rootId);
 
-		if ($rootPage->addPwa && $rootPage->pwaConfiguration)
+		if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration)
 		{
 			$config = PwaConfigurationsModel::findByPk($rootPage->pwaConfiguration);
 			if (!$config)
