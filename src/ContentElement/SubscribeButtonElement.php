@@ -24,13 +24,16 @@ class SubscribeButtonElement extends ContentElement
 	protected $strTemplate = 'ce_subscribelinkbutton';
 	protected $scopeMatcher;
 	protected $request;
+	protected $twig;
+	protected $templateUtil;
 
 	public function __construct(ContentModel $objElement, string $strColumn = 'main')
 	{
 		parent::__construct($objElement, $strColumn);
 		$this->scopeMatcher = System::getContainer()->get('contao.routing.scope_matcher');
 		$this->request = System::getContainer()->get('request_stack')->getCurrentRequest();
-//		$this->translator
+		$this->twig = System::getContainer()->get('twig');
+		$this->templateUtil = System::getContainer()->get('huh.utils.template');
 	}
 
 
@@ -47,7 +50,15 @@ class SubscribeButtonElement extends ContentElement
 			return $this->Template->parse();
 		}
 
-		$this->Template->button = '<button class="huhPwaWebSubscription" disabled="disabled">Notification</button>';
+		$template = $this->pwaSubscribeButtonTemplate ?: 'pwa_subscription_default';
+		$templatePath = $this->templateUtil->getTemplate($template);
+
+		try
+		{
+			$this->Template->button = $this->twig->render($templatePath);
+		} catch (\Twig_Error $e){
+			$this->Template->button = '<button class="huhPwaWebSubscription" disabled="disabled"><span class="label">Notification</span></button>';
+		}
 
 		return $this->Template->parse();
 	}

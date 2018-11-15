@@ -65,7 +65,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         }
         this.buttons.forEach((button) => {
             button.removeAttribute('disabled');
-            button.textContent = HuhPwaTranslator.pushnotifications.subscribe;
+            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
@@ -81,7 +81,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         }
         this.buttons.forEach((button) => {
             button.removeAttribute('disabled');
-            button.textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
+            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
@@ -94,7 +94,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
                 console.log('[Push Notification Subscription] Permission denied');
             }
             this.buttons.forEach((button) => {
-                button.textContent = HuhPwaTranslator.pushnotifications.blocked;
+                button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.blocked;
                 button.classList.add('blocked');
                 button.classList.remove('unsubscribed');
                 button.classList.remove('subscribed');
@@ -110,6 +110,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         }
         this.buttons.forEach((button) => {
             button.classList.add('hidden');
+            button.setAttribute('aria-hidden','true');
         });
     };
     this.show = () => {
@@ -117,9 +118,8 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
             console.log('[Push Notification Subscription] Show Subscription Elements');
         }
         this.buttons.forEach((button) => {
-            if (botton.classList.contains('hidden')) {
-                button.classList.remove('hidden');
-            }
+            button.removeAttribute('aria-hidden');
+            button.classList.remove('hidden');
         });
     };
     this.urlBase64ToUint8Array = (base64String) => {

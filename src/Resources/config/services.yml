@@ -12,6 +12,10 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
     public: true
     autowire: true
+  huh.pwalist.choice.template.item:
+    class: HeimrichHannot\ContaoPwaBundle\DataContainer\ContentContainer
+    public: true
+    autowire: true
   huh.pwa.datacontainer.pwapushnotification:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer
     public: true
