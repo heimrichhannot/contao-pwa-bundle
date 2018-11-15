@@ -14,7 +14,16 @@ self.addEventListener('install', function(e) {
                     return json[key];
                 });
                 // Cache webpack assets from generated file list
-                return cache.addAll(files);
+                return cache.addAll(files).then(function () {
+                    // Remove old caches
+                    caches.keys().then(function(names) {
+                        return Promise.all(names.filter(function(name) {
+                            return name !== CACHE;
+                        }).map(function(name) {
+                            return caches.delete(name)
+                        }))
+                    })
+                });
             });
         }).then(function() {
             {% if debug|default(false) %}console.log('[Serviceworker] Install: Skip waiting');{% endif %}
