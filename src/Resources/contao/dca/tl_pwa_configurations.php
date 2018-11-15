@@ -26,13 +26,12 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['title'],
-			'format' => '%s',
+			'fields' => ['title','supportPush'],
+			'format' => '%s <span style="color:#999;padding-left:3px">(Push: %s)</span>',
 		],
 		'sorting'           => [
 			'mode'         => 1,
 			'fields'       => ['title'],
-			'headerFields' => ['title'],
 			'panelLayout'  => 'filter;search,limit',
 		],
 		'global_operations' => [
@@ -123,7 +122,7 @@ $GLOBALS['TL_DCA'][$table] = [
 		'addDebugLog'          => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['addDebugLog'],
 			'inputType' => 'checkbox',
-			'filter'    => true,
+			'search'    => true,
 			'eval'      => ['tl_class'  => 'w50 clr'],
 			'sql'       => "char(1) NOT NULL default ''",
 		],
