@@ -82,6 +82,10 @@ class HookListener
 
 			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
 
+			$GLOBALS['TL_HEAD'][] =
+				"<script type='text/javascript'>"
+				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
+				."</script>";
 			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
 			$GLOBALS['TL_HEAD'][] =
 				"<script type='text/javascript'>"

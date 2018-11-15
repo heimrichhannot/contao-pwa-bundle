@@ -30,6 +30,7 @@ class SubscribeButtonElement extends ContentElement
 		parent::__construct($objElement, $strColumn);
 		$this->scopeMatcher = System::getContainer()->get('contao.routing.scope_matcher');
 		$this->request = System::getContainer()->get('request_stack')->getCurrentRequest();
+//		$this->translator
 	}
 
 

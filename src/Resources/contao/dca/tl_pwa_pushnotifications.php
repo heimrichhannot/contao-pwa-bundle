@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA'][$table] = [
 		],
 		'receiverCount' => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
-			'inputType' => 'checkbox',
+			'inputType' => 'text',
 			'eval'      => [],
 			'sql'       => "int(10) unsigned NOT NULL default '0'",
 		],

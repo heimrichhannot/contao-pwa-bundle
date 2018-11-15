@@ -2,6 +2,6 @@
 
 <?php $this->block('content'); ?>
 
-<?= $this->button ?>
+<button class="huhPwaWebSubscription" disabled="disabled">Notification</button>
 
 <?php $this->endblock(); ?>

@@ -52,30 +52,25 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 		],
 		'operations'        => [
-//			'edit'   => [
-//				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
-//				'href'  => 'table=tl_pwa_pushsubscriber',
-//				'icon'  => 'edit.gif',
-//			],
-			'editheader' => [
-				'label'           => &$GLOBALS['TL_LANG']['MSC']['editheader'],
+			'edit' => [
+				'label'           => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['edit'],
 				'href'            => 'act=edit',
 				'icon'            => 'header.svg',
 			],
 			'copy'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['copy'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['copy'],
 				'href'  => 'act=copy',
 				'icon'  => 'copy.gif',
 			],
 			'delete' => [
-				'label'      => &$GLOBALS['TL_LANG']['MSC']['delete'],
+				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
-				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
+				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['tl_pwa_configurations']['deleteConfirm']
 					. '\'))return false;Backend.getScrollOffset()"',
 			],
 			'show'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['show'],
+				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['show'],
 				'href'  => 'act=show',
 				'icon'  => 'show.gif',
 			],
@@ -93,7 +88,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'palettes' => [
 		'__selector__' => ['pwaName'],
-		'default' => '{general_legend},title;'
+		'default' => '{general_legend},title,addDebugLog;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
 	'subpalettes' => [
@@ -124,6 +119,13 @@ $GLOBALS['TL_DCA'][$table] = [
 			'eval'      => ['mandatory' => true, 'maxlength' => 255],
 			'sql'       => "varchar(255) NOT NULL default ''",
 		],
+		'addDebugLog'          => [
+			'label'     => &$GLOBALS['TL_LANG'][$table]['addDebugLog'],
+			'inputType' => 'checkbox',
+			'filter'    => true,
+			'eval'      => ['tl_class'  => 'w50'],
+			'sql'       => "char(1) NOT NULL default ''",
+		],
 		'pwaName' => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaName'],
 			'inputType' => 'select',
@@ -138,7 +140,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(10) NOT NULL default ''",
 		],
 		'pwaCustomName'                     => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaName'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaName'],
 			'inputType' => 'text',
 			'eval'      => [
 				'maxlength' => 128,
@@ -147,7 +149,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(128) NOT NULL default ''",
 		],
 		'pwaShortName'                => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaShortName'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaShortName'],
 			'inputType' => 'text',
 			'eval'      => [
 				'maxlength' => 32,
@@ -156,19 +158,19 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(32) NOT NULL default ''",
 		],
 		'pwaBackgroundColor'          => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaBackgroundColor'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaBackgroundColor'],
 			'inputType' => 'text',
 			'eval'      => ['maxlength' => 6, 'colorpicker' => true, 'isHexColor' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
 			'sql'       => "varchar(16) NOT NULL default ''",
 		],
 		'pwaThemeColor'               => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaThemeColor'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaThemeColor'],
 			'inputType' => 'text',
 			'eval'      => ['maxlength' => 6, 'colorpicker' => true, 'isHexColor' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
 			'sql'       => "varchar(64) NOT NULL default ''",
 		],
 		'pwaDescription'              => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['manifestDescription'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['manifestDescription'],
 			'inputType' => 'textarea',
 			'eval'      => [
 				'tl_class' => 'clr',
@@ -176,7 +178,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "text NULL",
 		],
 		'pwaDirection'                => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaDirection'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaDirection'],
 			'inputType' => 'select',
 			'options'   => \HeimrichHannot\ContaoPwaBundle\Manifest\Manifest::DIR_VALUES,
 			'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDir'],
@@ -188,7 +190,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(4) NOT NULL default ''",
 		],
 		'pwaDisplay'                  => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaDisplay'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaDisplay'],
 			'inputType' => 'select',
 			'options'   => \HeimrichHannot\ContaoPwaBundle\Manifest\Manifest::DISPLAY_VALUES,
 			'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDisplay'],
@@ -196,7 +198,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(16) NOT NULL default ''",
 		],
 		'pwaIcons'                    => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaIcons'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaIcons'],
 			'inputType' => 'fileTree',
 			'eval'      => [
 				'files'      => true,
@@ -208,7 +210,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "blob NULL",
 		],
 		'pwaOrientation'              => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaOrientation'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaOrientation'],
 			'inputType' => 'select',
 			'options'   => \HeimrichHannot\ContaoPwaBundle\Manifest\Manifest::ORIENTATION_VALUES,
 			'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaOrientation'],
@@ -216,13 +218,13 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(32) NOT NULL default ''",
 		],
 		'pwaStartUrl'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['pwaStartUrl'],
+			'label'      => &$GLOBALS['TL_LANG'][$table]['pwaStartUrl'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50 clr'],
 			'sql'        => "varchar(255) NOT NULL default ''",
 		],
 		'pwaScope'                    => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaScope'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaScope'],
 			'inputType' => 'text',
 			'eval'      => [
 				'maxlength' => 256,
@@ -231,33 +233,33 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(256) NOT NULL default ''",
 		],
 		'pwaPreferRelatedApplication' => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaPreferRelatedApplication'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaPreferRelatedApplication'],
 			'exclude'   => true,
 			'inputType' => 'checkbox',
 			'eval'      => ['tl_class' => 'w50'],
 			'sql'       => "char(1) NOT NULL default ''"
 		],
 		'pwaRelatedApplications'      => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaRelatedApplications'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaRelatedApplications'],
 			'exclude'   => true,
 			'inputType' => 'multiColumnWizard',
 			'eval'      => [
 				'tl_class' => 'clr',
 				'columnFields' => [
 					'plattform' => [
-						'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaRelatedApplications_plattform'],
+						'label'     => &$GLOBALS['TL_LANG'][$table]['pwaRelatedApplications_plattform'],
 						'exclude'   => true,
 						'inputType' => 'text',
 						'eval'      => ['style' => 'width:180px']
 					],
 					'url'       => [
-						'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaRelatedApplications_url'],
+						'label'     => &$GLOBALS['TL_LANG'][$table]['pwaRelatedApplications_url'],
 						'exclude'   => true,
 						'inputType' => 'text',
 						'eval'      => ['style' => 'width:180px']
 					],
 					'id'        => [
-						'label'     => &$GLOBALS['TL_LANG']['tl_page']['pwaRelatedApplications_id'],
+						'label'     => &$GLOBALS['TL_LANG'][$table]['pwaRelatedApplications_id'],
 						'exclude'   => true,
 						'inputType' => 'text',
 						'eval'      => ['style' => 'width:180px']

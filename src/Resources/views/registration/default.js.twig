@@ -14,7 +14,7 @@ else {
     });
 
     if (('PushManager' in window)) {
-        {% if debug == true %}console.log("[Subscription] Push supported");{% endif %}
+        {% if debug|default(false) %}console.log("[Subscription] Push supported");{% endif %}
 
         navigator.serviceWorker.ready
         .then(function(registration) {
@@ -34,6 +34,7 @@ else {
         });
     }
     else {
+        {% if debug|default(false) %}console.log('[Subscription] Browser don\'t support push. Hide subscription button.');{% endif %}
         pushSubscription.hide();
     }
 }
