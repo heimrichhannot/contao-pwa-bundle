@@ -4,7 +4,8 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	'config'   => [
 		'dataContainer'     => 'Table',
 		'ptable'           => 'tl_pwa_configurations',
-		'enableVersioning'  => true,
+		'enableVersioning'  => false,
+		'closed' => true,
 		'sql'               => [
 			'keys' => [
 				'id' => 'primary',
@@ -20,7 +21,6 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'mode'         => 2,
 			'fields'       => ['dateAdded'],
 			'panelLayout'  => 'filter;search,limit',
-//			'disableGrouping' => true,
 		],
 		'global_operations' => [
 			'all' => [
@@ -31,16 +31,6 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			],
 		],
 		'operations'        => [
-			'edit'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['edit'],
-				'href'  => 'act=edit',
-				'icon'  => 'edit.gif',
-			],
-			'copy'   => [
-				'label' => &$GLOBALS['TL_LANG']['MSC']['copy'],
-				'href'  => 'act=copy',
-				'icon'  => 'copy.gif',
-			],
 			'delete' => [
 				'label'      => &$GLOBALS['TL_LANG']['MSC']['delete'],
 				'href'       => 'act=delete',
