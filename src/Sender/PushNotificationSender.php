@@ -123,9 +123,9 @@ class PushNotificationSender
 
 		if ($notification->getSource())
 		{
-//			$notification->getSource()->sent = "1";
-//			$notification->getSource()->sendDate = time();
-//			$notification->getSource()->save();
+			$notification->getSource()->sent = "1";
+			$notification->getSource()->sendDate = time();
+			$notification->getSource()->save();
 		}
 
 		return [
