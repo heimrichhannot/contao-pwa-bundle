@@ -52,27 +52,33 @@ let HuhPwaBackend = {
             console.log(response);
             console.log('Response succeeded');
             if (response.json.count > 0) {
+                let promises = [];
                 response.json.notifications.forEach((notification) => {
                     let sendRequest = this.sendNotificationRequest(this.sendNotificationRoute);
-                    sendRequest.post('notificationId=' + notification).then((sendResponse) => {
+                    promises.push(sendRequest.post('notificationId=' + notification).then((sendResponse) => {
                         let failCount = 0;
                         sendResponse.json.result.forEach((element) => {
                             if (element.success === false) {
                                 failCount++;
                             }
                         });
-                        this.addLogEntry('Sent notification with id ' + notification + ': Sent ' + sendResponse.json.sentCount + ' messages, got ' + failCount + ' errors.');
+                        return this.addLogEntry('Sent notification with id ' + notification + ': Sent ' + sendResponse.json.sentCount + ' messages, got ' + failCount + ' errors.');
+                    }));
+                });
+                Promise.all(promises).then(() => {
+                    this.addLogEntry('Finished').then(() => {
+                        this.button.disabled = false;
                     });
-                }).then(() => {
-                    this.addLogEntry('Finished');
-                    this.button.disabled = false;
                 });
 
             }
             else {
-                this.addLogEntry('Finished');
-                this.button.disabled = false;
+                this.addLogEntry('Finished').then(() => {
+                    this.button.disabled = false;
+                });
             }
+        }).catch(()=> {
+            this.button.disabled = false;
         });
     },
     rebuildFiles: function() {

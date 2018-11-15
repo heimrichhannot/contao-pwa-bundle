@@ -1,16 +1,14 @@
 let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 
-{% set debug = false %}
-
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE).then(function(cache) {
-            {% if debug %}console.log('[Serviceworker] Install: Cache open');{% endif %}
+            {% if debug|default(false) %}console.log('[Serviceworker] Install: Cache open');{% endif %}
             // Fetch webpack manifest file
             return fetch('/build/manifest.json').then(function(responce) {
                 return responce.json();
             }).then(function(json) {
-                console.log('[Serviceworker] Install: Fetched manifest');
+                {% if debug|default(false) %}console.log('[Serviceworker] Install: Fetched manifest');{% endif %}
                 // Create an array with only file paths
                 let files = Object.keys(json).map(function(key) {
                     return json[key];
@@ -19,14 +17,14 @@ self.addEventListener('install', function(e) {
                 return cache.addAll(files);
             });
         }).then(function() {
-            console.log('[Install] Skip waiting');
+            {% if debug|default(false) %}console.log('[Serviceworker] Install: Skip waiting');{% endif %}
             return self.skipWaiting();
         })
     );
 });
 
 self.addEventListener('activate', function(event) {
-    console.log('[Serviceworker] Activate event!');
+    {% if debug|default(false) %} console.log('[Serviceworker] Activate event!');{% endif %}
     event.waitUntil(self.clients.claim());
 });
 
@@ -41,7 +39,7 @@ self.addEventListener('fetch', function(event) {
     }
 
     event.respondWith(fromNetwork(event.request, 600).catch(function () {
-        console.log('[Serviceworker] Fetch: Catch error with cache');
+        {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Catch error with cache');{% endif %}
         return fromCache(event.request).catch(function() {
             return useFallback();
         });
@@ -53,10 +51,10 @@ self.addEventListener('push', function(event) {
     let payload = event.data ? event.data.text() : false;
     if (false === payload)
     {
-        console.log("A push notification sent from {{ pageTitle }} without any content.");
+        {% if debug|default(false) %}console.log("[Serviceworker] Push: A push notification sent from {{ pageTitle }} without any content.");{% endif %}
         return;
     }
-    console.log("Payload: ", payload);
+    {% if debug|default(false) %}console.log("[Serviceworker] Push: Payload: ", payload);{% endif %}
     payload = JSON.parse(payload);
 
     event.waitUntil(
@@ -65,6 +63,7 @@ self.addEventListener('push', function(event) {
 });
 
 self.addEventListener('notificationclick', function(event) {
+    {% if debug|default(false) %}console.log("[Serviceworker] Notificationclick event ");{% endif %}
     if (event.notification.data.clickJumpTo !== undefined)
     {
         event.notification.close();
@@ -92,7 +91,7 @@ function fromNetwork(request, timeout) {
 }
 
 function fromCache(request) {
-    console.log('[Serviceworker] Fetch: Try fetch from cache');
+    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from cache');{% endif %}
     return caches.open(CACHE).then(function (cache) {
         console.log('[Cache] Return cache if matching');
         return cache.match(request).then(function (matching) {
@@ -110,7 +109,7 @@ var FALLBACK =
     '</svg>';
 
 function useFallback() {
-    console.log('[Fallback] Use Fallback');
+    console.log('[Serviceworker] Fetch: Use Fallback');
     return Promise.resolve(new Response(FALLBACK, { headers: {
             'Content-Type': 'image/svg+xml'
         }}));

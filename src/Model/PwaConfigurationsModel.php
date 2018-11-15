@@ -22,6 +22,7 @@ use Contao\Model;
  * @property int $tstamp
  * @property int $dateAdded
  * @property string $title
+ * @property string $addDebugLog
  * @property string $pwaName
  * @property string $pwaCustomName
  * @property string $pwaShortName

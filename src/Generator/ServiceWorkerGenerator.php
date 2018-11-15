@@ -85,6 +85,7 @@ class ServiceWorkerGenerator
 					'pageTitle'   => $title,
 					'version'     => date('YmdHis'),
 					'alias'       => $page->alias,
+					'debug'		  => (bool) $config->addDebugLog,
 				])
 			);
 		} catch (\Twig_Error_Loader $e)

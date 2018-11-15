@@ -8,3 +8,6 @@ huh.pwa:
     subscribe: Benachrichtigungen abonnieren
     unsubscribe: Benachrichtigungen nicht mehr empfangen
     blocked: Benachrichtigungen wurden von Ihrem Browser blockiert
+  backend:
+    control:
+      headline: "PWA Verwaltung"

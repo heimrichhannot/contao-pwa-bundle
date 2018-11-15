@@ -36,10 +36,6 @@ class HookListener
 	 */
 	private $twig;
 	/**
-	 * @var KernelInterface
-	 */
-	private $kernel;
-	/**
 	 * @var RouterInterface
 	 */
 	private $router;
@@ -48,12 +44,11 @@ class HookListener
 	/**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, KernelInterface $kernel, RouterInterface $router)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
-		$this->kernel = $kernel;
 		$this->router = $router;
 	}
 
@@ -94,7 +89,7 @@ class HookListener
 					'serviceWorkerPath' => $serviceWorker,
 					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
 					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-					'debug' => $this->kernel->isDebug(),
+					'debug' => (bool) $config->addDebugLog,
 				])
 				."</script>";
 		}
