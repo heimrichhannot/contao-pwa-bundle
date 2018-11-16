@@ -46,7 +46,7 @@ class PushSubscriptionElement extends ContentElement
 		{
 			$this->strTemplate = 'be_wildcard';
 			$this->Template = new BackendTemplate($this->strTemplate);
-			$this->Template->title = "Web Notification Subscribe Button";
+			$this->Template->title = "Web Push Notification Subscribe Button";
 			return $this->Template->parse();
 		}
 

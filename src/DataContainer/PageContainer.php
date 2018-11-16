@@ -14,6 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
@@ -40,17 +41,22 @@ class PageContainer
 	 * @var \Twig_Environment
 	 */
 	private $twig;
+	/**
+	 * @var ServiceWorkerGenerator
+	 */
+	private $serviceWorkerGenerator;
 
 
 	/**
 	 * PageContainer constructor.
 	 */
-	public function __construct(ManifestGenerator $manifestGenerator, FileLocator $fileLocator, ContainerInterface $container, \Twig_Environment $twig)
+	public function __construct(ManifestGenerator $manifestGenerator, FileLocator $fileLocator, ContainerInterface $container, \Twig_Environment $twig, ServiceWorkerGenerator $serviceWorkerGenerator)
 	{
 		$this->manifestGenerator = $manifestGenerator;
 		$this->fileLocator = $fileLocator;
 		$this->container = $container;
 		$this->twig = $twig;
+		$this->serviceWorkerGenerator = $serviceWorkerGenerator;
 	}
 
 	public function onCreateVersionCallback($table, $pid, $version, $row)
@@ -70,17 +76,8 @@ class PageContainer
 			return;
 		}
 
-		$manifest = $this->manifestGenerator->generatePageManifest($page);
-
-		file_put_contents(
-			$this->container->getParameter('contao.web_dir') . '/sw_'.$page->alias.'.js',
-			$this->twig->render('@HeimrichHannotContaoPwa/serviceworker/serviceworker_default.js.twig', [
-				'supportPush' => true,
-				'pageTitle' => $manifest->name,
-				'version' => date('YmdHis'),
-				'alias' => $page->alias,
-			])
-		);
+		$this->manifestGenerator->generatePageManifest($page);
+		$this->serviceWorkerGenerator->generatePageServiceworker($page);
 	}
 
 	public function getPwaConfigurationsAsOptions()

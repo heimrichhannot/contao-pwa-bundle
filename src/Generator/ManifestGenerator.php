@@ -59,7 +59,7 @@ class ManifestGenerator
 	 */
 	public function generatePageManifest(PageModel $page)
 	{
-		if (!$page->addPwa|| !$page->pwaConfiguration)
+		if (!$page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration)
 		{
 			return false;
 		}

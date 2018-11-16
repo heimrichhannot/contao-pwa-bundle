@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 
 use Contao\PageModel;
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Bridge\Monolog\Logger;
@@ -55,7 +56,7 @@ class ServiceWorkerGenerator
 	 */
 	public function generatePageServiceworker(PageModel $page)
 	{
-		if (!$page->addPwa || !$page->pwaConfiguration)
+		if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration)
 		{
 			return false;
 		}
