@@ -34,23 +34,23 @@ let HuhContaoPwaButtons = {
     setSubscribe: function (event) {
         this.beforeEvent('Update Buttons to "Subscribe"');
         this.buttons.forEach((button) => {
-            button.removeAttribute('disabled');
+            button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', () => { this.changeSubscriptionStatus('subscribe'); });
+            button.addEventListener('click', () => { this.changeSubscriptionStatus('subscribe', button); });
         });
     },
     setUnsubscribe: function (event) {
         this.beforeEvent('Update Buttons to "Unsubscribe"');
         this.buttons.forEach((button) => {
-            button.removeAttribute('disabled');
+            button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', () => { this.changeSubscriptionStatus('unsubscribe'); });
+            button.addEventListener('click', () => { this.changeSubscriptionStatus('unsubscribe', button); });
         });
     },
     setBlocked: function(event) {
@@ -63,7 +63,8 @@ let HuhContaoPwaButtons = {
             button.disabled = true;
         });
     },
-    changeSubscriptionStatus: function(action) {
+    changeSubscriptionStatus: function(action, button) {
+        button.disabled = true;
         document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: action }));
     }
 };
