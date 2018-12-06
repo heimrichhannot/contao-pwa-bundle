@@ -51,11 +51,16 @@ huh_pwa:
     privateKey: "W0qtmwq0aB47Swmid0uDZyW945p9b5bgv_WmfsmsRHw"
 ```
 
+## Usage
+
+### Regenerate files
+You can regenerate all your manifest and service worker files at once from the Pwa Control (Contao Backend -> System -> PWA Configuration -> Control -> Files -> Rebuild files)
+
 ## Developers
 
 ### JS Event
 
-To support custom controlls, there are events and event listeners that can be used.
+To support custom controlls, there are events and event listeners that can be used. All events are dispatched and listen to on `document`. 
 
 #### Events
 
@@ -72,7 +77,7 @@ huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notificati
 
 Event type | Usage | Description
 ---------- | ----- | -----------
-huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: [subscribe\|unsubscribe]} )` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
+huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
 
 
 
