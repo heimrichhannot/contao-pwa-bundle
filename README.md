@@ -72,7 +72,7 @@ huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notificati
 
 Event type | Usage | Description
 ---------- | ----- | -----------
-huh_pwa_push_changeSubscriptionState | ``new CustomEvent('huh_pwa_push_changeSubscriptionState', {detail: [subscribe\|unsubscribe]})`` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
+huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: [subscribe\|unsubscribe]} )` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
 
 
 
