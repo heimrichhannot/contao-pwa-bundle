@@ -2,6 +2,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
     this.debug = false;
     this.subscribePath = subscribePath;
     this.unsubscribePath = unsubscribePath;
+    this.buttons = [];
 
     this.collectElementsToUpdate = () => {
         this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
@@ -30,7 +31,13 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
                         subscription: subscription,
                     }),
                 });
-            }).then(this.setUnsubscribe);
+            }).then(() => {
+                this.setUnsubscribe();
+            }).catch((reason) => {
+                document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', {detail: {
+                    reason: reason
+                }}));
+            });
         });
     };
     this.unsubscribe = () => {
@@ -54,12 +61,17 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
                     }),
                 });
             });
-        }).then(this.setSubscribe);
+        }).then(() => {
+            this.setSubscribe();
+        }).catch((reason) => {
+            document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {detail: {'reason': reason}}));
+        });
     };
     this.setSubscribe = () => {
         if (!this.checkPermission()) {
             return;
         }
+        document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
         if (this.debug) {
             console.log('[Push Notification Subscription] Update Button to "Subscribe"');
         }
@@ -76,6 +88,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         if (!this.checkPermission()) {
             return;
         }
+        document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
         if (this.debug) {
             console.log('[Push Notification Subscription] Update Button to "Unsubscribe"');
         }
@@ -90,6 +103,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
     };
     this.checkPermission = () => {
         if (Notification.permission === 'denied') {
+            document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             if (this.debug) {
                 console.log('[Push Notification Subscription] Permission denied');
             }

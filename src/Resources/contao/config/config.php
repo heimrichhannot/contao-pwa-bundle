@@ -39,6 +39,7 @@ if (TL_MODE == 'BE') {
 	$GLOBALS['TL_JAVASCRIPT']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
 	$GLOBALS['TL_CSS']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/css/huhPwaBackend.css';
 }
+$GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contaoPwaBundle.es6.js';
 
 /**
  * Cronjobs

@@ -111,7 +111,7 @@ let HuhPwaBackend = {
                     method: 'post',
                     onFailure: (xhr) => {
                         console.log('Error: ', xhr);
-                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr.statusText);
+                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr.responseText);
                     },
                     onCancel: () => {
                         HuhPwaBackend.addLogEntry('Update page files canceled');
