@@ -69,7 +69,7 @@ Event                              | Description
 huh_pwa_sw_not_supported           | Fired if browser not supports serviceworker or no service worker found.
 huh_pwa_push_not_supported         | Fired if browser not supports push notifications
 huh_pwa_push_permission_denied     | Fired if browser has push notifications blocked
-huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when unsubscribe)
+huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when subscribe)
 huh_pwa_push_isUnsubscribed        | Fired when unsubscribed from push notification (on page load or when unsubscribe)
 huh_pwa_push_subscription_failed   | Fired when subscription to push notifications failed. Error reason can be found in event.detail.reason.
 huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notifications failed. Error reason can be found in event.detail.reason.
