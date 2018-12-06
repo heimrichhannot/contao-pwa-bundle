@@ -1,5 +1,6 @@
 let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 
+{% block install %}
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE).then(function(cache) {
@@ -31,18 +32,26 @@ self.addEventListener('install', function(e) {
         })
     );
 });
+{% endblock %}
 
+{% block activate %}
 self.addEventListener('activate', function(event) {
     {% if debug|default(false) %} console.log('[Serviceworker] Activate event!');{% endif %}
     event.waitUntil(self.clients.claim());
 });
+{% endblock %}
 
+{% block fetch %}
 self.addEventListener('fetch', function(event) {
     {% if debug|default(false) %}console.log('[Serviceworker] Fetch: '.event.request.url);{% endif %}
     var url = new URL(event.request.url);
 
     // don't cache backend or dev routes
-    if (url.pathname.match('^\/contao') || url.pathname.match('^\/_contao') || url.pathname.match('^\/app_dev.php')) {
+    if (url.pathname.match('^\/contao')
+        || url.pathname.match('^\/_contao')
+        || url.pathname.match('^\/app_dev.php')
+        || url.pathname.match('^\/api')
+    ) {
         {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');{% endif %}
         return false;
     }
@@ -55,34 +64,42 @@ self.addEventListener('fetch', function(event) {
     }));
 });
 
-{% if supportPush|default(false) %}
-self.addEventListener('push', function(event) {
-    let payload = event.data ? event.data.text() : false;
-    if (false === payload)
-    {
-        {% if debug|default(false) %}console.log("[Serviceworker] Push: A push notification sent from {{ pageTitle }} without any content.");{% endif %}
-        return;
-    }
-    {% if debug|default(false) %}console.log("[Serviceworker] Push: Payload: ", payload);{% endif %}
-    payload = JSON.parse(payload);
+{% endblock %}
 
-    event.waitUntil(
-        self.registration.showNotification("{{ pageTitle }}", payload)
-    );
-});
+{% block push %}
+    {% if supportPush|default(false) %}
+    self.addEventListener('push', function(event) {
+        let payload = event.data ? event.data.text() : false;
+        if (false === payload)
+        {
+            {% if debug|default(false) %}console.log("[Serviceworker] Push: A push notification sent from {{ pageTitle }} without any content.");{% endif %}
+            return;
+        }
+        {% if debug|default(false) %}console.log("[Serviceworker] Push: Payload: ", payload);{% endif %}
+        payload = JSON.parse(payload);
 
-self.addEventListener('notificationclick', function(event) {
-    {% if debug|default(false) %}console.log("[Serviceworker] Notificationclick event ");{% endif %}
-    if (event.notification.data.clickJumpTo !== undefined)
-    {
-        event.notification.close();
         event.waitUntil(
-            clients.openWindow(event.notification.data.clickJumpTo)
+            self.registration.showNotification("{{ pageTitle }}", payload)
         );
-    }
-});
-{% endif %}
+    });
 
+
+        {% block noticiationclick %}
+        self.addEventListener('notificationclick', function(event) {
+            {% if debug|default(false) %}console.log("[Serviceworker] Notificationclick event ");{% endif %}
+            if (event.notification.data.clickJumpTo !== undefined)
+            {
+                event.notification.close();
+                event.waitUntil(
+                    clients.openWindow(event.notification.data.clickJumpTo)
+                );
+            }
+        });
+        {% endblock %}
+    {% endif %}
+{% endblock %}
+
+{% block fromNetwork %}
 function fromNetwork(request, timeout) {
     {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from network'); {% endif %}
     return new Promise(function (fulfill, reject) {
@@ -96,7 +113,9 @@ function fromNetwork(request, timeout) {
         }, reject);
     });
 }
+{% endblock %}
 
+{% block fromCache %}
 function fromCache(request) {
     {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from cache');{% endif %}
     return caches.open(CACHE).then(function (cache) {
@@ -106,8 +125,10 @@ function fromCache(request) {
         });
     });
 }
+{% endblock %}
 
-var FALLBACK =
+{% block fallback %}
+const FALLBACK =
     '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" stroke-linejoin="round">' +
     '  <path stroke="#DDD" stroke-width="25" d="M99,18 15,162H183z"/>' +
     '  <path stroke-width="17" fill="#FFF" d="M99,18 15,162H183z" stroke="#eee"/>' +
@@ -121,3 +142,4 @@ function useFallback() {
             'Content-Type': 'image/svg+xml'
         }}));
 }
+{% endblock %}

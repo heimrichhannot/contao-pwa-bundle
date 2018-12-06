@@ -37,16 +37,10 @@ else {
         else {
             document.dispatchEvent(new Event('huh_pwa_push_not_supported'))
             {% if debug|default(false) %}console.log('[Subscription] Browser don\'t support push. Hide subscription button.');{% endif %}
-
-
         }
     {% endif %}
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    pushSubscription.collectElementsToUpdate();
-    {% if supportPush|default(false) == false %}
-        pushSubscription.hide();
-    {% endif %}
+    pushSubscription.init();
 });
-

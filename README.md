@@ -55,9 +55,11 @@ huh_pwa:
 
 ### JS Event
 
-To support custom controlls, following events will be fired on document during pwa lifecycle:
+To support custom controlls, there are events and event listeners that can be used.
 
-type                               | Description
+#### Events
+
+Event                              | Description
 ---------------------------------- | --------------------
 huh_pwa_push_not_supported         | Fired if browser not supports push notifications
 huh_pwa_push_permission_denied     | Fired if browser has push notifications blocked
@@ -65,6 +67,12 @@ huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications
 huh_pwa_push_isUnsubscribed        | Fired when unsubscribed from push notification (on page load or when unsubscribe)
 huh_pwa_push_subscription_failed   | Fired when subscription to push notifications failed. Error reason can be found in event.detail.reason.
 huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notifications failed. Error reason can be found in event.detail.reason.
+
+#### Listener
+
+Event type | Usage | Description
+---------- | ----- | -----------
+huh_pwa_push_changeSubscriptionState | ``new CustomEvent('huh_pwa_push_changeSubscriptionState', {detail: [subscribe\|unsubscribe]})`` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
 
 
 

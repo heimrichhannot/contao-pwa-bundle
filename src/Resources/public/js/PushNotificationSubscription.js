@@ -1,12 +1,13 @@
-function PushNotificationSubscription(subscribePath, unsubscribePath) {
+function PushNotificationSubscription(subscribePath, unsubscribePath)
+{
     this.debug = false;
     this.subscribePath = subscribePath;
     this.unsubscribePath = unsubscribePath;
-    this.buttons = [];
 
-    this.collectElementsToUpdate = () => {
-        this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
+    this.init = function() {
+        document.addEventListener('huh_pwa_push_changeSubscriptionState', this.changeSubscriptionStatus.bind(this));
     };
+
     this.subscribe = () => {
         if (this.debug) {
             console.log('[Push Notification Subscription] Subscribe');
@@ -68,73 +69,39 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         });
     };
     this.setSubscribe = () => {
-        if (!this.checkPermission()) {
-            return;
-        }
+        if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
         if (this.debug) {
-            console.log('[Push Notification Subscription] Update Button to "Subscribe"');
+            console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
         }
-        this.buttons.forEach((button) => {
-            button.removeAttribute('disabled');
-            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
-            button.classList.add('unsubscribed');
-            button.classList.remove('subscribed');
-            button.classList.remove('blocked');
-            button.addEventListener('click', this.subscribe);
-        });
     };
     this.setUnsubscribe = () => {
-        if (!this.checkPermission()) {
-            return;
-        }
+        if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
         if (this.debug) {
-            console.log('[Push Notification Subscription] Update Button to "Unsubscribe"');
+            console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
         }
-        this.buttons.forEach((button) => {
-            button.removeAttribute('disabled');
-            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
-            button.classList.add('subscribed');
-            button.classList.remove('unsubscribed');
-            button.classList.remove('blocked');
-            button.addEventListener('click', this.unsubscribe);
-        });
     };
     this.checkPermission = () => {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             if (this.debug) {
-                console.log('[Push Notification Subscription] Permission denied');
+                console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
             }
-            this.buttons.forEach((button) => {
-                button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.blocked;
-                button.classList.add('blocked');
-                button.classList.remove('unsubscribed');
-                button.classList.remove('subscribed');
-                button.disabled = true;
-            });
             return false;
         }
         return true;
     };
-    this.hide = () => {
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Hide Subscription Elements');
+    this.changeSubscriptionStatus = function (event)
+    {
+        if (!this.checkPermission()) return;
+        if (event.detail === 'subscribe')
+        {
+            this.subscribe();
         }
-        this.buttons.forEach((button) => {
-            button.classList.add('hidden');
-            button.setAttribute('aria-hidden','true');
-        });
-    };
-    this.show = () => {
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Show Subscription Elements');
+        else if (event.detail === 'unsubscribe') {
+            this.unsubscribe();
         }
-        this.buttons.forEach((button) => {
-            button.removeAttribute('aria-hidden');
-            button.classList.remove('hidden');
-        });
     };
     this.urlBase64ToUint8Array = (base64String) => {
         var padding = '='.repeat((4 - base64String.length % 4) % 4);
