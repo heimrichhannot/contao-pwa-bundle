@@ -3,8 +3,10 @@ let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 {% block install %}
 self.addEventListener('install', function(e) {
     e.waitUntil(
+
         caches.open(CACHE).then(function(cache) {
             {% if debug|default(false) %}console.log('[Serviceworker] Install: Cache open');{% endif %}
+
             // Fetch webpack manifest file
             return fetch('/build/manifest.json').then(function(responce) {
                 return responce.json();
@@ -14,19 +16,25 @@ self.addEventListener('install', function(e) {
                 let files = Object.keys(json).map(function(key) {
                     return json[key];
                 });
+                files.push('{{ startUrl|default('/') }}');
                 // Cache webpack assets from generated file list
-                return cache.addAll(files).then(function () {
-                    // Remove old caches
-                    caches.keys().then(function(names) {
-                        return Promise.all(names.filter(function(name) {
-                            return name !== CACHE;
-                        }).map(function(name) {
-                            return caches.delete(name)
-                        }))
-                    })
-                });
+                console.log(files);
+                return cache.addAll(files)
+            }).catch(function(reason) {
+                console.log("[Serviceworker] Install: Error caching start url ({{ startUrl|default('/') }})", reason);
+            })
+            .finally(function () {
+                // Remove old caches
+                caches.keys().then(function(names) {
+                    return Promise.all(names.filter(function(name) {
+                        return name !== CACHE;
+                    }).map(function(name) {
+                        return caches.delete(name)
+                    }))
+                })
             });
-        }).then(function() {
+        })
+        .then(function() {
             {% if debug|default(false) %}console.log('[Serviceworker] Install: Skip waiting');{% endif %}
             return self.skipWaiting();
         })
@@ -43,7 +51,8 @@ self.addEventListener('activate', function(event) {
 
 {% block fetch %}
 self.addEventListener('fetch', function(event) {
-    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: '.event.request.url);{% endif %}
+    console.log('[Serviceworker] Fetch: ' + event.request.url);
+    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: ' + event.request.url);{% endif %}
     var url = new URL(event.request.url);
 
     // don't cache backend or dev routes
@@ -56,7 +65,7 @@ self.addEventListener('fetch', function(event) {
         return false;
     }
 
-    event.respondWith(fromNetwork(event.request, 600).catch(function () {
+    event.respondWith(fromNetwork(event.request, 2000).catch(function () {
         {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Catch error with cache');{% endif %}
         return fromCache(event.request).catch(function() {
             return useFallback();

@@ -5,7 +5,7 @@ pushSubscription = new PushNotificationSubscription('{{ subscribePath }}', '{{ u
 {% endif %}
 
 if (!('serviceWorker' in navigator)) {
-    pushSubscription.hide();
+    document.dispatchEvent(new Event('huh_pwa_sw_not_supported'));
 }
 else {
     {% if debug|default(false) %}console.log("[Registration] Register service worker");{% endif %}

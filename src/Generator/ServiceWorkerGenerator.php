@@ -82,11 +82,12 @@ class ServiceWorkerGenerator
 			return (bool)file_put_contents(
 				$this->webDir . '/sw_' . $page->alias . '.js',
 				$this->twig->render($this->serviceWorkerTemplate, [
-					'supportPush' => (bool) $config->supportPush,
+					'supportPush' => (bool)$config->supportPush,
 					'pageTitle'   => $title,
 					'version'     => date('YmdHis'),
 					'alias'       => $page->alias,
-					'debug'		  => (bool) $config->addDebugLog,
+					'debug'       => (bool)$config->addDebugLog,
+					'startUrl'    => $config->pwaStartUrl,
 				])
 			);
 		} catch (\Twig_Error_Loader $e)

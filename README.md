@@ -66,6 +66,7 @@ To support custom controlls, there are events and event listeners that can be us
 
 Event                              | Description
 ---------------------------------- | --------------------
+huh_pwa_sw_not_supported           | Fired if browser not supports serviceworker or no service worker found.
 huh_pwa_push_not_supported         | Fired if browser not supports push notifications
 huh_pwa_push_permission_denied     | Fired if browser has push notifications blocked
 huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when unsubscribe)
@@ -77,7 +78,7 @@ huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notificati
 
 Event type | Usage | Description
 ---------- | ----- | -----------
-huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a custom event with detail parameter set to subscribe or unsubscrive.
+huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscrive.
 
 
 
