@@ -81,7 +81,7 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 			'huh_encore',
 			$extensionName,
 			$extensionConfigs,
-			__DIR__.'/../Resources/config/config_encore.yml'
+			__DIR__.'/../Resources/config/encore_config.yml'
 		);
 	}
 }

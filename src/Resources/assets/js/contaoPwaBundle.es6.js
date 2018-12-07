@@ -1,4 +1,5 @@
 HuhContaoPwaButtons = require('./HuhContaoPwaButtons.es6');
+HuhPwaSubscription = require('./PushNotificationSubscription.es6');
 
 PwaButtons = new HuhContaoPwaButtons();
 
