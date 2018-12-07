@@ -74,8 +74,4 @@ HuhContaoPwaButtons.prototype.changeSubscriptionStatus = function(button) {
     document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: this.subscriptionAction }));
 };
 
-huhPwaButtons = new HuhContaoPwaButtons();
-
-document.addEventListener('DOMContentLoaded', function() {
-    huhPwaButtons.onReady();
-});
+module.exports = HuhContaoPwaButtons;

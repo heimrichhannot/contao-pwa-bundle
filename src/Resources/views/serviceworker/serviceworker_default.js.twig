@@ -18,10 +18,9 @@ self.addEventListener('install', function(e) {
                 });
                 files.push('{{ startUrl|default('/') }}');
                 // Cache webpack assets from generated file list
-                console.log(files);
                 return cache.addAll(files)
             }).catch(function(reason) {
-                console.log("[Serviceworker] Install: Error caching start url ({{ startUrl|default('/') }})", reason);
+                {% if debug|default(false) %}console.log("[Serviceworker] Install: Error caching start url ({{ startUrl|default('/') }})", reason);{% endif %}
             })
             .finally(function () {
                 // Remove old caches
@@ -51,7 +50,6 @@ self.addEventListener('activate', function(event) {
 
 {% block fetch %}
 self.addEventListener('fetch', function(event) {
-    console.log('[Serviceworker] Fetch: ' + event.request.url);
     {% if debug|default(false) %}console.log('[Serviceworker] Fetch: ' + event.request.url);{% endif %}
     var url = new URL(event.request.url);
 

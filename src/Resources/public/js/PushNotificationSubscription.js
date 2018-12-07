@@ -1,6 +1,6 @@
 function PushNotificationSubscription(subscribePath, unsubscribePath)
 {
-    this.debug = false;
+    this.debug = true;
     this.subscribePath = subscribePath;
     this.unsubscribePath = unsubscribePath;
 
@@ -9,9 +9,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
     };
 
     this.subscribe = () => {
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Subscribe');
-        }
+        if (this.debug) console.log('[Push Notification Subscription] Trying to Subscribe');
         navigator.serviceWorker.ready.then(async (registration) => {
             let responce = await fetch('./api/notifications/publickey');
             const publicKey = await responce.text();
@@ -20,9 +18,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
                 userVisibleOnly: true,
                 applicationServerKey: this.urlBase64ToUint8Array(publicKey),
             }).then((subscription) => {
-                if (this.debug) {
-                    console.log('[Push Notification Subscription] Subscribed');
-                }
+                if (this.debug) console.log('[Push Notification Subscription] Successful Subscribed', subscription.endpoint);
                 fetch(this.subscribePath, {
                     method: 'post',
                     headers: {
@@ -42,16 +38,12 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
         });
     };
     this.unsubscribe = () => {
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Unsubscribe');
-        }
+        if (this.debug) console.log('[Push Notification Subscription] Trying to unsubscribe');
         navigator.serviceWorker.ready.then((registration) => {
             return registration.pushManager.getSubscription();
         }).then((subscription) => {
             return subscription.unsubscribe().then(() => {
-                if (this.debug) {
-                    console.log('[Push Notification Subscription] Unsubscribed', subscription.endpoint);
-                }
+                if (this.debug) console.log('[Push Notification Subscription] Successful Unsubscribed', subscription.endpoint);
                 return fetch(this.unsubscribePath, {
                     method: 'post',
                     headers: {
@@ -71,29 +63,24 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
     this.setSubscribe = () => {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
-        }
+        if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
     };
     this.setUnsubscribe = () => {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
-        if (this.debug) {
-            console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
-        }
+        if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
     };
     this.checkPermission = () => {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
-            if (this.debug) {
-                console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
-            }
+            if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
             return false;
         }
         return true;
     };
     this.changeSubscriptionStatus = function (event)
     {
+        console.log("CHANGE Subscription state");
         if (!this.checkPermission()) return;
         if (event.detail === 'subscribe')
         {
