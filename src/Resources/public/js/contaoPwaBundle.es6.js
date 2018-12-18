@@ -33,29 +33,29 @@ let HuhContaoPwaButtons = {
     },
     setSubscribe: function (event) {
         this.beforeEvent('Update Buttons to "Subscribe"');
-        this.buttons.forEach((button) => {
+        this.buttons.forEach(function(button){
             button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', () => { this.changeSubscriptionStatus('subscribe', button); });
+            button.addEventListener('click', function(){ this.changeSubscriptionStatus('subscribe', button); });
         });
     },
     setUnsubscribe: function (event) {
         this.beforeEvent('Update Buttons to "Unsubscribe"');
-        this.buttons.forEach((button) => {
+        this.buttons.forEach(function(button) {
             button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', () => { this.changeSubscriptionStatus('unsubscribe', button); });
+            button.addEventListener('click', function(){ this.changeSubscriptionStatus('unsubscribe', button); });
         });
     },
     setBlocked: function(event) {
         this.beforeEvent('Update Buttons to blocked');
-        this.buttons.forEach((button) => {
+        this.buttons.forEach(function(button) {
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.blocked;
             button.classList.add('blocked');
             button.classList.remove('unsubscribed');

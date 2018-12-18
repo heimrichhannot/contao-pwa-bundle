@@ -1,46 +1,42 @@
-pushSubscription = new PushNotificationSubscription('{{ subscribePath }}', '{{ unsubscribePath }}');
+if (('serviceWorker' in navigator)) {
+    pushSubscription = new PushNotificationSubscription('{{ subscribePath }}', '{{ unsubscribePath }}');
 
-{% if debug|default(false) %}
+    {% if debug|default(false) %}
     pushSubscription.debug = true;
-{% endif %}
+    {% endif %}
 
-if (!('serviceWorker' in navigator)) {
-    document.dispatchEvent(new Event('huh_pwa_sw_not_supported'));
-}
-else {
     {% if debug|default(false) %}console.log("[Registration] Register service worker");{% endif %}
     navigator.serviceWorker.register('{{ serviceWorkerPath }}', {
         scope: '/'
     });
 
     {% if supportPush|default(false) %}
-        if (('PushManager' in window)) {
-            {% if debug|default(false) %}console.log("[Subscription] Push supported");{% endif %}
+    if (('PushManager' in window)) {
+        {% if debug|default(false) %}console.log("[Subscription] Push supported");{% endif %}
 
-            navigator.serviceWorker.ready
-            .then(function(registration) {
+        navigator.serviceWorker.ready
+            .then(function (registration) {
                 {% if debug|default(false) %}console.log("[Subscription] Service worker registered");{% endif %}
                 return registration.pushManager.getSubscription();
-            }).then(function(subscription) {
-                if (subscription)
-                {
-                    {% if debug|default(false) %}console.log('[Subscription] Already subscribed');{% endif %}
-                    pushSubscription.setUnsubscribe();
-                }
-                else
-                {
-                    {% if debug|default(false) %}console.log('[Subscription] Not subscribed');{% endif %}
-                    pushSubscription.setSubscribe();
-                }
-            });
-        }
-        else {
-            document.dispatchEvent(new Event('huh_pwa_push_not_supported'))
-            {% if debug|default(false) %}console.log('[Subscription] Browser don\'t support push. Hide subscription button.');{% endif %}
-        }
+            }).then(function (subscription) {
+            if (subscription) {
+                {% if debug|default(false) %}console.log('[Subscription] Already subscribed');{% endif %}
+                pushSubscription.setUnsubscribe();
+            } else {
+                {% if debug|default(false) %}console.log('[Subscription] Not subscribed');{% endif %}
+                pushSubscription.setSubscribe();
+            }
+        });
+    } else {
+        document.dispatchEvent(new Event('huh_pwa_push_not_supported'))
+        {% if debug|default(false) %}console.log('[Subscription] Browser don\'t support push. Hide subscription button.');{% endif %}
+    }
     {% endif %}
+
+    document.addEventListener('DOMContentLoaded', function () {
+        pushSubscription.init();
+    });
+} else {
+    document.dispatchEvent(new Event('huh_pwa_sw_not_supported'));
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    pushSubscription.init();
-});

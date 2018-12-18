@@ -8,7 +8,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
         document.addEventListener('huh_pwa_push_changeSubscriptionState', this.changeSubscriptionStatus.bind(this));
     };
 
-    this.subscribe = () => {
+    this.subscribe = function(){
         if (this.debug) {
             console.log('[Push Notification Subscription] Subscribe');
         }
@@ -41,7 +41,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
             });
         });
     };
-    this.unsubscribe = () => {
+    this.unsubscribe = function() {
         if (this.debug) {
             console.log('[Push Notification Subscription] Unsubscribe');
         }
@@ -68,21 +68,21 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
             document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {detail: {'reason': reason}}));
         });
     };
-    this.setSubscribe = () => {
+    this.setSubscribe = function() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
         if (this.debug) {
             console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
         }
     };
-    this.setUnsubscribe = () => {
+    this.setUnsubscribe = function() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
         if (this.debug) {
             console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
         }
     };
-    this.checkPermission = () => {
+    this.checkPermission = function() {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             if (this.debug) {
