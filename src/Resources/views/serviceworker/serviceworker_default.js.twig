@@ -63,7 +63,7 @@ self.addEventListener('fetch', function(event) {
         return false;
     }
 
-    event.respondWith(fromNetwork(event.request, 2000).catch(function () {
+    event.respondWith(fromNetwork(event.request, 5000).catch(function () {
         {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Catch error with cache');{% endif %}
         return fromCache(event.request).catch(function() {
             return useFallback();

@@ -103,3 +103,5 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
         return outputArray;
     };
 }
+
+module.exports = PushNotificationSubscription;

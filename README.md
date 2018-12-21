@@ -81,6 +81,9 @@ Event type | Usage | Description
 huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscrive.
 
 
+## Internal
+
+Compile js: `npm run-script build`
 
 ## Todo
 * image size config

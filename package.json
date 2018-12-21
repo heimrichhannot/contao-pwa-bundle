@@ -6,30 +6,17 @@
   "author": "Heimrich & Hannot GmbH <digitales@heimrich-hannot.de>",
   "license": "LGPL-3.0-or-later",
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.2.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
-    "@babel/preset-env": "^7.2.0"
+    "@babel/cli": "^7.2",
+    "@babel/core": "^7.2",
+    "@babel/preset-env": "^7.2",
+    "babel-minify": "^0.5",
+    "babel-plugin-transform-remove-import": "^1.0.0"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "browsers": "> 1%, last 2 versions, ie 10"
-          },
-          "debug": true,
-          "modules": "commonjs",
-          "useBuiltIns": "entry"
-        }
-      ]
-    ]
+  "scripts": {
+    "build": "babel src/Resources/assets/js --out-dir src/Resources/public/js"
   },
   "browserslist": [
-    "> 1%",
     "last 2 versions",
-    "ie 8"
-  ],
-  "dependencies": {}
+    "not dead"
+  ]
 }

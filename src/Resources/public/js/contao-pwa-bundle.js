@@ -1,0 +1,1 @@
+"use strict";window.huhContaoPwaBundle={PushNotificationSubscription:PushNotificationSubscription},PwaButtons=new HuhContaoPwaButtons,document.addEventListener("DOMContentLoaded",function(){PwaButtons.onReady()});

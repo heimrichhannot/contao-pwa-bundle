@@ -39,7 +39,9 @@ if (TL_MODE == 'BE') {
 	$GLOBALS['TL_JAVASCRIPT']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/js/huhPwaBackend.js';
 	$GLOBALS['TL_CSS']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/css/huhPwaBackend.css';
 }
-$GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contaoPwaBundle.es6.js';
+$GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/push-notification-subscription.js';
+$GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/huh-contao-pwa-buttons.js';
+$GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js';
 
 /**
  * Cronjobs
