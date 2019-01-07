@@ -86,6 +86,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
                 continue;
             }
             $io->text("Generated service worker file");
+
             if (!$this->getContainer()->get('huh.pwa.generator.configurationfile')->generateConfigurationFile($page))
             {
                 $io->error("Error on generating configuration file for page. Continue with next page...");

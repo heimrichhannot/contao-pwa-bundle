@@ -36,7 +36,7 @@ class NotificationController extends Controller
 	 * @param int $config
 	 * @return Response
 	 */
-	public function subscribeAction(Request $request, int $config)
+	public function subscribeAction(Request $request, $config)
 	{
 		$this->container->get('contao.framework')->initialize();
 
@@ -76,7 +76,7 @@ class NotificationController extends Controller
 	 * @param int $config
 	 * @return Response
 	 */
-	public function unsubscribeAction(Request $request, int $config)
+	public function unsubscribeAction(Request $request, $config)
 	{
 		$this->container->get('contao.framework')->initialize();
 

@@ -16,6 +16,7 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
@@ -40,18 +41,23 @@ class HookListener
 	 * @var RouterInterface
 	 */
 	private $router;
+    /**
+     * @var ConfigurationFileGenerator
+     */
+    private $configurationGenerator;
 
 
-	/**
+    /**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
 		$this->router = $router;
-	}
+        $this->configurationGenerator = $configurationGenerator;
+    }
 
 	/**
 	 * @param PageModel $page
@@ -82,16 +88,9 @@ class HookListener
 				"<script type='text/javascript'>"
 				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
 				."</script>";
-			$GLOBALS['TL_HEAD'][] =
-				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/config.js.twig', [
-                    'serviceWorkerPath' => $serviceWorker,
-                    'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-                    'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-                    'debug' => (bool) $config->addDebugLog,
-                    'supportPush' => (bool) $config->supportPush,
-                ])
-				."</script>";
+			$GLOBALS['TL_HEAD'][] = "<script type='text/javascript'>"
+                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($page, $config))
+                ."</script>";
 			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
 		}
 	}

@@ -11,7 +11,7 @@ class PushSubscriptionButtons {
         document.addEventListener('huh_pwa_push_permission_denied', this.setBlocked.bind(this));
     }
 
-    onReady () {
+    onLoaded () {
         if (!this.isInit)
         {
             this.init();

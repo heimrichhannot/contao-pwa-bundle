@@ -36,6 +36,9 @@ class ConfigurationFileGenerator
 
     /**
      * ConfigurationFileGenerator constructor.
+     * @param RouterInterface $router
+     * @param string $webDir
+     * @param array $bundleConfiguration
      */
     public function __construct(RouterInterface $router, string $webDir, array $bundleConfiguration)
     {
@@ -44,9 +47,14 @@ class ConfigurationFileGenerator
         $this->webDir = $webDir;
     }
 
+    /**
+     * Generate a json file containing config parameters for js part of the web app into the config folder.
+     *
+     * @param PageModel $page
+     * @return bool
+     */
     public function generateConfigurationFile(PageModel $page)
     {
-        $configuration = [];
         if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration)
         {
             return false;
@@ -56,15 +64,7 @@ class ConfigurationFileGenerator
             return false;
         }
 
-        $configuration['debug'] = (bool) $config->addDebugLog;
-        $configuration['serviceworker']['path'] = 'sw_'.$page->alias.'.js';
-        $configuration['pushNotifications'] = [
-            'support' => (bool) $config->supportPush,
-            'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-            'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-        ];
-
-        $configurationJson = json_encode($configuration);
+        $configurationJson = json_encode($this->generateConfiguration($page, $config));
         $relativePath = $this->bundleConfiguration['configfile_path'];
         if (substr($relativePath, 0,1) != '/')
         {
@@ -76,6 +76,26 @@ class ConfigurationFileGenerator
         $filesystem = new Filesystem();
         $filesystem->dumpFile($path.'/'.$filename, $configurationJson);
         return true;
+    }
+
+    /**
+     * Returns the configuration
+     *
+     * @param PageModel $page
+     * @param PwaConfigurationsModel $config
+     * @return array
+     */
+    public function generateConfiguration(PageModel $page, PwaConfigurationsModel $config)
+    {
+        $configuration = [];
+        $configuration['debug'] = (bool) $config->addDebugLog;
+        $configuration['serviceWorker']['path'] = 'sw_'.$page->alias.'.js';
+        $configuration['pushNotifications'] = [
+            'support' => (bool) $config->supportPush,
+            'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
+            'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
+        ];
+        return $configuration;
     }
 
     public function generateFileName (PageModel $page)
