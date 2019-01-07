@@ -88,6 +88,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	'palettes' => [
 		'__selector__' => ['pwaName','sendWithCron'],
 		'default' => '{general_legend},title,supportPush,sendWithCron,addDebugLog;'
+                    .'{serviceworker_legend},serviceWorkerTemplate;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
 	'subpalettes' => [
@@ -144,6 +145,16 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'sql'       => "varchar(10) NOT NULL default ''",
 		],
+        'serviceWorkerTemplate' => [
+            'label'     => &$GLOBALS['TL_LANG'][$table]['serviceWorkerTemplate'],
+            'inputType' => 'select',
+            'options_callback'   => ['huh.pwa.datacontainer.pwaconfigurations','getServiceWorkerTemplates'],
+            'eval'      => [
+                'tl_class'  => 'w50',
+                'includeBlankOption' => false
+            ],
+            'sql'       => "varchar(128) NOT NULL default ''",
+        ],
 		'pwaName' => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaName'],
 			'inputType' => 'select',

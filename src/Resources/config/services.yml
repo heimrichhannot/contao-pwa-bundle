@@ -45,7 +45,7 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator
     public: true
     arguments:
-      ['%contao.web_dir%', '@twig', '@logger']
+      ['%contao.web_dir%', '@twig', '@logger', '@huh.utils.template']
   HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
 
   huh.pwa.generator.configurationfile:

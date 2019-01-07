@@ -15,6 +15,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use Symfony\Component\EventDispatcher\Tests\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -89,7 +90,7 @@ class ConfigurationFileGenerator
     {
         $configuration = [];
         $configuration['debug'] = (bool) $config->addDebugLog;
-        $configuration['serviceWorker']['path'] = 'sw_'.$page->alias.'.js';
+        $configuration['serviceWorker']['path'] = ServiceWorkerGenerator::generateFileName($page);
         $configuration['pushNotifications'] = [
             'support' => (bool) $config->supportPush,
             'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),

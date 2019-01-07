@@ -13,9 +13,6 @@
     "babel-minify": "^0.5",
     "babel-plugin-transform-remove-import": "^1.0.0"
   },
-  "scripts": {
-    "build": "babel src/Resources/assets/js --out-dir src/Resources/public/js"
-  },
   "browserslist": [
     "last 2 versions",
     "not dead"

@@ -82,8 +82,6 @@ class HookListener
 			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
-
 			$GLOBALS['TL_HEAD'][] =
 				"<script type='text/javascript'>"
 				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')

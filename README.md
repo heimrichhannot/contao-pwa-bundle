@@ -92,10 +92,6 @@ huh_pwa:
   configfile_path: '/pwa' # where the configuration files should be located within web folder
 ```
 
-## Internal
-
-Compile js: `npm run-script build`
-
 ## Todo
 * image size config
 * support svg icons
