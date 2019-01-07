@@ -20,6 +20,7 @@ use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -45,18 +46,23 @@ class HookListener
      * @var ConfigurationFileGenerator
      */
     private $configurationGenerator;
+    /**
+     * @var ContainerUtil
+     */
+    private $containerUtil;
 
 
     /**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator)
+	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator, ContainerUtil $containerUtil)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
 		$this->router = $router;
         $this->configurationGenerator = $configurationGenerator;
+        $this->containerUtil = $containerUtil;
     }
 
 	/**
@@ -69,6 +75,10 @@ class HookListener
 	 */
 	public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
 	{
+	    if ($this->containerUtil->isBackend())
+        {
+            return;
+        }
 		$rootPage = PageModel::findByPk($page->rootId);
 
 		if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration)
@@ -87,7 +97,7 @@ class HookListener
 				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
 				."</script>";
 			$GLOBALS['TL_HEAD'][] = "<script type='text/javascript'>"
-                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($page, $config))
+                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config))
                 ."</script>";
 			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
 		}

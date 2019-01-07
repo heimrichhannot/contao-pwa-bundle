@@ -81,8 +81,11 @@ class ServiceWorkerGenerator
 				$title = $page->title;
 		}
 
-		if (!$template = $config->serviceWorkerTemplate)
+		if ($config->serviceWorkerTemplate)
         {
+            $template = $this->templateUtil->getTemplate($config->serviceWorkerTemplate, 'js.twig');
+        }
+		else {
             $template = static::DEFAULT_SERVICEWORKER_TEMPLATE;
         }
 

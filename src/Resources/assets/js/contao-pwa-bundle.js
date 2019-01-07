@@ -5,20 +5,12 @@ import PushNotificationSubscription from './PushNotificationSubscription';
 let PwaButtons = new PushSubscriptionButtons();
 let PushSubscription = new PushNotificationSubscription();
 let debug = false;
-let supportSW = false;
 
 if (!('serviceWorker' in navigator)) {
     if (debug) console.log('[SW Registration] Service Worker not supported');
     document.dispatchEvent(new Event('huh_pwa_sw_not_supported'));
 }
 else {
-    supportSW = true;
-}
-
-function pushSupport(supportSW)
-{
-    if (!supportSW) return;
-
     if (debug) console.log("[SW Registration] Register service worker");
     navigator.serviceWorker.register(HuhContaoPwaBundle.serviceWorker.path, {
         scope: '/'
@@ -53,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
     debug = HuhContaoPwaBundle.debug;
     PushSubscription.subscribePath = HuhContaoPwaBundle.pushNotifications.subscribePath;
     PushSubscription.unsubscribePath = HuhContaoPwaBundle.pushNotifications.unsubscribePath;
-    pushSupport(supportSW);
     PushSubscription.onLoaded();
     PwaButtons.onLoaded();
 });
