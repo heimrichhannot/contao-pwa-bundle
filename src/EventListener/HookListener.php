@@ -92,14 +92,27 @@ class HookListener
 			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$GLOBALS['TL_HEAD'][] =
-				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
-				."</script>";
-			$GLOBALS['TL_HEAD'][] = "<script type='text/javascript'>"
+			$pwaHead = [];
+			$pwaHead[] =
+                "<script type='text/javascript'>"
+                .$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
+                ."</script>";
+			$pwaHead[] = "<script type='text/javascript'>"
                 ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config))
                 ."</script>";
-			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
+
+
+
+			$pageRegular->Template->pwaHead = implode('', $pwaHead);
+
+//			$GLOBALS['TL_HEAD'][] =
+//				"<script type='text/javascript'>"
+//				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
+//				."</script>";
+//			$GLOBALS['TL_HEAD'][] = "<script type='text/javascript'>"
+//                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config))
+//                ."</script>";
+//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
 		}
 	}
 }

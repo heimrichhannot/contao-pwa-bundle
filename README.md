@@ -24,6 +24,7 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
     * curl
     * openssl
 * Contao >=4.4 
+* [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
 ### Install
 
@@ -31,11 +32,15 @@ Call `composer require heimrichhannot/contao-pwa-bundle` and update database aft
 
 ### First Steps
 
-1. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
-2. Create an PWA Configuration(Backend -> System -> PWA Configuration)
-3. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
+1. Output `$this->pwaHead` in your page template (typically `fe_page.html5`). This must be done **before** javascript output, means for example:
+    * `TL_JAVASCRIPT` (typically `$this->head`)
+    * `$this->encoreScripts` and `$this->encoreHeadScripts` if your use [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle)
+2. Output meta data (`$this->meta`) in your page template (see [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle))
+3. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
+4. Create an PWA Configuration(Backend -> System -> PWA Configuration)
+5. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
     * On saving the page the page manifest and the serviceworker will be generated
-4. To provide an option to register to your push notifications, you need to add the Push Notification Subscribe Button content element on your page
+6. To provide an option to register to your push notifications, you need to add the Push Notification Subscribe Button content element on your page
  
 ### Push Notifications
 
@@ -55,6 +60,8 @@ huh_pwa:
 
 ### Regenerate files
 You can regenerate all your manifest and service worker files at once from the Pwa Control (Contao Backend -> System -> PWA Configuration -> Control -> Files -> Rebuild files)
+
+There is also an command available: `huh:pwa:build`
 
 ## Developers
 
@@ -80,7 +87,7 @@ Event type | Usage | Description
 ---------- | ----- | -----------
 huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscrive.
 
-#### Complete configuration
+### Complete configuration
 
 ```yaml
 huh_pwa:
@@ -91,6 +98,14 @@ huh_pwa:
   manifest_path: '/pwa' # where the manifest files should be located within web folder
   configfile_path: '/pwa' # where the configuration files should be located within web folder
 ```
+
+### Commands
+ 
+Command          | Description
+---------------- | -----------
+huh:pwa:build    | (Re)Build config specific files like service worker and manifest
+huh:pwa:sendpush | Send unsent push notifications
+
 
 ## Todo
 * image size config

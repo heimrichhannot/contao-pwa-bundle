@@ -40,7 +40,7 @@ if (TL_MODE == 'BE') {
 	$GLOBALS['TL_CSS']['huh.pwa.backend'] = 'bundles/heimrichhannotcontaopwa/css/contao-pwa-backend.css';
 }
 else {
-//    $GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js';
+    $GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js';
 }
 
 
