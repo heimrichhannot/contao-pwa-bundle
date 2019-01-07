@@ -1,26 +1,30 @@
 let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
+let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
+let pageTitle = '{{ pageTitle }}';
+let startUrl = '{{ startUrl|default('/') }}';
+
 
 {% block install %}
 self.addEventListener('install', function(e) {
     e.waitUntil(
 
         caches.open(CACHE).then(function(cache) {
-            {% if debug|default(false) %}console.log('[Serviceworker] Install: Cache open');{% endif %}
+            if (debug) console.log('[Serviceworker] Install: Cache open');
 
             // Fetch webpack manifest file
             return fetch('/build/manifest.json').then(function(responce) {
                 return responce.json();
             }).then(function(json) {
-                {% if debug|default(false) %}console.log('[Serviceworker] Install: Fetched manifest');{% endif %}
+                if (debug) console.log('\'[Serviceworker] Install: Fetched manifest\'');
                 // Create an array with only file paths
                 let files = Object.keys(json).map(function(key) {
                     return json[key];
                 });
-                files.push('{{ startUrl|default('/') }}');
+                files.push(startUrl);
                 // Cache webpack assets from generated file list
                 return cache.addAll(files)
             }).catch(function(reason) {
-                {% if debug|default(false) %}console.log("[Serviceworker] Install: Error caching start url ({{ startUrl|default('/') }})", reason);{% endif %}
+                if (debug) console.log("[Serviceworker] Install: Error caching start url (" + startUrl + ")", reason);
             })
             .finally(function () {
                 // Remove old caches
@@ -34,7 +38,7 @@ self.addEventListener('install', function(e) {
             });
         })
         .then(function() {
-            {% if debug|default(false) %}console.log('[Serviceworker] Install: Skip waiting');{% endif %}
+            if (debug) console.log('[Serviceworker] Install: Skip waiting');
             return self.skipWaiting();
         })
     );
@@ -43,14 +47,14 @@ self.addEventListener('install', function(e) {
 
 {% block activate %}
 self.addEventListener('activate', function(event) {
-    {% if debug|default(false) %} console.log('[Serviceworker] Activate event!');{% endif %}
+    if (debug) console.log('[Serviceworker] Activate event!');
     event.waitUntil(self.clients.claim());
 });
 {% endblock %}
 
 {% block fetch %}
 self.addEventListener('fetch', function(event) {
-    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: ' + event.request.url);{% endif %}
+    if (debug) console.log('[Serviceworker] Fetch: ' + event.request.url);
     var url = new URL(event.request.url);
 
     // don't cache backend or dev routes
@@ -59,17 +63,41 @@ self.addEventListener('fetch', function(event) {
         || url.pathname.match('^\/app_dev.php')
         || url.pathname.match('^\/api')
     ) {
-        {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');{% endif %}
+        if (debug) console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');
         return false;
     }
 
     event.respondWith(fromNetwork(event.request, 5000).catch(function () {
-        {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Catch error with cache');{% endif %}
+        if (debug) console.log('[Serviceworker] Fetch: Catch error with cache');
         return fromCache(event.request).catch(function() {
             return useFallback();
         });
     }));
 });
+
+function fromNetwork(request, timeout) {
+    if (debug) console.log('[Serviceworker] Fetch: Try fetch from network');
+    return new Promise(function (fulfill, reject) {
+        var timeoutId = setTimeout(reject, timeout);
+        fetch(request).then(function (response) {
+            clearTimeout(timeoutId);
+            caches.open(CACHE).then(function(cache){
+                cache.put(request, response.clone());
+                fulfill(response);
+            });
+        }, reject);
+    });
+}
+
+function fromCache(request) {
+    if (debug) console.log('[Serviceworker] Fetch: Try fetch from cache');
+    return caches.open(CACHE).then(function (cache) {
+        return cache.match(request).then(function (matching) {
+            {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Return result from cache');{% endif %}
+            return matching || Promise.reject('no-match');
+        });
+    });
+}
 
 {% endblock %}
 
@@ -79,10 +107,10 @@ self.addEventListener('fetch', function(event) {
         let payload = event.data ? event.data.text() : false;
         if (false === payload)
         {
-            {% if debug|default(false) %}console.log("[Serviceworker] Push: A push notification sent from {{ pageTitle }} without any content.");{% endif %}
+            if (debug) console.log('[Serviceworker] Push: A push notification sent from ' + pageTitle + ' without any content.');
             return;
         }
-        {% if debug|default(false) %}console.log("[Serviceworker] Push: Payload: ", payload);{% endif %}
+        if (debug) console.log("[Serviceworker] Push: Payload: ", payload);
         payload = JSON.parse(payload);
 
         event.waitUntil(
@@ -93,7 +121,7 @@ self.addEventListener('fetch', function(event) {
 
         {% block noticiationclick %}
         self.addEventListener('notificationclick', function(event) {
-            {% if debug|default(false) %}console.log("[Serviceworker] Notificationclick event ");{% endif %}
+            if (debug) console.log("[Serviceworker] Notificationclick event ");
             if (event.notification.data.clickJumpTo !== undefined)
             {
                 event.notification.close();
@@ -106,34 +134,6 @@ self.addEventListener('fetch', function(event) {
     {% endif %}
 {% endblock %}
 
-{% block fromNetwork %}
-function fromNetwork(request, timeout) {
-    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from network'); {% endif %}
-    return new Promise(function (fulfill, reject) {
-        var timeoutId = setTimeout(reject, timeout);
-        fetch(request).then(function (response) {
-            clearTimeout(timeoutId);
-            caches.open(CACHE).then(function(cache){
-                cache.put(request, response.clone());
-                fulfill(response);
-            });
-        }, reject);
-    });
-}
-{% endblock %}
-
-{% block fromCache %}
-function fromCache(request) {
-    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Try fetch from cache');{% endif %}
-    return caches.open(CACHE).then(function (cache) {
-        return cache.match(request).then(function (matching) {
-            {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Return result from cache');{% endif %}
-            return matching || Promise.reject('no-match');
-        });
-    });
-}
-{% endblock %}
-
 {% block fallback %}
 const FALLBACK =
     '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" stroke-linejoin="round">' +
@@ -144,7 +144,7 @@ const FALLBACK =
     '</svg>';
 
 function useFallback() {
-    {% if debug|default(false) %}console.log('[Serviceworker] Fetch: Use Fallback');{% endif %}
+    if (debug) console.log('[Serviceworker] Fetch: Use Fallback');
     return Promise.resolve(new Response(FALLBACK, { headers: {
             'Content-Type': 'image/svg+xml'
         }}));

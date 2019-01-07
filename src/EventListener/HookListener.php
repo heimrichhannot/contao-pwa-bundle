@@ -73,7 +73,7 @@ class HookListener
 				return;
 			}
 
-			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
+			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
 			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
@@ -82,19 +82,17 @@ class HookListener
 				"<script type='text/javascript'>"
 				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
 				."</script>";
-//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
-//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contaoPwaBundle.es6.js"></script>';
 			$GLOBALS['TL_HEAD'][] =
 				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
-					'alias' => $rootPage->alias,
-					'serviceWorkerPath' => $serviceWorker,
-					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-					'debug' => (bool) $config->addDebugLog,
-					'supportPush' => (bool) $config->supportPush,
-				])
+				.$this->twig->render('@HeimrichHannotContaoPwa/config.js.twig', [
+                    'serviceWorkerPath' => $serviceWorker,
+                    'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
+                    'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
+                    'debug' => (bool) $config->addDebugLog,
+                    'supportPush' => (bool) $config->supportPush,
+                ])
 				."</script>";
+			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
 		}
 	}
 }

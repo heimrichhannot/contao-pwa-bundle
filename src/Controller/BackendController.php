@@ -12,8 +12,8 @@
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
-use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
@@ -133,8 +133,7 @@ class BackendController extends Controller
 	 */
 	public function findPagesWithPwaAction()
 	{
-		/** @var PageModel[]|null $pages */
-		$pages = PageModel::findByAddPwa(PageContainer::ADD_PWA_YES);
+	    $pages = PageModel::findAllWithActivePwaConfiguration();
 		if (!$pages)
 		{
 			return new JsonResponse([]);

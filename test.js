@@ -141,7 +141,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
                     })
                   });
                 }).then(function () {
-                  _this.setUnsubscribe();
+                  _this.setIsSubscribed();
                 }).catch(function (reason) {
                   document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', {
                     detail: {
@@ -182,7 +182,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
         });
       });
     }).then(function () {
-      _this.setSubscribe();
+      _this.setIsUnsubscribed();
     }).catch(function (reason) {
       document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {
         detail: {
@@ -192,13 +192,13 @@ function PushNotificationSubscription(subscribePath, unsubscribePath) {
     });
   };
 
-  this.setSubscribe = function () {
+  this.setIsUnsubscribed = function () {
     if (!_this.checkPermission()) return;
     document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
     if (_this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
   };
 
-  this.setUnsubscribe = function () {
+  this.setIsSubscribed = function () {
     if (!_this.checkPermission()) return;
     document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
     if (_this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');

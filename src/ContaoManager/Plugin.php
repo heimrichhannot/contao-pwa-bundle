@@ -29,7 +29,7 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
 
-class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPluginInterface
 {
 
 	/**
@@ -75,13 +75,13 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 	 *
 	 * @return array<string,mixed>
 	 */
-	public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
-	{
-		return ContainerUtil::mergeConfigFile(
-			'huh_encore',
-			$extensionName,
-			$extensionConfigs,
-			__DIR__.'/../Resources/config/encore_config.yml'
-		);
-	}
+//	public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+//	{
+//		return ContainerUtil::mergeConfigFile(
+//			'huh_encore',
+//			$extensionName,
+//			$extensionConfigs,
+//			__DIR__.'/../Resources/config/encore_config.yml'
+//		);
+//	}
 }

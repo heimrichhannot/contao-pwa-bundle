@@ -1,4 +1,4 @@
-class HuhContaoPwaButtons {
+class PushSubscriptionButtons {
 
     constructor() {
         this.buttons = [];
@@ -80,4 +80,5 @@ class HuhContaoPwaButtons {
         document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: this.subscriptionAction }));
     }
 }
-exports = HuhContaoPwaButtons;
+
+module.exports = PushSubscriptionButtons;

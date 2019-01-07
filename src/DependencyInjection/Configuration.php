@@ -38,6 +38,8 @@ class Configuration implements ConfigurationInterface
 					->scalarNode('privateKey')->defaultNull()->end()
 				->end()
 			->end()
+            ->scalarNode('manifest_path')->defaultValue('/pwa')->end()
+            ->scalarNode('configfile_path')->defaultValue('/pwa')->end()
 		->end();
 
 		return $treeBuilder;

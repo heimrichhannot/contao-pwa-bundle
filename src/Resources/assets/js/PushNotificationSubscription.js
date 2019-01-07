@@ -1,14 +1,19 @@
-function PushNotificationSubscription(subscribePath, unsubscribePath)
-{
-    this.debug = true;
-    this.subscribePath = subscribePath;
-    this.unsubscribePath = unsubscribePath;
+class PushNotificationSubscription {
+    constructor(subscribePath = '', unsubscribePath = '') {
+        this.isInit = false;
+        this.debug = false;
+        this.subscribePath = subscribePath;
+        this.unsubscribePath = unsubscribePath;
+    }
 
-    this.init = function() {
-        document.addEventListener('huh_pwa_push_changeSubscriptionState', this.changeSubscriptionStatus.bind(this));
-    };
+    onLoaded() {
+        if (!this.isInit) {
+            document.addEventListener('huh_pwa_push_changeSubscriptionState', this.changeSubscriptionStatus.bind(this));
+            this.isInit = true;
+        }
+    }
 
-    this.subscribe = () => {
+    subscribe() {
         if (this.debug) console.log('[Push Notification Subscription] Trying to Subscribe');
         navigator.serviceWorker.ready.then(async (registration) => {
             let responce = await fetch('./api/notifications/publickey');
@@ -16,7 +21,7 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
 
             return registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: this.urlBase64ToUint8Array(publicKey),
+                applicationServerKey: PushNotificationSubscription.urlBase64ToUint8Array(publicKey),
             }).then((subscription) => {
                 if (this.debug) console.log('[Push Notification Subscription] Successful Subscribed', subscription.endpoint);
                 fetch(this.subscribePath, {
@@ -29,15 +34,16 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
                     }),
                 });
             }).then(() => {
-                this.setUnsubscribe();
+                this.setIsSubscribed();
             }).catch((reason) => {
                 document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', {detail: {
-                    reason: reason
-                }}));
+                        reason: reason
+                    }}));
             });
         });
     };
-    this.unsubscribe = () => {
+
+    unsubscribe() {
         if (this.debug) console.log('[Push Notification Subscription] Trying to unsubscribe');
         navigator.serviceWorker.ready.then((registration) => {
             return registration.pushManager.getSubscription();
@@ -55,22 +61,22 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
                 });
             });
         }).then(() => {
-            this.setSubscribe();
+            this.setIsUnsubscribed();
         }).catch((reason) => {
             document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {detail: {'reason': reason}}));
         });
     };
-    this.setSubscribe = () => {
+    setIsUnsubscribed() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
         if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
     };
-    this.setUnsubscribe = () => {
+    setIsSubscribed() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
         if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
     };
-    this.checkPermission = () => {
+    checkPermission() {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
@@ -78,9 +84,10 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
         }
         return true;
     };
-    this.changeSubscriptionStatus = function (event)
+
+    changeSubscriptionStatus (event)
     {
-        console.log("CHANGE Subscription state");
+        if (this.debug) console.log("[Push Notification Subscription] CHANGE Subscription state");
         if (!this.checkPermission()) return;
         if (event.detail === 'subscribe')
         {
@@ -90,12 +97,13 @@ function PushNotificationSubscription(subscribePath, unsubscribePath)
             this.unsubscribe();
         }
     };
-    this.urlBase64ToUint8Array = (base64String) => {
-        var padding = '='.repeat((4 - base64String.length % 4) % 4);
-        var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
 
-        var rawData = window.atob(base64);
-        var outputArray = new Uint8Array(rawData.length);
+    static urlBase64ToUint8Array(base64String) {
+        let padding = '='.repeat((4 - base64String.length % 4) % 4);
+        let base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+
+        let rawData = window.atob(base64);
+        let outputArray = new Uint8Array(rawData.length);
 
         for (var i = 0; i < rawData.length; ++i) {
             outputArray[i] = rawData.charCodeAt(i);

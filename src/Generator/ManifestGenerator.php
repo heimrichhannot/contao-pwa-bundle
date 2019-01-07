@@ -34,7 +34,7 @@ class ManifestGenerator
 	 */
 	public function __construct(ContainerInterface $container, ManifestIconGenerator $iconGenerator)
 	{
-		$this->defaultManifestPath = $container->getParameter('contao.web_dir').'/manifest';
+		$this->defaultManifestPath = $container->getParameter('contao.web_dir').'/pwa';
 		$this->iconGenerator = $iconGenerator;
 	}
 

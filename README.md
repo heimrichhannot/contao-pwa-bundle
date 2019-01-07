@@ -80,6 +80,17 @@ Event type | Usage | Description
 ---------- | ----- | -----------
 huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscrive.
 
+#### Complete configuration
+
+```yaml
+huh_pwa:
+  vapid:
+    subject: "mailto:test@example.org"
+    publicKey: "BPZACSEB_Efa3_e2XdVRm4M3Suga2WnhNs9THpVixfScWicSiA3ZYQ3zCG4Uez3EnbL3q-O2RomlZtYejva642M"
+    privateKey: "W0qtmwq0aB47Swmid0uDZyW945p9b5bgv_WmfsmsRHw"
+  manifest_path: '/pwa' # where the manifest files should be located within web folder
+  configfile_path: '/pwa' # where the configuration files should be located within web folder
+```
 
 ## Internal
 
