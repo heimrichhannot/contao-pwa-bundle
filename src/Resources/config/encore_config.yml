@@ -2,3 +2,6 @@ huh_encore:
   encore:
     entries:
       - { name: "contao-pwa-bundle", requiresCss: false, head: false, file: "vendor/heimrichhannot/contao-pwa-bundle/src/Resources/assets/js/contao-pwa-bundle.js"}
+    legacy:
+      js:
+        - "huh.pwa.bundle"

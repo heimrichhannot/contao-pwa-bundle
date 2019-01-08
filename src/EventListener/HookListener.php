@@ -18,6 +18,7 @@ use Contao\PageRegular;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
+use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
@@ -50,12 +51,20 @@ class HookListener
      * @var ContainerUtil
      */
     private $containerUtil;
+    /**
+     * @var PwaHeadScriptTags
+     */
+    private $pwaHeadScriptTags;
 
 
     /**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator, ContainerUtil $containerUtil)
+	public function __construct(
+	    ManifestLinkTag $manifestLinkTag,
+        ThemeColorMetaTag $colorMetaTag,
+        PwaHeadScriptTags $pwaHeadScriptTags,
+        \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator, ContainerUtil $containerUtil)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
@@ -63,6 +72,7 @@ class HookListener
 		$this->router = $router;
         $this->configurationGenerator = $configurationGenerator;
         $this->containerUtil = $containerUtil;
+        $this->pwaHeadScriptTags = $pwaHeadScriptTags;
     }
 
 	/**
@@ -92,18 +102,8 @@ class HookListener
 			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$pwaHead = [];
-			$pwaHead[] =
-                "<script type='text/javascript'>"
-                .$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
-                ."</script>";
-			$pwaHead[] = "<script type='text/javascript'>"
-                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config))
-                ."</script>";
-
-
-
-			$pageRegular->Template->pwaHead = implode('', $pwaHead);
+			$this->pwaHeadScriptTags->addScript($this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig'));
+			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config)));
 
 //			$GLOBALS['TL_HEAD'][] =
 //				"<script type='text/javascript'>"

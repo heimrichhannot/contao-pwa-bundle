@@ -7,7 +7,9 @@ let startUrl = '{{ startUrl|default('/') }}';
 self.addEventListener('install', function(e) {
     if (debug) console.log('[Serviceworker] Install event');
     {% block install_inner %}
-
+        e.waitUntil(
+            self.skipWaiting()
+        );
     {% endblock %}
 });
 {% endblock %}
