@@ -10,6 +10,10 @@ $lang['supportPush'] = ["Push-Benachrichtigungen unterstützen","Aktivieren Sie 
 $lang['addDebugLog'] = ["Debug-Ausgabe aktivieren","Wenn aktiviert, werden umfangreiche Debug-Ausgaben in der Browserkonsole ausgegeben. Achtung: Der Serviceworker muss dazu neu erzeugt werden!"];
 $lang['sendWithCron'] = ["Benachrichtigungen automatisch per Cron senden","Wenn aktiviert, werden Push-Benachrichtigungen automatisch per Cronjob im festgelegten Interval sendet"];
 $lang['cronIntervall'] = ["Sende-Intervall","Intervall in welchem nach ungesendeten Push-Benachrichtigungen gesucht und diese gesendet werden sollen."];
+
+$lang['serviceWorkerTemplate'] = ["Service Worker Template","Wählen Sie ein Service Worker Template aus. Nicht alle Templates unterstützen alle Funktionen."];
+$lang['offlinePage'] = ["Offline Seite","Wählen Sie eine Seite aus, welche angezeigt werden soll, wenn der Nutzer offline ist und eine nicht-gecachte Seite aufruft. Nicht alle Service Worker Templates unterstützen diese Funktion."];
+
 $lang['pwaName'] = ["Name der Webanwendung","Wählen Sie hier aus, wie der Name der Webanwendung erzeugt werden soll. "];
 $lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_PAGETITLE] = "Seitenname";
 $lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_META_PAGETITLE] = "Seitentitel (Metadaten)";

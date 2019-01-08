@@ -22,7 +22,6 @@ use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class HookListener
@@ -104,15 +103,6 @@ class HookListener
 
 			$this->pwaHeadScriptTags->addScript($this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig'));
 			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config)));
-
-//			$GLOBALS['TL_HEAD'][] =
-//				"<script type='text/javascript'>"
-//				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
-//				."</script>";
-//			$GLOBALS['TL_HEAD'][] = "<script type='text/javascript'>"
-//                ."HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config))
-//                ."</script>";
-//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js"></script>';
 		}
 	}
 }
