@@ -3,8 +3,11 @@ import PushSubscriptionButtons from './PushSubscriptionButtons';
 import PushNotificationSubscription from './PushNotificationSubscription';
 
 let PwaButtons = new PushSubscriptionButtons();
-let PushSubscription = new PushNotificationSubscription();
-let debug = false;
+let PushSubscription = new PushNotificationSubscription(
+    HuhContaoPwaBundle.pushNotifications.subscribePath,
+    HuhContaoPwaBundle.pushNotifications.unsubscribePath
+);
+let debug = HuhContaoPwaBundle.debug;
 
 if (!('serviceWorker' in navigator)) {
     if (debug) console.log('[SW Registration] Service Worker not supported');
@@ -13,7 +16,9 @@ if (!('serviceWorker' in navigator)) {
 else {
     if (debug) console.log("[SW Registration] Register service worker");
     navigator.serviceWorker.register(HuhContaoPwaBundle.serviceWorker.path, {
-        scope: '/'
+        scope: HuhContaoPwaBundle.serviceWorker.scope
+    }).then(function(registration) {
+        if (debug) console.log("[SW Registration] Registered for scope " + registration.scope);
     });
 
     if (HuhContaoPwaBundle.pushNotifications.support && ('PushManager' in window)) {
@@ -42,9 +47,9 @@ else {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    debug = HuhContaoPwaBundle.debug;
-    PushSubscription.subscribePath = HuhContaoPwaBundle.pushNotifications.subscribePath;
-    PushSubscription.unsubscribePath = HuhContaoPwaBundle.pushNotifications.unsubscribePath;
+    // debug = HuhContaoPwaBundle.debug;
+    // PushSubscription.subscribePath = HuhContaoPwaBundle.pushNotifications.subscribePath;
+    // PushSubscription.unsubscribePath = HuhContaoPwaBundle.pushNotifications.unsubscribePath;
     PushSubscription.onLoaded();
     PwaButtons.onLoaded();
 });

@@ -90,7 +90,10 @@ class ConfigurationFileGenerator
     {
         $configuration = [];
         $configuration['debug'] = (bool) $config->addDebugLog;
-        $configuration['serviceWorker']['path'] = ServiceWorkerGenerator::generateFileName($page);
+        $configuration['serviceWorker'] = [
+            'path' => ServiceWorkerGenerator::generateFileName($page),
+            'scope' => ltrim($config->pwaScope, "/"),
+        ];
         $configuration['pushNotifications'] = [
             'support' => (bool) $config->supportPush,
             'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
