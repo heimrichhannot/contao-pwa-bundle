@@ -12,6 +12,7 @@
 namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 
+use Contao\Controller;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
@@ -91,6 +92,17 @@ class ServiceWorkerGenerator
 
 		$fileName = static::generateFileName($page);
 
+		$offlinePage = '';
+		if ($config->offlinePage > 0)
+        {
+            $offlinePageModel = PageModel::findById($config->offlinePage);
+            if ($offlinePageModel)
+            {
+                $offlinePage = $offlinePageModel->getFrontendUrl();
+            }
+
+        }
+
 		try
 		{
 			return (bool)file_put_contents(
@@ -102,7 +114,7 @@ class ServiceWorkerGenerator
 					'alias'       => $page->alias,
 					'debug'       => (bool)$config->addDebugLog,
 					'startUrl'    => $config->pwaStartUrl,
-                    'offlinePage' => (int)$config->offlinePage
+                    'offlinePage' => $offlinePage,
 				])
 			);
 		} catch (\Twig_Error_Loader $e)

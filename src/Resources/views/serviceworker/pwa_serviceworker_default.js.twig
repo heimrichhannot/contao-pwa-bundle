@@ -1,17 +1,17 @@
-let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
-let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
-let pageTitle = '{{ pageTitle }}';
-let startUrl = '{{ startUrl|default('/') }}';
-let offlinePage = {{ offlinePage }};
+{% block config_variables %}
+    let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
+    let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
+    let pageTitle = '{{ pageTitle }}';
+    let startUrl = '{{ startUrl|default('/') }}';
+    let offlinePage = '{{ offlinePage|default('') }}';
+{% endblock %}
 
 {% block install %}
-self.addEventListener('install', function(e) {
+self.addEventListener('install', function(event) {
     if (debug) console.log('[Serviceworker] Install event');
-    {% block install_inner %}
         e.waitUntil(
             self.skipWaiting()
         );
-    {% endblock %}
 });
 {% endblock %}
 
@@ -55,10 +55,8 @@ self.addEventListener('fetch', function(event) {
     {% endblock %}
     {% block fetch_inner %}
         event.respondWith(
-            fetch(event.request).catch(function(error) {
-                useFallback();
-            }
-        ));
+            fetch(event.request)
+        );
     {% endblock %}
 });
 {% endblock %}
@@ -93,22 +91,4 @@ self.addEventListener('notificationclick', function(event) {
         );
     }
 });
-{% endblock %}
-
-
-{% block fallback %}
-const FALLBACK =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="180" stroke-linejoin="round">' +
-    '  <path stroke="#DDD" stroke-width="25" d="M99,18 15,162H183z"/>' +
-    '  <path stroke-width="17" fill="#FFF" d="M99,18 15,162H183z" stroke="#eee"/>' +
-    '  <path d="M91,70a9,9 0 0,1 18,0l-5,50a4,4 0 0,1-8,0z" fill="#aaa"/>' +
-    '  <circle cy="138" r="9" cx="100" fill="#aaa"/>' +
-    '</svg>';
-
-function useFallback() {
-    if (debug) console.log('[Serviceworker] Fetch: Use Fallback');
-    return Promise.resolve(new Response(FALLBACK, { headers: {
-            'Content-Type': 'image/svg+xml'
-        }}));
-}
 {% endblock %}

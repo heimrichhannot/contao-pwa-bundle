@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA'][$table] = [
             'inputType' => 'select',
             'options_callback'   => ['huh.pwa.datacontainer.pwaconfigurations','getServiceWorkerTemplates'],
             'eval'      => [
-                'tl_class'  => 'w50',
+                'tl_class'  => 'w50 clr',
                 'includeBlankOption' => false
             ],
             'sql'       => "varchar(128) NOT NULL default ''",
@@ -160,7 +160,7 @@ $GLOBALS['TL_DCA'][$table] = [
             'exclude'    => true,
             'inputType'  => 'pageTree',
             'foreignKey' => 'tl_page.title',
-            'eval'       => ['fieldType' => 'radio'],
+            'eval'       => ['fieldType' => 'radio', 'tl_class'  => 'clr'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'hasOne', 'load' => 'eager']
         ],
