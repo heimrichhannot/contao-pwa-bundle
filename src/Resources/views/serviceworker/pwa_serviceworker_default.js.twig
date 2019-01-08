@@ -2,6 +2,7 @@ let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
 let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
 let pageTitle = '{{ pageTitle }}';
 let startUrl = '{{ startUrl|default('/') }}';
+let offlinePage = {{ offlinePage }};
 
 {% block install %}
 self.addEventListener('install', function(e) {
@@ -18,7 +19,20 @@ self.addEventListener('install', function(e) {
 self.addEventListener('activate', function(event) {
     if (debug) console.log('[Serviceworker] Activate event!');
     {% block activate_inner %}
-        event.waitUntil(self.clients.claim());
+    event.waitUntil(
+        self.clients.claim().then(function() {
+            caches.open(CACHE).then(function(cache) {
+                // Delete old caches
+                caches.keys().then(function(names) {
+                    return Promise.all(names.filter(function(name) {
+                        return name !== CACHE;
+                    }).map(function(name) {
+                        return caches.delete(name)
+                    }))
+                })
+            })
+        })
+    );
     {% endblock %}
 });
 {% endblock %}

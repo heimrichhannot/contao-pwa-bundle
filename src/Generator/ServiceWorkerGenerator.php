@@ -102,6 +102,7 @@ class ServiceWorkerGenerator
 					'alias'       => $page->alias,
 					'debug'       => (bool)$config->addDebugLog,
 					'startUrl'    => $config->pwaStartUrl,
+                    'offlinePage' => (int)$config->offlinePage
 				])
 			);
 		} catch (\Twig_Error_Loader $e)
