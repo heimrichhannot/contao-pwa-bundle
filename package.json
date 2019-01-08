@@ -2,10 +2,22 @@
   "name": "contao-pwa-bundle",
   "version": "1.0.0",
   "description": "Progressive Web Apps for Contao",
-  "main": "index.js",
+  "main": "src/Resources/assets/js/contao-pwa-bundle.js",
   "author": "Heimrich & Hannot GmbH <digitales@heimrich-hannot.de>",
   "license": "LGPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/cli": "^7.2",
+    "@babel/core": "^7.2",
+    "@babel/preset-env": "^7.2",
+    "@symfony/webpack-encore": "^0.22.2",
+    "babel-minify": "^0.5",
+    "babel-plugin-transform-remove-import": "^1.0.0"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead"
+  ],
   "dependencies": {
-    "workbox-sw": "^3.6.3"
+    "@babel/polyfill": "^7.2.5"
   }
 }

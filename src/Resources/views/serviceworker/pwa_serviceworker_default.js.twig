@@ -1,0 +1,94 @@
+{% block config_variables %}
+    let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
+    let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
+    let pageTitle = '{{ pageTitle }}';
+    let startUrl = '{{ startUrl|default('/') }}';
+    let offlinePage = '{{ offlinePage|default('') }}';
+{% endblock %}
+
+{% block install %}
+self.addEventListener('install', function(event) {
+    if (debug) console.log('[Serviceworker] Install event');
+        e.waitUntil(
+            self.skipWaiting()
+        );
+});
+{% endblock %}
+
+{% block activate %}
+self.addEventListener('activate', function(event) {
+    if (debug) console.log('[Serviceworker] Activate event!');
+    {% block activate_inner %}
+    event.waitUntil(
+        self.clients.claim().then(function() {
+            caches.open(CACHE).then(function(cache) {
+                // Delete old caches
+                caches.keys().then(function(names) {
+                    return Promise.all(names.filter(function(name) {
+                        return name !== CACHE;
+                    }).map(function(name) {
+                        return caches.delete(name)
+                    }))
+                })
+            })
+        })
+    );
+    {% endblock %}
+});
+{% endblock %}
+
+{% block fetch %}
+self.addEventListener('fetch', function(event) {
+    if (debug) console.log('[Serviceworker] Fetch ' + event.request.url);
+    {% block fetch_filter %}
+        var url = new URL(event.request.url);
+
+        // don't cache backend or dev routes
+        if (url.pathname.match('^\/contao')
+            || url.pathname.match('^\/_contao')
+            || url.pathname.match('^\/app_dev.php')
+            || url.pathname.match('^\/api')
+        ) {
+            if (debug) console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');
+            return false;
+        }
+    {% endblock %}
+    {% block fetch_inner %}
+        event.respondWith(
+            fetch(event.request)
+        );
+    {% endblock %}
+});
+{% endblock %}
+
+{% block push %}
+self.addEventListener('push', function(event) {
+    {% block push_inner %}
+    let payload = event.data ? event.data.text() : false;
+    if (false === payload)
+    {
+        if (debug) console.log('[Serviceworker] Push: A push notification sent from ' + pageTitle + ' without any content.');
+        return;
+    }
+    if (debug) console.log("[Serviceworker] Push: Payload: ", payload);
+    payload = JSON.parse(payload);
+
+    event.waitUntil(
+        self.registration.showNotification(pageTitle, payload)
+    );
+    {% endblock %}
+});
+{% endblock %}
+
+{% block noticiationclick %}
+self.addEventListener('notificationclick', function(event) {
+    if (debug) console.log("[Serviceworker] Notificationclick event ");
+    if (event.notification.data.clickJumpTo !== undefined)
+    {
+        event.notification.close();
+        event.waitUntil(
+            clients.openWindow(event.notification.data.clickJumpTo)
+        );
+    }
+});
+{% endblock %}

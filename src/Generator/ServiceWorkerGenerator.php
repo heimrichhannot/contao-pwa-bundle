@@ -12,14 +12,18 @@
 namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 
+use Contao\Controller;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Bridge\Monolog\Logger;
 
 class ServiceWorkerGenerator
 {
+    const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotContaoPwa/serviceworker/pwa_serviceworker_default.js.twig';
+
 	/**
 	 * @var string
 	 */
@@ -29,26 +33,27 @@ class ServiceWorkerGenerator
 	 */
 	protected $twig;
 	/**
-	 * @var string
-	 */
-	protected $serviceWorkerTemplate = '@HeimrichHannotContaoPwa/serviceworker/serviceworker_default.js.twig';
-	/**
 	 * @var Logger
 	 */
 	private $logger;
+    /**
+     * @var TemplateUtil
+     */
+    private $templateUtil;
 
 
-	/**
+    /**
 	 * ServiceWorkerGenerator constructor.
 	 * @param string $webDir
 	 * @param \Twig_Environment $twig
 	 */
-	public function __construct(string $webDir, \Twig_Environment $twig, Logger $logger)
+	public function __construct(string $webDir, \Twig_Environment $twig, Logger $logger, TemplateUtil $templateUtil)
 	{
 		$this->webDir = $webDir;
 		$this->twig = $twig;
 		$this->logger = $logger;
-	}
+        $this->templateUtil = $templateUtil;
+    }
 
 	/**
 	 * @param PageModel $page
@@ -77,17 +82,39 @@ class ServiceWorkerGenerator
 				$title = $page->title;
 		}
 
+		if ($config->serviceWorkerTemplate)
+        {
+            $template = $this->templateUtil->getTemplate($config->serviceWorkerTemplate, 'js.twig');
+        }
+		else {
+            $template = static::DEFAULT_SERVICEWORKER_TEMPLATE;
+        }
+
+		$fileName = static::generateFileName($page);
+
+		$offlinePage = '';
+		if ($config->offlinePage > 0)
+        {
+            $offlinePageModel = PageModel::findById($config->offlinePage);
+            if ($offlinePageModel)
+            {
+                $offlinePage = $offlinePageModel->getFrontendUrl();
+            }
+
+        }
+
 		try
 		{
 			return (bool)file_put_contents(
-				$this->webDir . '/sw_' . $page->alias . '.js',
-				$this->twig->render($this->serviceWorkerTemplate, [
+				$this->webDir . '/'.$fileName,
+				$this->twig->render($template, [
 					'supportPush' => (bool)$config->supportPush,
 					'pageTitle'   => $title,
 					'version'     => date('YmdHis'),
 					'alias'       => $page->alias,
 					'debug'       => (bool)$config->addDebugLog,
 					'startUrl'    => $config->pwaStartUrl,
+                    'offlinePage' => $offlinePage,
 				])
 			);
 		} catch (\Twig_Error_Loader $e)
@@ -104,4 +131,9 @@ class ServiceWorkerGenerator
 			return false;
 		}
 	}
+
+	public static function generateFileName (PageModel $page)
+    {
+        return 'sw_' . $page->alias . '.js';
+    }
 }

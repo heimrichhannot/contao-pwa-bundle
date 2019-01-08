@@ -45,8 +45,15 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator
     public: true
     arguments:
-      ['%contao.web_dir%', '@twig', '@logger']
+      ['%contao.web_dir%', '@twig', '@logger', '@huh.utils.template']
   HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
+
+  huh.pwa.generator.configurationfile:
+    class: HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator
+    public: true
+    arguments:
+      ['@router.default', '%contao.web_dir%', '%huh.pwa%']
+  HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
 
   # Header Tags
 
@@ -56,12 +63,20 @@ services:
     arguments:
       ['@huh.head.tag_manager']
   HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
+
   huh.head.tag.pwa.meta_themecolor:
     class: HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag
     public: true
     arguments:
       ['@huh.head.tag_manager']
   HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"
+
+  huh.head.tag.pwa.script:
+    class: HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags
+    public: true
+    arguments:
+      ['@huh.head.tag_manager']
+  HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags: "@huh.head.tag.pwa.script"
 
 # Sender
 

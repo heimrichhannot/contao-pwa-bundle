@@ -23,6 +23,8 @@ use Contao\Model;
  * @property int $dateAdded
  * @property string $title
  * @property string $addDebugLog
+ * @property string $serviceWorkerTemplate
+ * @property string $offlinePage
  * @property string $supportPush
  * @property string $sendWithCron
  * @property string $cronIntervall

@@ -1,28 +1,35 @@
-let HuhContaoPwaButtons = {
-    buttons: [],
-    debug: true,
-    isInit: false,
+class PushSubscriptionButtons {
 
-    preInit: function() {
+    constructor() {
+        this.buttons = [];
+        this.debug = false;
+        this.isInit = false;
+        this.subscriptionAction = '';
+
         document.addEventListener('huh_pwa_push_isSubscribed', this.setUnsubscribe.bind(this));
         document.addEventListener('huh_pwa_push_isUnsubscribed', this.setSubscribe.bind(this));
         document.addEventListener('huh_pwa_push_permission_denied', this.setBlocked.bind(this));
-    },
-    onReady: function() {
+    }
+
+    onLoaded () {
         if (!this.isInit)
         {
             this.init();
         }
-    },
-    init: function() {
+    }
+
+    init ()  {
         this.collectElementsToUpdate();
         this.isInit = true;
-    },
-    collectElementsToUpdate: function() {
-        this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
-    },
+    }
 
-    beforeEvent: function(debugMessage) {
+    collectElementsToUpdate() {
+        this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
+        this.buttons.forEach((button) => {
+            button.addEventListener('click', () => { this.changeSubscriptionStatus(button); });
+        });
+    }
+    beforeEvent (debugMessage) {
         if (this.debug) {
             console.log('[Push Notification Buttons] ' + debugMessage);
         }
@@ -30,30 +37,33 @@ let HuhContaoPwaButtons = {
         {
             this.init();
         }
-    },
-    setSubscribe: function (event) {
+    }
+
+    setSubscribe (event) {
         this.beforeEvent('Update Buttons to "Subscribe"');
-        this.buttons.forEach(function(button){
+        this.subscriptionAction = 'subscribe';
+        this.buttons.forEach((button) => {
             button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', function(){ this.changeSubscriptionStatus('subscribe', button); });
         });
-    },
-    setUnsubscribe: function (event) {
+    }
+
+    setUnsubscribe (event) {
         this.beforeEvent('Update Buttons to "Unsubscribe"');
-        this.buttons.forEach(function(button) {
+        this.subscriptionAction = 'unsubscribe';
+        this.buttons.forEach((button) => {
             button.disabled = false;
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
-            button.addEventListener('click', function(){ this.changeSubscriptionStatus('unsubscribe', button); });
         });
-    },
-    setBlocked: function(event) {
+    }
+
+    setBlocked (event) {
         this.beforeEvent('Update Buttons to blocked');
         this.buttons.forEach(function(button) {
             button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.blocked;
@@ -62,14 +72,13 @@ let HuhContaoPwaButtons = {
             button.classList.remove('subscribed');
             button.disabled = true;
         });
-    },
-    changeSubscriptionStatus: function(action, button) {
-        button.disabled = true;
-        document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: action }));
     }
-};
+    changeSubscriptionStatus (button) {
 
-HuhContaoPwaButtons.preInit();
-document.addEventListener('DOMContentLoaded', function() {
-    HuhContaoPwaButtons.onReady();
-});
+        console.log("Fire huh_pwa_push_changeSubscriptionState event");
+        button.disabled = true;
+        document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: this.subscriptionAction }));
+    }
+}
+
+module.exports = PushSubscriptionButtons;

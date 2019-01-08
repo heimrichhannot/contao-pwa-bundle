@@ -16,10 +16,12 @@ use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
+use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use Symfony\Component\HttpKernel\KernelInterface;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\Routing\RouterInterface;
 
 class HookListener
@@ -40,18 +42,37 @@ class HookListener
 	 * @var RouterInterface
 	 */
 	private $router;
+    /**
+     * @var ConfigurationFileGenerator
+     */
+    private $configurationGenerator;
+    /**
+     * @var ContainerUtil
+     */
+    private $containerUtil;
+    /**
+     * @var PwaHeadScriptTags
+     */
+    private $pwaHeadScriptTags;
 
 
-	/**
+    /**
 	 * HookListener constructor.
 	 */
-	public function __construct(ManifestLinkTag $manifestLinkTag, ThemeColorMetaTag $colorMetaTag, \Twig_Environment $twig, RouterInterface $router)
+	public function __construct(
+	    ManifestLinkTag $manifestLinkTag,
+        ThemeColorMetaTag $colorMetaTag,
+        PwaHeadScriptTags $pwaHeadScriptTags,
+        \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator, ContainerUtil $containerUtil)
 	{
 		$this->manifestLinkTag = $manifestLinkTag;
 		$this->colorMetaTag = $colorMetaTag;
 		$this->twig = $twig;
 		$this->router = $router;
-	}
+        $this->configurationGenerator = $configurationGenerator;
+        $this->containerUtil = $containerUtil;
+        $this->pwaHeadScriptTags = $pwaHeadScriptTags;
+    }
 
 	/**
 	 * @param PageModel $page
@@ -63,6 +84,10 @@ class HookListener
 	 */
 	public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
 	{
+	    if ($this->containerUtil->isBackend())
+        {
+            return;
+        }
 		$rootPage = PageModel::findByPk($page->rootId);
 
 		if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration)
@@ -73,28 +98,11 @@ class HookListener
 				return;
 			}
 
-			$this->manifestLinkTag->setContent('/manifest/' . $rootPage->alias . '_manifest.json');
+			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$serviceWorker = 'sw_'.$rootPage->alias.'.js';
-
-			$GLOBALS['TL_HEAD'][] =
-				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig')
-				."</script>";
-			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/PushNotificationSubscription.js"></script>';
-//			$GLOBALS['TL_HEAD'][] = '<script src="bundles/heimrichhannotcontaopwa/js/contaoPwaBundle.es6.js"></script>';
-			$GLOBALS['TL_HEAD'][] =
-				"<script type='text/javascript'>"
-				.$this->twig->render('@HeimrichHannotContaoPwa/registration/default.js.twig', [
-					'alias' => $rootPage->alias,
-					'serviceWorkerPath' => $serviceWorker,
-					'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-					'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
-					'debug' => (bool) $config->addDebugLog,
-					'supportPush' => (bool) $config->supportPush,
-				])
-				."</script>";
+			$this->pwaHeadScriptTags->addScript($this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig'));
+			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config)));
 		}
 	}
 }

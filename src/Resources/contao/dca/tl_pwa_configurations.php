@@ -88,6 +88,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	'palettes' => [
 		'__selector__' => ['pwaName','sendWithCron'],
 		'default' => '{general_legend},title,supportPush,sendWithCron,addDebugLog;'
+                    .'{serviceworker_legend},serviceWorkerTemplate,offlinePage;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
 	'subpalettes' => [
@@ -144,6 +145,25 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'sql'       => "varchar(10) NOT NULL default ''",
 		],
+        'serviceWorkerTemplate' => [
+            'label'     => &$GLOBALS['TL_LANG'][$table]['serviceWorkerTemplate'],
+            'inputType' => 'select',
+            'options_callback'   => ['huh.pwa.datacontainer.pwaconfigurations','getServiceWorkerTemplates'],
+            'eval'      => [
+                'tl_class'  => 'w50 clr',
+                'includeBlankOption' => false
+            ],
+            'sql'       => "varchar(128) NOT NULL default ''",
+        ],
+        'offlinePage'   => [
+            'label'      => &$GLOBALS['TL_LANG'][$table]['offlinePage'],
+            'exclude'    => true,
+            'inputType'  => 'pageTree',
+            'foreignKey' => 'tl_page.title',
+            'eval'       => ['fieldType' => 'radio', 'tl_class'  => 'clr'],
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'relation'   => ['type' => 'hasOne', 'load' => 'eager']
+        ],
 		'pwaName' => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaName'],
 			'inputType' => 'select',
