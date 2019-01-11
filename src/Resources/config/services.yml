@@ -16,12 +16,19 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\ContentContainer
     public: true
     autowire: true
+
+# DataContainer
+
   huh.pwa.datacontainer.pwapushnotification:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer
     public: true
     autowire: true
   huh.pwa.datacontainer.pwaconfigurations:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaConfigurationContainer
+    public: true
+    autowire: true
+  huh.pwa.datacontainer.pwasubscribers:
+    class: HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushSubscriberContainer
     public: true
     autowire: true
 

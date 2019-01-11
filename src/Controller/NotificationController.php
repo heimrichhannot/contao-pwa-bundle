@@ -97,7 +97,8 @@ class NotificationController extends Controller
 		/** @var PwaPushSubscriberModel|Collection|null $user */
 		if ($user = PwaPushSubscriberModel::findBy(['endpoint=?','pid=?'],[$endpoint, $pwaConfig->id]))
 		{
-			if ($user instanceof Collection)
+		    // Just in case an error lead to multiple registrations -> clean db
+			if ($user instanceof Collection && $user->count() > 1)
 			{
 				foreach ($user as $entry)
 				{
@@ -110,32 +111,6 @@ class NotificationController extends Controller
 			return new Response("User successful unsubscribed!", 200);
 		}
 		return new Response("User not found!", 404);
-	}
-
-	/**
-	 * @Route("/send/{config}/{payload}", name="send_notification")
-	 *
-	 * @param Request $request
-	 * @param string $payload
-	 * @return Response
-	 * @throws \ErrorException
-	 */
-	public function sendAction(Request $request, int $config, string $payload)
-	{
-		$this->get('contao.framework')->initialize();
-
-		if (!$pwaConfig = PwaConfigurationsModel::findByPk($config))
-		{
-			return new Response("No configuration found. Could not send payload.", 404);
-		}
-
-		$notification = new DefaultNotification();
-		$notification->setTitle('HuH Pwa Bundle');
-		$notification->setBody($payload);
-		$notification->setIcon('images/icons/icon-128x128.png');
-		$result = $this->get('huh.pwa.sender.pushnotification')->send($notification, $pwaConfig);
-		dump($result);
-		die();
 	}
 
 	/**

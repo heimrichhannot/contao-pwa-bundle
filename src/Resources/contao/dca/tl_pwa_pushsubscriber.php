@@ -16,10 +16,11 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 		'label'             => [
 			'fields' => ['endpoint'],
 			'format' => '%s',
+            'label_callback' => ['huh.pwa.datacontainer.pwasubscribers','onLabelCallback'],
 		],
 		'sorting'           => [
 			'mode'         => 2,
-			'fields'       => ['dateAdded'],
+			'fields'       => ['dateAdded DESC'],
 			'panelLayout'  => 'filter;search,limit',
 		],
 		'global_operations' => [
@@ -68,20 +69,25 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
 			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		],
+        'lastSuccessfulSend'    => [
+            'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['lastSuccessfulSend'],
+            'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
+            'sql'   => "int(10) unsigned NOT NULL default '0'",
+        ],
 		'endpoint'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['endpoint'],
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['endpoint'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(255) NOT NULL default ''",
 		],
 		'publicKey'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['authToken'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(128) NOT NULL default ''",
 		],
 		'authToken'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_page']['authToken'],
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['authToken'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(128) NOT NULL default ''",

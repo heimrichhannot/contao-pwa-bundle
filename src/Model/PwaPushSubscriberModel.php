@@ -21,6 +21,7 @@ use Contao\Model;
  * @property int $pid
  * @property int $tstamp
  * @property int $dateAdded
+ * @property int $lastSuccessfulSend
  * @property string $endpoint
  * @property string $publicKey
  * @property string $authToken

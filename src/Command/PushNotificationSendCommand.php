@@ -14,6 +14,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Command;
 
 use Contao\CoreBundle\Command\AbstractLockedCommand;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -58,7 +59,8 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 
 		$sender = $this->getContainer()->get('huh.pwa.sender.pushnotification');
 
-		$unsent = $sender->findUnsendNotifications();
+        $unsent = PwaPushNotificationsModel::findUnsentNotifications();
+
 		if (!$unsent || $unsent->count() == 0)
 		{
 			$io->text("Found no unsent messages.");

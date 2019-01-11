@@ -18,7 +18,9 @@ else {
     navigator.serviceWorker.register(HuhContaoPwaBundle.serviceWorker.path, {
         scope: HuhContaoPwaBundle.serviceWorker.scope
     }).then(function(registration) {
-        if (debug) console.log("[SW Registration] Registered for scope " + registration.scope);
+        registration.addEventListener('updatefound', function() {
+            if (debug) console.log("[SW Registration] New service worker found for scope " + registration.scope);
+        })
     });
 
     if (HuhContaoPwaBundle.pushNotifications.support && ('PushManager' in window)) {
@@ -47,9 +49,6 @@ else {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // debug = HuhContaoPwaBundle.debug;
-    // PushSubscription.subscribePath = HuhContaoPwaBundle.pushNotifications.subscribePath;
-    // PushSubscription.unsubscribePath = HuhContaoPwaBundle.pushNotifications.unsubscribePath;
     PushSubscription.onLoaded();
     PwaButtons.onLoaded();
 });

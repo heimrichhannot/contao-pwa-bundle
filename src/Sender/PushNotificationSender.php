@@ -98,6 +98,7 @@ class PushNotificationSender
 		}
 
 		$validSubscribers = 0;
+		$sendDate = time(); //same sendtime for all subscribers and the notification
 
 		/** @var PwaPushSubscriberModel $subscriber */
 		foreach ($subscribers as $subscriber)
@@ -117,6 +118,8 @@ class PushNotificationSender
 			{
 				return ["success" => false, "message" => $e->getMessage()];
 			}
+			$subscriber->lastSuccessfulSend = $sendDate;
+			$subscriber->save();
 		}
 
 		$result = $webPush->flush();
@@ -124,7 +127,7 @@ class PushNotificationSender
 		if ($notification->getSource())
 		{
 			$notification->getSource()->sent = "1";
-			$notification->getSource()->sendDate = time();
+			$notification->getSource()->sendDate = $sendDate;
 			$notification->getSource()->save();
 		}
 
@@ -133,13 +136,5 @@ class PushNotificationSender
 			'sentCount' => $validSubscribers,
 			'result' => $result,
 		];
-	}
-
-	/**
-	 * @return PwaPushNotificationsModel[]|Collection|PwaPushNotificationsModel|null
-	 */
-	public function findUnsendNotifications()
-	{
-		return PwaPushNotificationsModel::findBySent('');
 	}
 }
