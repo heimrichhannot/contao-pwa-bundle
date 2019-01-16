@@ -32,6 +32,10 @@ class PwaHeadScriptTags extends AbstractTag
     public function generate()
     {
         $content = "";
+        if (empty($this->scripts))
+        {
+            return $content;
+        }
         foreach ($this->scripts as $script)
         {
             $content .= "<script type='text/javascript'>".$script."</script>";
