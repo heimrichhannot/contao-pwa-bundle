@@ -128,6 +128,7 @@ class PushNotificationSender
 		{
 			$notification->getSource()->sent = "1";
 			$notification->getSource()->sendDate = $sendDate;
+			$notification->getSource()->receiverCount = $validSubscribers;
 			$notification->getSource()->save();
 		}
 

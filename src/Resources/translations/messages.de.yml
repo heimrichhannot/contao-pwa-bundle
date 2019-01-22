@@ -5,7 +5,7 @@ huh.pwa:
       sendAt: "Wird gesendet am "
       dateFormat: "d.m.Y H:i"
   pushnotifications:
-    wait: "Check ob Push-Benachrichtigungen unterstützt werden"
+    wait: "Es wird geprüft, ob Ihr Browser Push-Benachrichtigungen unterstützt"
     subscribe: "Benachrichtigungen abonnieren"
     unsubscribe: "Benachrichtigungen nicht mehr empfangen"
     blocked: "Benachrichtigungen wurden von Ihrem Browser blockiert"

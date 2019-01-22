@@ -7,7 +7,7 @@ $lang = &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications'];
  */
 $lang['title'] = ["Titel","Titel der Banachrichtigung"];
 $lang['body'] = ["Inhalt","Kurzer Inhaltstext der Banchrichtigung"];
-$lang['icon'] = ["Icon","Das Bild das neben der Banchrichtigung angezeigt wrden soll."];
+$lang['icon'] = ["Icon","Das Bild das neben der Banchrichtigung angezeigt werden soll."];
 $lang['iconSize'] = ["Icon-Bildgröße","Geben Sie hier die Bildgröße an, welche das Icon haben soll."];
 $lang['sendDate'] = ["Sende-Datum","Geben Sie hier das Sendedatum an, an welchem die Benachrichtigung gesendet werden soll."];
 $lang['sent'] = ["Gesendet","Geben Sie hier an, ob die Nachricht bereits gesendet wurde."];

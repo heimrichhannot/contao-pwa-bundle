@@ -148,7 +148,7 @@ $GLOBALS['TL_DCA'][$table] = [
 
 		],
 		'receiverCount' => [
-			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['receiverCount'],
 			'inputType' => 'text',
 			'eval'      => [],
 			'sql'       => "int(10) unsigned NOT NULL default '0'",
