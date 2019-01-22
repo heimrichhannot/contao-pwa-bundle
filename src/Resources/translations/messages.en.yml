@@ -5,9 +5,10 @@ huh.pwa:
       sendAt: "Send at"
       dateFormat: "Y-m-d H:i"
   pushnotifications:
-    subscribe: Subscribe push notifications
-    unsubscribe: Unsubscribe push notifications
-    blocked: Push notifications were blocked by your browser
+    subscribe: "Subscribe push notifications"
+    unsubscribe: "Unsubscribe push notifications"
+    blocked: "Push notifications were blocked by your browser"
+    not_supported: "Push notifications not supported by your browser"
   backend:
     control:
       headline: "PWA control"

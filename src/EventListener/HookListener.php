@@ -102,7 +102,10 @@ class HookListener
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
 			$this->pwaHeadScriptTags->addScript($this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig'));
-			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config)));
+			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode(
+			    $this->configurationGenerator->generateConfiguration($rootPage, $config),
+                JSON_UNESCAPED_UNICODE
+            ));
 		}
 	}
 }

@@ -1,6 +1,7 @@
-class PushSubscriptionButtons {
-
-    constructor() {
+class PushSubscriptionButtons
+{
+    constructor()
+    {
         this.buttons = [];
         this.debug = false;
         this.isInit = false;
@@ -9,27 +10,33 @@ class PushSubscriptionButtons {
         document.addEventListener('huh_pwa_push_isSubscribed', this.setUnsubscribe.bind(this));
         document.addEventListener('huh_pwa_push_isUnsubscribed', this.setSubscribe.bind(this));
         document.addEventListener('huh_pwa_push_permission_denied', this.setBlocked.bind(this));
+        document.addEventListener('huh_pwa_sw_not_supported', this.setNotSupported.bind(this));
     }
 
-    onLoaded () {
+    onLoaded ()
+    {
         if (!this.isInit)
         {
             this.init();
         }
     }
 
-    init ()  {
+    init ()
+    {
         this.collectElementsToUpdate();
         this.isInit = true;
     }
 
-    collectElementsToUpdate() {
+    collectElementsToUpdate()
+    {
         this.buttons = document.querySelectorAll('.huhPwaWebSubscription');
         this.buttons.forEach((button) => {
             button.addEventListener('click', () => { this.changeSubscriptionStatus(button); });
         });
     }
-    beforeEvent (debugMessage) {
+
+    beforeEvent (debugMessage)
+    {
         if (this.debug) {
             console.log('[Push Notification Buttons] ' + debugMessage);
         }
@@ -39,46 +46,62 @@ class PushSubscriptionButtons {
         }
     }
 
-    setSubscribe (event) {
+    setSubscribe (event)
+    {
         this.beforeEvent('Update Buttons to "Subscribe"');
         this.subscriptionAction = 'subscribe';
         this.buttons.forEach((button) => {
             button.disabled = false;
-            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.subscribe;
+            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
         });
     }
 
-    setUnsubscribe (event) {
+    setUnsubscribe (event)
+    {
         this.beforeEvent('Update Buttons to "Unsubscribe"');
         this.subscriptionAction = 'unsubscribe';
         this.buttons.forEach((button) => {
             button.disabled = false;
-            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.unsubscribe;
+            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
         });
     }
 
-    setBlocked (event) {
+    setBlocked (event)
+    {
         this.beforeEvent('Update Buttons to blocked');
         this.buttons.forEach(function(button) {
-            button.querySelector('.label').textContent = HuhPwaTranslator.pushnotifications.blocked;
+            button.querySelector('.label').innerHTML = HuhContaoPwaBundle.translations.pushnotifications.blocked;
             button.classList.add('blocked');
             button.classList.remove('unsubscribed');
             button.classList.remove('subscribed');
             button.disabled = true;
         });
     }
-    changeSubscriptionStatus (button) {
 
-        console.log("Fire huh_pwa_push_changeSubscriptionState event");
+    setNotSupported (event)
+    {
+        this.beforeEvent('Serviceworker not supported');
+        this.buttons.forEach(function(button) {
+            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.not_supported;
+            button.classList.add('blocked');
+            button.classList.remove('unsubscribed');
+            button.classList.remove('subscribed');
+            button.disabled = true;
+        });
+    }
+
+    changeSubscriptionStatus (button)
+    {
+        if (this.debug) console.log("Fire huh_pwa_push_changeSubscriptionState event");
         button.disabled = true;
         document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: this.subscriptionAction }));
     }
 }
 
-module.exports = PushSubscriptionButtons;
+export default PushSubscriptionButtons

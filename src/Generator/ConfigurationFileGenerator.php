@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 
 use Contao\PageModel;
+use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\EventDispatcher\Tests\Service;
@@ -99,6 +100,7 @@ class ConfigurationFileGenerator
             'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
             'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
         ];
+        $configuration['translations']['pushnotifications']['not_supported'] = System::getContainer()->get('translator')->trans('huh.pwa.pushnotifications.not_supported');
         return $configuration;
     }
 

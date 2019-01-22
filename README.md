@@ -2,7 +2,7 @@
 
 A bundle to provide progressive web app support for contao.
 
-> This bundle is still in early beta. Use at your own risk! Serviceworker precaching currently only works for Webpack/Encore enabled pages. 
+> This bundle is still in early beta. Use at your own risk!
 
 This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-push-php) to provide push notifications. 
 
@@ -35,12 +35,12 @@ Call `composer require heimrichhannot/contao-pwa-bundle` and update database aft
 
 ### First Steps
 1. Your page template (typically `fe_page.html5`) must support [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). This means it must output at least `$this->meta` in head section. See bundle readme for more information
-2. _Only for encore bundle users:_ Add `contao-pwa-bundle` as active entry to the page root(s), where you want  to enable PWA
-2. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
-3. Create an PWA Configuration(Backend -> System -> PWA Configuration)
-4. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
+1. _Only for encore bundle users:_ Add `contao-pwa-bundle` as active entry to the page root(s), where you want  to enable PWA
+1. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
+1. Create an PWA Configuration(Backend -> System -> PWA Configuration)
+1. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
     * On saving the page the page manifest and the serviceworker will be generated
-5. To provide an option to register to your push notifications, you need to add the Push Notification Subscribe Button content element on your page
+1. To provide an option to register to your push notifications, you need to add the Push Notification Subscribe Button content element on your page
  
 ### Push Notifications
 
@@ -110,7 +110,13 @@ huh:pwa:sendpush | Send unsent push notifications
 
 It is possible to add additional js code to the head section by using the `PwaHeadScriptTags` object available available as `huh.head.tag.pwa.script` service. Code added with `addScript` will be outputted in header section of your page within `<script type='text/javascript'>` tags.
 
+### Polyfills
+
+If you want to stop IE from throwing an console error, you need to add a custom event polyfill, for example [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill).
+
 
 ## Todo
 * image size config
 * support svg icons
+* select pages to precache
+* customize add to homescreen and push notification notifications

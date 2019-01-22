@@ -11,7 +11,7 @@ let debug = HuhContaoPwaBundle.debug;
 
 if (!('serviceWorker' in navigator)) {
     if (debug) console.log('[SW Registration] Service Worker not supported');
-    document.dispatchEvent(new Event('huh_pwa_sw_not_supported'));
+    document.dispatchEvent(new CustomEvent('huh_pwa_sw_not_supported'));
 }
 else {
     if (debug) console.log("[SW Registration] Register service worker");

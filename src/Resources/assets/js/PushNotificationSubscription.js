@@ -1,4 +1,5 @@
-class PushNotificationSubscription {
+class PushNotificationSubscription
+{
     constructor(subscribePath = '', unsubscribePath = '') {
         this.isInit = false;
         this.debug = false;
@@ -98,7 +99,8 @@ class PushNotificationSubscription {
         }
     };
 
-    static urlBase64ToUint8Array(base64String) {
+    static urlBase64ToUint8Array(base64String)
+    {
         let padding = '='.repeat((4 - base64String.length % 4) % 4);
         let base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
 
@@ -112,4 +114,4 @@ class PushNotificationSubscription {
     };
 }
 
-module.exports = PushNotificationSubscription;
+export default PushNotificationSubscription

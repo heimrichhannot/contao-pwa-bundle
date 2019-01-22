@@ -22,8 +22,6 @@ class PwaHeadScriptTags extends AbstractTag
      */
     protected $scripts;
 
-
-
     /**
      * Generate the tag output.
      *

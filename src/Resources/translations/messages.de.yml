@@ -9,6 +9,7 @@ huh.pwa:
     subscribe: "Benachrichtigungen abonnieren"
     unsubscribe: "Benachrichtigungen nicht mehr empfangen"
     blocked: "Benachrichtigungen wurden von Ihrem Browser blockiert"
+    not_supported: "Benachrichtigungen werden von Ihrem Browser nicht unterstützt"
   backend:
     control:
       headline: "PWA Verwaltung"
