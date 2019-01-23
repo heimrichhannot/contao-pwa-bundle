@@ -2,7 +2,7 @@
 
 A bundle to provide progressive web app support for contao.
 
-> This bundle is still in early beta. Use at your own risk!
+> This bundle is still in beta. Please provide feedback if you use it!
 
 This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-push-php) to provide push notifications. 
 
