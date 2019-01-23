@@ -36,7 +36,7 @@ class PwaHeadScriptTags extends AbstractTag
         }
         foreach ($this->scripts as $script)
         {
-            $content .= "<script type='text/javascript'>".$script."</script>";
+            $content .= "<script>".$script."</script>";
         }
         return $content;
     }
