@@ -49,7 +49,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
 
         $pages = PageModel::findAllWithActivePwaConfiguration();
 
-        if (($pageNumber = $pages->count()) < 1)
+        if (null === $pages || ($pageNumber = $pages->count()) < 1)
         {
             $io->text("Found no pages with active PWA Configuration. ");
             return 0;

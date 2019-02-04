@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2019-02-04
+
+#### Fixed
+* `BuildPwaFilesCommand` error if no pages with active pwa configuration exist
+
 ## [0.1.2] - 2019-01-23
 
 #### Changed
