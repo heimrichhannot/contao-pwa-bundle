@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2019-02-18
+
+#### Fixed
+* "Table is not allowed error" (#2)
+
 ## [0.1.3] - 2019-02-04
 
 #### Fixed
