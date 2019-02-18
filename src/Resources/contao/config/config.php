@@ -5,7 +5,7 @@
  */
 
 $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
-	'tables' => ['tl_pwa_configurations']
+	'tables' => ['tl_pwa_configurations', 'tl_pwa_pushsubscriber', 'tl_pwa_pushnotifications']
 ];
 
 
