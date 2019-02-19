@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.2.0-DEV] - 2019-02-18
+## [0.1.5] - 2019-02-18
 
 #### Changed
 * increased utils bundle dependency
