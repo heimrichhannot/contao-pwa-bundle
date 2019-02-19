@@ -14,11 +14,9 @@ namespace HeimrichHannot\ContaoPwaBundle\Sender;
 
 use Contao\Model\Collection;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
-use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
 class PushNotificationSender

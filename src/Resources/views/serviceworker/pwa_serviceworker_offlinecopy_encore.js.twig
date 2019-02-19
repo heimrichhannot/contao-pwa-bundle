@@ -4,7 +4,7 @@
     fetch('/build/manifest.json').then(function(responce) {
         return responce.json();
     }).then(function(json) {
-        if (debug) console.log('\'[Serviceworker] Install: Fetched manifest\'');
+        SW.log(event, 'Fetch webpack manifest')
         // Create an array with only file paths
         let encoreFiles = Object.keys(json).map(function(key) {
             return json[key];

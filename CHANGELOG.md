@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.0-DEV] - 2019-02-18
+
+#### Changed
+* increased utils bundle dependency
+* POST requests not cached
+* clone response (no duplicate request)
+
+#### Fixed
+* Formhybrid asynchronous forms not working
+
 ## [0.1.4] - 2019-02-18
 
 #### Fixed

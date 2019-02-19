@@ -41,9 +41,9 @@ class PwaPushNotificationsModel extends Model
 	/**
 	 * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
 	 */
-	public static function findUnsentNotifications()
+	public static function findUnsentNotifications(bool $ignoreSendDate = false)
 	{
-		return static::findBy('sent','');
+		return static::findBy(['sent=?'],['']);
 	}
 
 	/**

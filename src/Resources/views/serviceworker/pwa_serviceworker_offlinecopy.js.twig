@@ -2,7 +2,7 @@
 
 {% block install %}
 self.addEventListener('install', function(event) {
-    if (debug) console.log('[Serviceworker] Install event');
+    SW.log(event, 'Start install event');
     event.waitUntil(preLoad().then(self.skipWaiting()));
 
     function preLoad(){
@@ -10,7 +10,7 @@ self.addEventListener('install', function(event) {
             let files = [startUrl, offlinePage];
             {% block preload_files %}
             {% endblock %}
-            if (debug) console.log('[Serviceworker] Install: Precache file list', files);
+            SW.log(event, 'Precache file list', files);
             return cache.addAll(files);
         });
     }
@@ -18,57 +18,42 @@ self.addEventListener('install', function(event) {
 {% endblock %}
 
 {% block fetch_inner %}
-    event.respondWith(checkResponse(event.request)
-        .catch(function() {
-            return returnFromCache(event.request)}
-        )
+    event.respondWith(
+        fetch(event.request)
+        .then(function(responce) {
+            let cacheCopy = responce.clone();
+            caches.open(CACHE)
+                .then(function (cache) {
+                    cache.put(event.request, cacheCopy);
+                })
+                .then(function() {
+                    SW.log(event, 'Added request to cache:' + event.request.url);
+                });
+            return responce;
+        })
+        .catch(function(error) {
+            SW.log(event, 'Could not fetch resource, try to return from cache: ' + event.request.url)
+            return returnFromCache(event.request);
+        })
     );
 
 
-    try {
-        event.waitUntil(addToCache(event.request)).catch(function(error) {
-            console.log('[Serviceworker] Fetch: ' + error);
-        });
-    } catch (e) {
-        console.log('[Serviceworker] Fetch: ' + e);
-    }
-
-    function checkResponse(request){
-        return new Promise(function(fulfill, reject) {
-            fetch(request).then(function(response){
-                fulfill(response)
-            }, reject)
-        });
-    }
-
-    function addToCache(request){
-        return caches.open(CACHE).then(function (cache) {
-            return fetch(request).then(function (response) {
-                if (debug) console.log('[Serviceworker] Fetch: add page to offline '+response.url)
-                return cache.put(request, response);
-            }).then(function(error) {
-                console.log('[Serviceworker] Fetch: ' + error);
-            });
-        });
-    }
-
     function returnFromCache(request)
     {
-        //Check to see if you have it in the cache
-        //Return response
-        //If not in the cache, then return error page
         return caches.open(CACHE).then(function (cache) {
             return cache.match(request).then(function (matching) {
                 if (!matching || matching.status == 404)
                 {
-                    if (offlinePage != '')
-                    {
-                        return cache.match(offlinePage);
-                    }
-                    return Promise.reject('no-match');
+                    return SW.offlineFallback();
                 }
                 return matching;
             });
         });
+    }
+
+
+    
+    function returnOfflineFallback() {
+        return new Promise
     }
 {% endblock %}

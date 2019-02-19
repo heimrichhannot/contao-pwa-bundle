@@ -1,23 +1,48 @@
 {% block config_variables %}
     let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
-    let debug = {% if debug|default(false) %}true{% else %}false{% endif %};
     let pageTitle = '{{ pageTitle }}';
     let startUrl = '{{ startUrl|default('/') }}';
     let offlinePage = '{{ offlinePage|default('') }}';
 {% endblock %}
 
+class HuhPwaServiceWorker
+{
+    constructor() {
+        this.offlinePage = '';
+        this.debug = false;
+    }
+
+    offlineFallback() {
+        if (this.offlinePage != '')
+        {
+            return cache.match(this.offlinePage);
+        }
+        return Promise.reject('no-match');
+    }
+
+    log(event, message) {
+        if (this.debug) console.log('[Serviceworker ' + event.type + ' event] ' + message);
+    }
+}
+
+{% block configuration %}
+let SW = new HuhPwaServiceWorker();
+SW.offlinePage = offlinePage;
+SW.debug = {% if debug|default(false) %}true{% else %}false{% endif %};
+{% endblock %}
+
 {% block install %}
 self.addEventListener('install', function(event) {
-    if (debug) console.log('[Serviceworker] Install event');
-        e.waitUntil(
-            self.skipWaiting()
-        );
+    SW.log(event, 'Start install event');
+    e.waitUntil(
+        self.skipWaiting()
+    );
 });
 {% endblock %}
 
 {% block activate %}
 self.addEventListener('activate', function(event) {
-    if (debug) console.log('[Serviceworker] Activate event!');
+    SW.log(event, 'Start activate event');
     {% block activate_inner %}
     event.waitUntil(
         self.clients.claim().then(function() {
@@ -39,8 +64,13 @@ self.addEventListener('activate', function(event) {
 
 {% block fetch %}
 self.addEventListener('fetch', function(event) {
-    if (debug) console.log('[Serviceworker] Fetch ' + event.request.url);
+    SW.log(event, 'Fetch ' + event.request.url);
     {% block fetch_filter %}
+
+        if (event.request.method !== 'GET') {
+            SW.log(event, 'POST requests are not handled by the service worker');
+            return event.respondWith(fetch(event.request));
+        }
         var url = new URL(event.request.url);
 
         // don't cache backend or dev routes
@@ -49,7 +79,7 @@ self.addEventListener('fetch', function(event) {
             || url.pathname.match('^\/app_dev.php')
             || url.pathname.match('^\/api')
         ) {
-            if (debug) console.log('[Serviceworker] Fetch: Stop (' + event.request.url + ')');
+            SW.log(event, '[Serviceworker] Fetch: Stop (' + event.request.url + ')');
             return false;
         }
     {% endblock %}
@@ -67,10 +97,10 @@ self.addEventListener('push', function(event) {
     let payload = event.data ? event.data.text() : false;
     if (false === payload)
     {
-        if (debug) console.log('[Serviceworker] Push: A push notification sent from ' + pageTitle + ' without any content.');
+        SW.log(event, 'A push notification sent from ' + pageTitle + ' without any content.');
         return;
     }
-    if (debug) console.log("[Serviceworker] Push: Payload: ", payload);
+    SW.log(event, 'Push payload: ', payload);
     payload = JSON.parse(payload);
 
     event.waitUntil(
@@ -82,7 +112,7 @@ self.addEventListener('push', function(event) {
 
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function(event) {
-    if (debug) console.log("[Serviceworker] Notificationclick event ");
+    SW.log(event, 'Start notification clicked event');
     if (event.notification.data.clickJumpTo !== undefined)
     {
         event.notification.close();
