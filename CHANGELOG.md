@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2019-02-19
+
+#### Changed 
+* Added publish, start and dateSent fields to tl_pwa_pushnotifications, removed sendDate field
+* enhanced translations
+* renamed some methods
+
+#### Fixed 
+* send push notifiations not respect sendDate
+
 ## [0.1.5] - 2019-02-18
 
 #### Changed

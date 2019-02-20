@@ -12,6 +12,8 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\Config;
+use Contao\Date;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -34,23 +36,54 @@ class PwaPushNotificationContainer
 		$this->translator = $translator;
 	}
 
-	public function onLabelCallback(array $row)
+	public function onChildRecordCallback(array $row)
 	{
+        $dateFormat = Config::get('datimFormat');
+        $time = \Date::floorToMinute();
 		$label = $row['title'];
 		$label .= ' <span style="color:#999;padding-left:3px">(';
 		if ($row['sent'])
 		{
-			$label .= $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.sent');
+			$label .= $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.notificationSent', ["%date%" => Date::parse($dateFormat, $row['dateSent'])]);
 		}
 		else {
-			$label .= $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.sendAt');
+		    if ($row['published'])
+            {
+                if ($row['start'] > 0 && $row['start'] > $time)
+                {
+                    $label .= $this->translator->trans(
+                        'huh.pwa.tl_pwa_pushnotifications.label.notificationUnsentPublishedDate',
+                        ['%date%' => Date::parse($dateFormat, $row['date'])]
+                    );
+                }
+                else {
+                    $label .= $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.notificationUnsentPublished');
+                }
+            }
+		    else {
+                $label .= $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.notificationUnsentNotPublished');
+            }
+
+
 		}
-		$label .= ' ';
-		$dateFormat = $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.dateFormat');
-		$label .= date($dateFormat, $row['sendDate']);
 		$label .= ')</span>';
 		return $label;
 	}
+
+	public function onGroupCallback($group, $mode, $field, $row, $dcTable)
+    {
+	    if ($field === 'sent')
+        {
+            if ($row['sent'] === "1")
+            {
+                $group = $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.groupSent');
+            }
+            else {
+                $group = $this->translator->trans('huh.pwa.tl_pwa_pushnotifications.label.groupUnsent');
+            }
+        }
+	    return $group;
+    }
 
 	/**
 	 *

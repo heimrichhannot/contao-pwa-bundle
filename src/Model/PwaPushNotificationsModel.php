@@ -28,42 +28,67 @@ use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
  * @property string $body
  * @property string $icon
  * @property string $iconSize
- * @property string $sendDate
  * @property string $sent
  * @property int $receiverCount
  * @property string $clickEvent
  * @property string $clickJumpTo
+ * @property int $dateSent
+ * @property boolean $published
+ * @property int  $start
  */
 class PwaPushNotificationsModel extends Model
 {
 	protected static $strTable = 'tl_pwa_pushnotifications';
 
-	/**
-	 * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
-	 */
-	public static function findUnsentNotifications(bool $ignoreSendDate = false)
+    /**
+     * @param array $options
+     * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
+     */
+	public static function findUnsentPublishedNotifications(array $options = [])
 	{
-		return static::findBy(['sent=?'],['']);
+        $t = static::$strTable;
+        $time = \Date::floorToMinute();
+
+        $columns = [
+            "$t.sent=''",
+            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+        ];
+
+		return static::findBy($columns, null, $options);
 	}
 
-	/**
-	 * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
-	 */
-	public static function findUnsentNotificationsByPid(int $id)
+    /**
+     * @param int $pid
+     * @param array $options
+     * @return Collection|PwaPushNotificationsModel|PwaPushNotificationsModel[]|null
+     */
+	public static function findUnsentPublishedNotificationsByPid(int $pid, array $options = [])
 	{
 		$t = static::$strTable;
-		return static::findBy(["$t.pid=?", "$t.sent=?"],[$id, ""]);
+        $time = \Date::floorToMinute();
+        $columns = [
+            "$t.pid=?",
+            "$t.sent=''",
+            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+        ];
+		return static::findBy($columns,$pid, $options);
 	}
 
-	/**
-	 * Find an unsent notification by id
-	 *
-	 * @param int $id
-	 * @return PwaPushNotificationsModel|null
-	 */
+    /**
+     * Find an unsent notification by id
+     *
+     * @param int $id
+     * @return PwaPushNotificationsModel|null
+     */
 	public static function findUnsentNotificationById(int $id)
 	{
 		$t = static::$strTable;
-		return static::findOneBy(["$t.id=?", "$t.sent=?"],[$id, ""]);
+        $time = \Date::floorToMinute();
+        $columns = [
+            "$t.id=?",
+            "$t.sent=''",
+            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+        ];
+        return static::findOneBy($columns, $id, $columns);
 	}
 }

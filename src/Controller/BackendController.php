@@ -84,7 +84,7 @@ class BackendController extends Controller
 	 */
 	public function findUnsentNotificationAction()
 	{
-		$notifications = PwaPushNotificationsModel::findUnsentNotifications();
+		$notifications = PwaPushNotificationsModel::findUnsentPublishedNotifications();
 		if (!$notifications)
 		{
 			return new JsonResponse(['count' => 0]);

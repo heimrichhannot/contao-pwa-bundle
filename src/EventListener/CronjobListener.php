@@ -75,7 +75,7 @@ class CronjobListener
 
 		foreach ($configurations as $configuration)
 		{
-			$notifications = PwaPushNotificationsModel::findUnsentNotificationsByPid($configuration->id);
+			$notifications = PwaPushNotificationsModel::findUnsentPublishedNotificationsByPid($configuration->id);
 			if (!$notifications)
 			{
 				continue;

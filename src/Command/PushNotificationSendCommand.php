@@ -59,7 +59,7 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 
 		$sender = $this->getContainer()->get('huh.pwa.sender.pushnotification');
 
-        $unsent = PwaPushNotificationsModel::findUnsentNotifications();
+        $unsent = PwaPushNotificationsModel::findUnsentPublishedNotifications();
 
 		if (!$unsent || $unsent->count() == 0)
 		{

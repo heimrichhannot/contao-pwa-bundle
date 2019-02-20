@@ -1,9 +1,12 @@
 huh.pwa:
   tl_pwa_pushnotifications:
     label:
-      sent: "Sent at"
-      sendAt: "Send at"
-      dateFormat: "Y-m-d H:i"
+      notificationSent: "Sent at %date%"
+      notificationUnsentPublished: "Will soon be sent"
+      notificationUnsentPublishedDate: "Will be sent from %date%"
+      notificationUnsentNotPublished: "Not published yet"
+      groupSent: "Sent notifications"
+      groupUnsent: "Unsent notifications"
   pushnotifications:
     wait: "We currently checking if push notifications are supported by your browser"
     subscribe: "Subscribe push notifications"

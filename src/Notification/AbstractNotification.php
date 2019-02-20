@@ -22,7 +22,7 @@ abstract class AbstractNotification implements \JsonSerializable
 	 *
 	 * @return PwaPushNotificationsModel|null
 	 */
-	abstract function getSource(): ?PwaPushNotificationsModel;
+	abstract function getModel(): ?PwaPushNotificationsModel;
 
 	/**
 	 *

@@ -9,12 +9,14 @@ $lang['title'] = ["Title","The title of the notification."];
 $lang['body'] = ["Content","A short content text for the notification."];
 $lang['icon'] = ["Icon","The image should be shown next to the notification."];
 $lang['iconSize'] = ["Icon size","Size of the image."];
-$lang['sendDate'] = ["Send date","The the, when the notification should be sent."];
 $lang['sent'] = ["Sent","Select if message is already sent."];
 $lang['receiverCount'] = ["Recipient count","The number of recipients the message was sent."];
 $lang['clickEvent'] = ["Notification click behavior","Select what to do if the notification is clicked."];
 $lang['clickEvent'][\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE] = "Open page";
 $lang['clickJumpTo'] = ["Jump to page","Select the page that should be opened when the notification is clicked."];
+$lang['published'] = ["Publish notification","Activate the delivery of the push notification."];
+$lang['start'] = ["Shipping from","Do not send the push notification before this date."];
+$lang['dateSent'] = ["Sent date","The date, when the notification was sent."];
 
 
 /**
@@ -23,7 +25,7 @@ $lang['clickJumpTo'] = ["Jump to page","Select the page that should be opened wh
 
 $lang['message_legend'] = 'Notification content';
 $lang['behavior_legend'] = 'Notification behavior';
-$lang['send_legend'] = 'Send notification';
+$lang['publish_legend'] = 'Publish';
 
 /**
  * Buttons

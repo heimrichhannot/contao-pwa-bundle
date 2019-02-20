@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Notification;
 
 
 use Contao\FilesModel;
+use Contao\Model;
 use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 
@@ -21,7 +22,10 @@ class DefaultNotification extends AbstractNotification
 	protected $title;
 	protected $body;
 	protected $icon;
-	protected $source;
+    /**
+     * @var PwaPushNotificationsModel|Model|null
+     */
+	protected $model;
 
 
 	/**
@@ -32,12 +36,12 @@ class DefaultNotification extends AbstractNotification
 	{
 		if ($notificationsModel)
 		{
-			 $this->setSource($notificationsModel);
+			 $this->setModel($notificationsModel);
 			 $this->setTitle($notificationsModel->title);
 			 $this->setBody($notificationsModel->body);
 			 if ($notificationsModel->icon)
 			 {
-				 $this->setIconFromSource($notificationsModel->icon, $notificationsModel->iconSize);
+				 $this->setIconFromModel($notificationsModel->icon, $notificationsModel->iconSize);
 			 }
 		}
 	}
@@ -90,17 +94,17 @@ class DefaultNotification extends AbstractNotification
 		$this->icon = $icon;
 	}
 
-	function getSource(): ?PwaPushNotificationsModel
+	function getModel(): ?PwaPushNotificationsModel
 	{
-		return $this->source;
+		return $this->model;
 	}
 
 	/**
-	 * @param mixed $source
+	 * @param mixed $model
 	 */
-	public function setSource($source): void
+	public function setModel($model): void
 	{
-		$this->source = $source;
+		$this->model = $model;
 	}
 
 	/**
@@ -111,7 +115,7 @@ class DefaultNotification extends AbstractNotification
 	 *
 	 * @todo Refactor this out to a factory class
 	 */
-	public function setIconFromSource(string $icon, string $iconSize = null)
+	public function setIconFromModel(string $icon, string $iconSize = null)
 	{
 		if ($iconSize)
 		{

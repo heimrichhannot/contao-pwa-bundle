@@ -17,6 +17,7 @@ use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
+use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
 class PushNotificationSender
@@ -81,7 +82,6 @@ class PushNotificationSender
 			return ["success" => false, "message" => $e->getMessage()];
 		}
 
-		$payload = [];
 		try
 		{
 			$payload = $notification->toArray();
@@ -90,7 +90,7 @@ class PushNotificationSender
 			return ["sucess" => false, "message" => "Could not serialize notification. Error message: ".$e->getMessage()];
 		}
 
-		if ($notificationsModel = $notification->getSource())
+		if ($notificationsModel = $notification->getModel())
 		{
 			$this->notificationContainer->notificationClickEvent($notificationsModel, $payload);
 		}
@@ -122,12 +122,12 @@ class PushNotificationSender
 
 		$result = $webPush->flush();
 
-		if ($notification->getSource())
+		if ($notification->getModel())
 		{
-			$notification->getSource()->sent = "1";
-			$notification->getSource()->sendDate = $sendDate;
-			$notification->getSource()->receiverCount = $validSubscribers;
-			$notification->getSource()->save();
+			$notification->getModel()->sent          = "1";
+			$notification->getModel()->dateSent      = $sendDate;
+			$notification->getModel()->receiverCount = $validSubscribers;
+			$notification->getModel()->save();
 		}
 
 		return [
