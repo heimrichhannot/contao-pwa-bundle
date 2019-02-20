@@ -51,7 +51,7 @@ class PwaPushNotificationsModel extends Model
 
         $columns = [
             "$t.sent=''",
-            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+            "($t.start='' OR $t.start<='$time') AND $t.published='1'"
         ];
 
 		return static::findBy($columns, null, $options);
@@ -69,7 +69,7 @@ class PwaPushNotificationsModel extends Model
         $columns = [
             "$t.pid=?",
             "$t.sent=''",
-            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+            "($t.start='' OR $t.start<='$time') AND $t.published='1'"
         ];
 		return static::findBy($columns,$pid, $options);
 	}
@@ -87,7 +87,7 @@ class PwaPushNotificationsModel extends Model
         $columns = [
             "$t.id=?",
             "$t.sent=''",
-            "($t.start='0' OR $t.start<='$time') AND $t.published='1'"
+            "($t.start='' OR $t.start<='$time') AND $t.published='1'"
         ];
         return static::findOneBy($columns, $id, $columns);
 	}

@@ -17,6 +17,8 @@ use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
+use Minishlink\WebPush\Encryption;
+use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
@@ -41,15 +43,15 @@ class PushNotificationSender
 		$this->notificationContainer = $notificationContainer;
 	}
 
-	/**
-	 * Send the notification to all recipients or a list of given recipients.
-	 *
-	 * @param AbstractNotification $notification
-	 * @param PwaConfigurationsModel $config
-	 * @param array|PwaPushSubscriberModel[]|null $subscribers
-	 * @return array|bool
-	 * @throws \ErrorException
-	 */
+    /**
+     * Send the notification to all recipients or a list of given recipients.
+     *
+     * @param AbstractNotification $notification
+     * @param PwaConfigurationsModel $config
+     * @param array|PwaPushSubscriberModel[]|Collection|null $subscribers
+     * @return array|bool
+     * @throws \Exception
+     */
 	public function send(AbstractNotification $notification, PwaConfigurationsModel $config, ?array $subscribers = null)
 	{
 
@@ -79,15 +81,33 @@ class PushNotificationSender
 			$webPush = new WebPush($auth);
 		} catch (\ErrorException $e)
 		{
-			return ["success" => false, "message" => $e->getMessage()];
+		    throw new \Exception("Web push config: Could not construct WebPush object. Error message: ".$e->getMessage());
 		}
+
+		try {
+            if (isset($this->bundleConfig['push']['automatic_padding']))
+            {
+                $padding = $this->bundleConfig['push']['automatic_padding'];
+                if (is_numeric($padding) && $padding > 0 && $padding <= Encryption::MAX_PAYLOAD_LENGTH)
+                {
+                    $webPush->setAutomaticPadding(intval($padding));
+                } elseif (is_bool($padding))
+                {
+                    $webPush->setAutomaticPadding($padding);
+                } else {
+                    $webPush->setAutomaticPadding(2847);
+                }
+            }
+        } catch (\Exception $e) {
+		    throw new \Exception("Web push config: Invalid padding. Error message: ".$e->getMessage());
+        }
 
 		try
 		{
 			$payload = $notification->toArray();
 		} catch (\ReflectionException $e)
 		{
-			return ["sucess" => false, "message" => "Could not serialize notification. Error message: ".$e->getMessage()];
+            throw new \Exception("Could not serialize notification. Error message: ".$e->getMessage());
 		}
 
 		if ($notificationsModel = $notification->getModel())
@@ -114,17 +134,43 @@ class PushNotificationSender
 				$validSubscribers++;
 			} catch (\ErrorException $e)
 			{
-				return ["success" => false, "message" => $e->getMessage()];
+			    throw new \Exception("Error while sending push notification (Subscriber Id: {$subscriber->id}): ".$e->getMessage());
 			}
-			$subscriber->lastSuccessfulSend = $sendDate;
-			$subscriber->save();
 		}
-
 		$result = $webPush->flush();
+
+		$successCount = 0;
+		$errors = [];
+
+		/** @var MessageSentReport $report */
+        foreach ($result as $index =>$report)
+        {
+            $subscriber = $subscribers->offsetGet($index);
+            if ($report->isSuccess())
+            {
+                $subscriber->lastSuccessfulSend = $sendDate;
+                $subscriber->save();
+                $successCount++;
+            }
+            else {
+                $error = [
+                    'endpoint' => $report->getEndpoint(),
+                    'response' => json_encode($report->getResponse()->getBody()),
+                ];
+                if ($report->isSubscriptionExpired())
+                {
+                    // TODO
+                    $error['reason'] = 'Subscription expired';
+                }
+                else {
+                    $error['reason'] = $report->getReason();
+                }
+                $errors[] = $error;
+            }
+        }
 
 		if ($notification->getModel())
 		{
-			$notification->getModel()->sent          = "1";
 			$notification->getModel()->dateSent      = $sendDate;
 			$notification->getModel()->receiverCount = $validSubscribers;
 			$notification->getModel()->save();
@@ -133,7 +179,8 @@ class PushNotificationSender
 		return [
 			'success' => true,
 			'sentCount' => $validSubscribers,
-			'result' => $result,
+            'successCount' => $successCount,
+            'errors' => $errors,
 		];
 	}
 }

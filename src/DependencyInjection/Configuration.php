@@ -40,6 +40,11 @@ class Configuration implements ConfigurationInterface
 			->end()
             ->scalarNode('manifest_path')->defaultValue('/pwa')->end()
             ->scalarNode('configfile_path')->defaultValue('/pwa')->end()
+            ->arrayNode('push')
+                ->children()
+                    ->scalarNode('automatic_padding')->defaultNull()->end()
+                ->end()
+            ->end()
 		->end();
 
 		return $treeBuilder;

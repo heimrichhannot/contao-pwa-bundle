@@ -47,6 +47,7 @@ let HuhPwaBackend = {
         this.button.disabled = true;
         this.logger = document.querySelector('#huhPwaSendPushNotificationStatus');
         this.logger.innerHTML = '';
+
         let request = this.unsentNotificationRequest(this.unsentCountRoute);
         request.send(this.unsentCountRoute).then((response) => {
             console.log(response);

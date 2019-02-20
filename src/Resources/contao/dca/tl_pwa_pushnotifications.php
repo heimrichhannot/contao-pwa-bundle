@@ -97,7 +97,7 @@ $GLOBALS['TL_DCA'][$table] = [
 		'title'         => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['title'],
 			'inputType' => 'text',
-			'eval'      => ['tl_class' => 'w50'],
+			'eval'      => ['tl_class' => 'w50', 'mandatory' => true,],
 			'sql'       => "varchar(255) NOT NULL default ''",
 		],
 		'body'          => [
@@ -174,13 +174,12 @@ $GLOBALS['TL_DCA'][$table] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['start'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql'       => "int(10) unsigned NOT NULL default '0'"
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'doNotCopy' => true],
+            'sql'       => "varchar(10) NOT NULL default ''"
         ],
         'dateSent'      => [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['dateSent'],
-            'inputType' => 'text',
-            'eval'      => ['rgxp' => 'datim', 'doNotCopy' => true, 'tl_class' => 'w50', 'datepicker' => true],
+            'eval'      => ['doNotCopy' => true],
             'sql'       => "int(10) unsigned NOT NULL default '0'",
             'flag'      => 8,
         ],

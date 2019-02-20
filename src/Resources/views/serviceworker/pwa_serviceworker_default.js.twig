@@ -1,6 +1,5 @@
 {% block config_variables %}
     let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
-    let pageTitle = '{{ pageTitle }}';
     let startUrl = '{{ startUrl|default('/') }}';
     let offlinePage = '{{ offlinePage|default('') }}';
 {% endblock %}
@@ -10,6 +9,7 @@ class HuhPwaServiceWorker
     constructor() {
         this.offlinePage = '';
         this.debug = false;
+        this.pageTitle = '';
     }
 
     offlineFallback() {
@@ -18,6 +18,16 @@ class HuhPwaServiceWorker
             return cache.match(this.offlinePage);
         }
         return Promise.reject('no-match');
+    }
+
+    notificationTitle(payload)
+    {
+        let title = this.pageTitle;
+        if (typeof payload.title === 'string')
+        {
+            title = payload.title;
+        }
+        return title;
     }
 
     log(event, message) {
@@ -29,6 +39,7 @@ class HuhPwaServiceWorker
 let SW = new HuhPwaServiceWorker();
 SW.offlinePage = offlinePage;
 SW.debug = {% if debug|default(false) %}true{% else %}false{% endif %};
+SW.pageTitle = '{{ pageTitle }}';
 {% endblock %}
 
 {% block install %}
@@ -92,19 +103,19 @@ self.addEventListener('fetch', function(event) {
 {% endblock %}
 
 {% block push %}
-self.addEventListener('push', function(event) {
+self.addEventListener('push', /** @param {PushEvent} event */ function(event) {
     {% block push_inner %}
     let payload = event.data ? event.data.text() : false;
     if (false === payload)
     {
-        SW.log(event, 'A push notification sent from ' + pageTitle + ' without any content.');
+        SW.log(event, 'A push notification sent from ' + SW.pageTitle + ' without any content.');
         return;
     }
-    SW.log(event, 'Push payload: ', payload);
+    SW.log(event, 'Push payload: ' + payload);
     payload = JSON.parse(payload);
 
     event.waitUntil(
-        self.registration.showNotification(pageTitle, payload)
+        self.registration.showNotification(SW.notificationTitle(payload), payload)
     );
     {% endblock %}
 });

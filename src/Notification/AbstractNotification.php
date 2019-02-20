@@ -22,7 +22,7 @@ abstract class AbstractNotification implements \JsonSerializable
 	 *
 	 * @return PwaPushNotificationsModel|null
 	 */
-	abstract function getModel(): ?PwaPushNotificationsModel;
+	abstract public function getModel(): ?PwaPushNotificationsModel;
 
 	/**
 	 *
@@ -39,6 +39,10 @@ abstract class AbstractNotification implements \JsonSerializable
 		foreach ($classMethods as $method)
 		{
 			if (substr($method->getName(),0,3) !== 'get')
+			{
+				continue;
+			}
+			if ($method->getName() === 'getModel')
 			{
 				continue;
 			}
