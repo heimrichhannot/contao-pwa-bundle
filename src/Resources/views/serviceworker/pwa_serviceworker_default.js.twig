@@ -121,17 +121,17 @@ self.addEventListener('push', /** @param {PushEvent} event */ function(event) {
 });
 {% endblock %}
 
-{% block pushsubscriptionchange %}
-self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChangeEvent} event */ function(event) {
-    SW.log(event, 'Start event');
-    event.waitUntil(
-        self.registration.pushManager.subscribe(e.oldSubscription.options)
-        .then(function(subscription) {
-
-        })
-    );
-});
-{% endblock %}
+{#{% block pushsubscriptionchange %}#}
+{#self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChangeEvent} event */ function(event) {#}
+    {#SW.log(event, 'Start event');#}
+    {#event.waitUntil(#}
+        {#self.registration.pushManager.subscribe(e.oldSubscription.options)#}
+        {#.then(function(subscription) {#}
+            {##}
+        {#})#}
+    {#);#}
+{#});#}
+{#{% endblock %}#}
 
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function(event) {

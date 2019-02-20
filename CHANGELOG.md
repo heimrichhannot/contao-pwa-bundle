@@ -10,7 +10,6 @@ All notable changes to this project will be documented in this file.
 
 #### Added
 * option to configure push message encryption padding
-* pushsubscriptionchange to serviceworker
 
 #### Fixed
 * push notifications not arrive in firefox mobile
