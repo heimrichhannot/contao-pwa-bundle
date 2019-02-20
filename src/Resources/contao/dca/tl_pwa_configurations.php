@@ -51,6 +51,11 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 		],
 		'operations'        => [
+            'pushNotifications'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['pushNotifications'],
+                'href'  => 'table=tl_pwa_pushnotifications',
+                'icon'  => 'edit.svg',
+            ],
 			'edit' => [
 				'label'           => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['edit'],
 				'href'            => 'act=edit',
@@ -77,11 +82,6 @@ $GLOBALS['TL_DCA'][$table] = [
 				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['subscriber'],
 				'href'  => 'table=tl_pwa_pushsubscriber',
 				'icon'  => 'mgroup.svg',
-			],
-			'pushNotifications'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['pushNotifications'],
-				'href'  => 'table=tl_pwa_pushnotifications',
-				'icon'  => 'news.svg',
 			],
 		],
 	],

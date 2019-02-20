@@ -1,12 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.3.0-DEV] - 2019-02-19
+## [0.3.0] - 2019-02-19
 
 #### Changed
 * increased WebPush lib dependency to 5
 * changed start field of push notifications to mysql varchar type
-* PushNotificationSender now throws errors,
+* PushNotificationSender now throws errors
+* reordered PWA config dca operation buttons
 
 #### Added
 * option to configure push message encryption padding
