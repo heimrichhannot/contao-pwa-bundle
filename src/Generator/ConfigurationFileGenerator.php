@@ -19,6 +19,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\EventDispatcher\Tests\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ConfigurationFileGenerator
 {
@@ -34,6 +35,10 @@ class ConfigurationFileGenerator
      * @var string
      */
     private $webDir;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
 
     /**
@@ -42,11 +47,12 @@ class ConfigurationFileGenerator
      * @param string $webDir
      * @param array $bundleConfiguration
      */
-    public function __construct(RouterInterface $router, string $webDir, array $bundleConfiguration)
+    public function __construct(RouterInterface $router, string $webDir, array $bundleConfiguration, TranslatorInterface $translator)
     {
         $this->router              = $router;
         $this->bundleConfiguration = $bundleConfiguration;
         $this->webDir = $webDir;
+        $this->translator = $translator;
     }
 
     /**
@@ -99,6 +105,14 @@ class ConfigurationFileGenerator
             'support' => (bool) $config->supportPush,
             'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
             'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
+        ];
+        $configuration['translations'] = [
+            'pushnotifications' => [
+                'subscribe'     => $this->translator->trans('huh.pwa.pushnotifications.subscribe'),
+                'unsubscribe'   => $this->translator->trans('huh.pwa.pushnotifications.unsubscribe'),
+                'blocked'       => $this->translator->trans('huh.pwa.pushnotifications.blocked'),
+                'not_supported' => $this->translator->trans('huh.pwa.pushnotifications.not_supported'),
+            ]
         ];
         return $configuration;
     }

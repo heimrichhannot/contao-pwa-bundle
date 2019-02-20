@@ -52,7 +52,7 @@ class PushSubscriptionButtons
         this.subscriptionAction = 'subscribe';
         this.buttons.forEach((button) => {
             button.disabled = false;
-            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.subscribe;
+            button.querySelector('.label').innerHTML = HuhContaoPwaBundle.translations.pushnotifications.subscribe;
             button.classList.add('unsubscribed');
             button.classList.remove('subscribed');
             button.classList.remove('blocked');
@@ -65,7 +65,7 @@ class PushSubscriptionButtons
         this.subscriptionAction = 'unsubscribe';
         this.buttons.forEach((button) => {
             button.disabled = false;
-            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.unsubscribe;
+            button.querySelector('.label').innerHTML = HuhContaoPwaBundle.translations.pushnotifications.unsubscribe;
             button.classList.add('subscribed');
             button.classList.remove('unsubscribed');
             button.classList.remove('blocked');
@@ -88,7 +88,7 @@ class PushSubscriptionButtons
     {
         this.beforeEvent('Serviceworker not supported');
         this.buttons.forEach(function(button) {
-            button.querySelector('.label').innerHTML = HuhPwaTranslator.pushnotifications.not_supported;
+            button.querySelector('.label').innerHTML = HuhContaoPwaBundle.translations.pushnotifications.not_supported;
             button.classList.add('blocked');
             button.classList.remove('unsubscribed');
             button.classList.remove('subscribed');

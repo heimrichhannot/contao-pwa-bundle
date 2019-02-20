@@ -59,7 +59,7 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator
     public: true
     arguments:
-      ['@router.default', '%contao.web_dir%', '%huh.pwa%']
+      ['@router.default', '%contao.web_dir%', '%huh.pwa%', '@translator']
   HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
 
   # Header Tags

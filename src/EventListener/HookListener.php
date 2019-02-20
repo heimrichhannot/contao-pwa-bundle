@@ -101,7 +101,6 @@ class HookListener
 			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
 			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
 
-			$this->pwaHeadScriptTags->addScript($this->twig->render('@HeimrichHannotContaoPwa/translation/translation.js.twig'));
 			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode(
 			    $this->configurationGenerator->generateConfiguration($rootPage, $config),
                 JSON_UNESCAPED_UNICODE

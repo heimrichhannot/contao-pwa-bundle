@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2019-02-19
+
+#### Fixed
+* an undefined error in PushSubscriptionBottons.js
+
+#### Changed
+* moved translations to HuhContaoPwaBundle js class
+* removed translation.js.twig
+
 ## [0.2.0] - 2019-02-19
 
 #### Changed 
