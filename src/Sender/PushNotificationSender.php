@@ -98,6 +98,9 @@ class PushNotificationSender
                     $webPush->setAutomaticPadding(2847);
                 }
             }
+            else {
+                $webPush->setAutomaticPadding(2847);
+            }
         } catch (\Exception $e) {
 		    throw new \Exception("Web push config: Invalid padding. Error message: ".$e->getMessage());
         }

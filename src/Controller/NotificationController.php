@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
 use Contao\Model\Collection;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
@@ -47,7 +48,6 @@ class NotificationController extends Controller
 			return new Response("No valid subscription id!", 400);
 		}
 
-
 		$data = json_decode($request->getContent(), true);
 		if (!isset($data['subscription']) || !isset($data['subscription']['endpoint']))
 		{
@@ -55,6 +55,7 @@ class NotificationController extends Controller
 		}
 		$endpoint = $data['subscription']['endpoint'];
 
+		/** @var PwaPushSubscriberModel $user */
 		if (!$user = PwaPushSubscriberModel::findByEndpoint($endpoint))
 		{
 			$user = new PwaPushSubscriberModel();
@@ -66,7 +67,14 @@ class NotificationController extends Controller
 			$user->save();
 			return new Response("Subscription successful!", 200);
 		}
-		return new Response("You already subscribed!", 200);
+		else {
+		    $user->tstamp = time();
+            $user->publicKey = $data['subscription']['keys']['p256dh'];
+            $user->authToken = $data['subscription']['keys']['auth'];
+            $user->save();
+            return new Response("Subscription updated", 200);
+        }
+
 	}
 
 	/**

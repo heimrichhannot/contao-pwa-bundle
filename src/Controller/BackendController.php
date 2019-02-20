@@ -127,7 +127,18 @@ class BackendController extends Controller
 		}
 
 		$pushNotification = new DefaultNotification($notification);
-		return new JsonResponse($this->container->get('huh.pwa.sender.pushnotification')->send($pushNotification, $config));
+
+		try {
+		    $result = $this->container->get('huh.pwa.sender.pushnotification')->send($pushNotification, $config);
+        } catch (\Exception $e)
+        {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+		return new JsonResponse($result);
 	}
 
 	/**
