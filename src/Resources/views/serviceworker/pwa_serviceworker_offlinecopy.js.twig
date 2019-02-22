@@ -33,21 +33,7 @@ self.addEventListener('install', function(event) {
         })
         .catch(function(error) {
             SW.log(event, 'Could not fetch resource, try to return from cache: ' + event.request.url)
-            return returnFromCache(event.request);
+            return SW.returnFromCache(event.request);
         })
     );
-
-
-    function returnFromCache(request)
-    {
-        return caches.open(CACHE).then(function (cache) {
-            return cache.match(request).then(function (matching) {
-                if (!matching || matching.status == 404)
-                {
-                    return SW.offlineFallback();
-                }
-                return matching;
-            });
-        });
-    }
 {% endblock %}

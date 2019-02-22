@@ -12,7 +12,20 @@ class HuhPwaServiceWorker
         this.pageTitle = '';
     }
 
-    offlineFallback() {
+    returnFromCache(request)
+    {
+        return caches.open(CACHE).then((cache) => {
+            return cache.match(request).then((matching) => {
+                if (!matching || matching.status == 404)
+                {
+                    return this.offlineFallback(cache);
+                }
+                return matching;
+            });
+        });
+    }
+
+    offlineFallback(cache) {
         if (this.offlinePage != '')
         {
             return cache.match(this.offlinePage);
