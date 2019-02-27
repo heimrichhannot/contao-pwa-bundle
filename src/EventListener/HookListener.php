@@ -22,10 +22,14 @@ use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\RouterInterface;
 
-class HookListener
+class HookListener implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
 	/**
 	 * @var ManifestLinkTag
 	 */
@@ -84,7 +88,7 @@ class HookListener
 	 */
 	public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
 	{
-	    if ($this->containerUtil->isBackend())
+	    if ($this->containerUtil->isBackend() || ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive()))
         {
             return;
         }
