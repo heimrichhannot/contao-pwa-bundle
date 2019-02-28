@@ -8,7 +8,7 @@
     "ext-json": "*",
     "ext-fileinfo": "*",
     "contao/core-bundle": "^4.4",
-    "heimrichhannot/contao-head-bundle": "^1.1",
+    "heimrichhannot/contao-head-bundle": "^1.2",
     "menatwork/contao-multicolumnwizard": "^3.3",
     "heimrichhannot/contao-utils-bundle": "^2.70",
     "minishlink/web-push": "^5.0",

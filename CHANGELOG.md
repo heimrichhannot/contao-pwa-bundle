@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2019-02-28
+
+#### Fixed
+* error due changes in Head bundle
+
 ## [0.4.0] - 2019-02-28
 
 #### Added

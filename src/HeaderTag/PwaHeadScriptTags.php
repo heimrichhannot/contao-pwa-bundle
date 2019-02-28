@@ -29,16 +29,19 @@ class PwaHeadScriptTags extends AbstractTag
      */
     public function generate()
     {
-        $content = "";
-        if (empty($this->scripts))
+        if (empty($this->content))
         {
-            return $content;
+            $content = "";
+            if (!empty($this->scripts))
+            {
+                foreach ($this->scripts as $script)
+                {
+                    $content .= "<script>".$script."</script>";
+                }
+            }
+            $this->content = $content;
         }
-        foreach ($this->scripts as $script)
-        {
-            $content .= "<script>".$script."</script>";
-        }
-        return $content;
+        return $this->content;
     }
 
     /**
@@ -60,4 +63,17 @@ class PwaHeadScriptTags extends AbstractTag
     {
         return $this->scripts;
     }
+
+    public function getContent()
+    {
+        return $this->generate();
+    }
+
+    public function setContent($content)
+    {
+        trigger_error("You should not use setContent in conjunction with PwaHeadSchriptTags. May lead to unexpected results. Use addScript instead!", E_WARNING);
+        parent::setContent($content);
+    }
+
+
 }
