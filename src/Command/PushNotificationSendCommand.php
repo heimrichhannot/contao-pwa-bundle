@@ -16,6 +16,7 @@ use Contao\CoreBundle\Command\AbstractLockedCommand;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,6 +74,9 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 
 		$io->progressStart($unsent->count());
 
+        $table = new Table($output);
+        $table->setHeaders(["Notification", "Messages sent","Messages sent successfull","Errors"]);
+
 		foreach ($unsent as $notification)
 		{
 			$configuration = PwaConfigurationsModel::findByPk($notification->pid);
@@ -83,11 +87,28 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 				continue;
 			}
 			$pushNotification = new DefaultNotification($notification);
+
 			if (!$this->dryRun)
 			{
 				try
 				{
 					$result = $sender->send($pushNotification, $configuration);
+					$tableResult = ["notification" => $notification->title.' (ID: '.$notification->id.')'];
+					$tableResult = array_merge($tableResult, $result);
+					unset($tableResult['success']);
+					if (!empty($tableResult['errors']))
+                    {
+                        $errors = implode("\n",$tableResult['errors']);
+                        if (strlen($errors) > 120)
+                        {
+                            $errors = substr($errors, 0, 100).'... (truncated)';
+                        }
+                        $tableResult['errors'] = $errors;
+                    }
+					else {
+					    $tableResult['errors'] = '-';
+                    }
+					$table->addRow($tableResult);
 				} catch (\ErrorException $e)
 				{
 					$io->error($e->getMessage());
@@ -96,6 +117,14 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 			$io->progressAdvance();
 		}
 		$io->progressFinish();
+
+        $io->newLine();
+		$io->section("Results:");
+
+		$table->render();
+        $io->newLine();
+
+
 		$io->success("Finished send command");
 		return 0;
 	}

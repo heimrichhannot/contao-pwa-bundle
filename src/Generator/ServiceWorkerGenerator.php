@@ -14,12 +14,18 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\ContaoPwaBundle\HeimrichHannotContaoPwaBundle;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class ServiceWorkerGenerator
+class ServiceWorkerGenerator implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotContaoPwa/serviceworker/pwa_serviceworker_default.js.twig';
 
 	/**
@@ -34,10 +40,6 @@ class ServiceWorkerGenerator
 	 * @var Logger
 	 */
 	private $logger;
-    /**
-     * @var TemplateUtil
-     */
-    private $templateUtil;
 
 
     /**
@@ -45,18 +47,18 @@ class ServiceWorkerGenerator
 	 * @param string $webDir
 	 * @param \Twig_Environment $twig
 	 */
-	public function __construct(string $webDir, \Twig_Environment $twig, Logger $logger, TemplateUtil $templateUtil)
+	public function __construct(string $webDir, \Twig_Environment $twig, Logger $logger)
 	{
 		$this->webDir = $webDir;
 		$this->twig = $twig;
 		$this->logger = $logger;
-        $this->templateUtil = $templateUtil;
     }
 
-	/**
-	 * @param PageModel $page
-	 * @return bool
-	 */
+    /**
+     * @param PageModel $page
+     * @return bool
+     * @throws \Twig_Error_Loader
+     */
 	public function generatePageServiceworker(PageModel $page)
 	{
 		if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration)
@@ -82,7 +84,7 @@ class ServiceWorkerGenerator
 
 		if ($config->serviceWorkerTemplate)
         {
-            $template = $this->templateUtil->getTemplate($config->serviceWorkerTemplate, 'js.twig');
+            $template = $this->container->get('huh.utils.template')->getTemplate($config->serviceWorkerTemplate, 'js.twig');
         }
 		else {
             $template = static::DEFAULT_SERVICEWORKER_TEMPLATE;
@@ -101,6 +103,10 @@ class ServiceWorkerGenerator
 
         }
 
+
+
+		$serviceworkerClass = '/bundles/heimrichhannotcontaopwa/js/huh-pwa-serviceworker.js';
+
 		try
 		{
 			return (bool)file_put_contents(
@@ -113,6 +119,8 @@ class ServiceWorkerGenerator
 					'debug'       => (bool)$config->addDebugLog,
 					'startUrl'    => $config->pwaStartUrl,
                     'offlinePage' => $offlinePage,
+                    'serviceworkerClass' => $serviceworkerClass,
+                    'updateSubscriptionPath' => $this->container->get('router')->generate('push_notification_update_subscription', ['config' => $config->id])
 				])
 			);
 		} catch (\Twig_Error_Loader $e)

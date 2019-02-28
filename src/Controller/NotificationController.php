@@ -77,6 +77,59 @@ class NotificationController extends Controller
 
 	}
 
+    /**
+     * @Route("/update/{config}", name="push_notification_update_subscription", methods={"POST"})
+     *
+     * @param Request $request
+     * @param int $config
+     * @return Response
+     */
+    public function updateSubscriptionAction(Request $request, $config)
+    {
+        ob_start();
+        echo "IN";
+        file_put_contents(__DIR__.'/debug.txt', ob_get_contents(), FILE_APPEND);
+        ob_end_clean();
+
+        $this->container->get('contao.framework')->initialize();
+
+        /** @var PwaConfigurationsModel $pwaConfig */
+        $pwaConfig = PwaConfigurationsModel::findByPk($config);
+        if (!$pwaConfig)
+        {
+            return new Response("No valid subscription id!", 400);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['oldSubscription']['endpoint']))
+        {
+            return new Response("No valid old subscription, could not renew subscription.", 400);
+        }
+        $oldSubscription = $data['oldSubscription'];
+
+        if (!isset($data['newSubscription']['endpoint']))
+        {
+            return new Response("No valid new subscription, could not renew subscription.", 400);
+        }
+        $newSubscription = $data['newSubscription'];
+
+        /** @var PwaPushSubscriberModel $user */
+        $user = PwaPushSubscriberModel::findByEndpoint($oldSubscription['endpoint']);
+        if (!$user)
+        {
+            return new Response("Could not find an existing subscription");
+        }
+
+        $user->tstamp = time();
+        $user->endpoint = $newSubscription['endpoint'];
+        $user->publicKey = $newSubscription['keys']['p256dh'];
+        $user->authToken = $newSubscription['keys']['auth'];
+        $user->save();
+
+        return new Response("Subscription updated", 200);
+	}
+
 	/**
 	 * @Route("/unsubscribe/{config}", name="push_notification_unsubscription", methods={"POST"})
 	 *

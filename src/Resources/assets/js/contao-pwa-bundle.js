@@ -9,27 +9,48 @@ let PushSubscription = new PushNotificationSubscription(
 );
 let debug = HuhContaoPwaBundle.debug;
 
-if (!('serviceWorker' in navigator)) {
-    if (debug) console.log('[SW Registration] Service Worker not supported');
-    document.dispatchEvent(new CustomEvent('huh_pwa_sw_not_supported'));
-}
-else {
-    if (debug) console.log("[SW Registration] Register service worker");
-    navigator.serviceWorker.register(HuhContaoPwaBundle.serviceWorker.path, {
-        scope: HuhContaoPwaBundle.serviceWorker.scope
-    }).then(function(registration) {
-        registration.addEventListener('updatefound', function() {
-            if (debug) console.log("[SW Registration] New service worker found for scope " + registration.scope);
-        })
-    });
+window.addEventListener('load', function()
+{
+    if (!('serviceWorker' in navigator)) {
+        if (debug) console.log('[SW Registration] Service Worker not supported');
+        document.dispatchEvent(new CustomEvent('huh_pwa_sw_not_supported'));
+    }
+    else {
+        if (debug) console.log("[SW Registration] Register service worker");
 
-    if (HuhContaoPwaBundle.pushNotifications.support && ('PushManager' in window)) {
-        if (debug) console.log("[SW Registration] Client supports push notifications");
-        navigator.serviceWorker.ready
-        .then(function(registration) {
-            if (debug)console.log("[SW Registration] Got service worker registration for push subscription");
-            return registration.pushManager.getSubscription();
-        }).then(function(subscription) {
+        navigator.serviceWorker.register(HuhContaoPwaBundle.serviceWorker.path, {
+            scope: HuhContaoPwaBundle.serviceWorker.scope
+        }).then(function(registration) {
+            registration.addEventListener('updatefound', function() {
+                if (debug) console.log("[SW Registration] New service worker found for scope " + registration.scope);
+            });
+            initializePush();
+        });
+    }
+});
+
+function initializePush()
+{
+    if (debug) console.log("[SW Registration] Initialize Push");
+    if (!HuhContaoPwaBundle.pushNotifications.support)
+    {
+        if (debug) console.log("[SW Registration] Push notifications not activated");
+        return;
+    }
+
+    PushSubscription.checkPermission();
+
+    if (!('PushManager' in window))
+    {
+        document.dispatchEvent(new Event('huh_pwa_push_not_supported'));
+        if (debug) console.log('[SW Registration] Browser don\'t support push. Hide subscription button.');
+    }
+
+    navigator.serviceWorker.ready.then(function(serviceWorkerRegistration)
+    {
+        if (debug) console.log("[SW Registration] Got service worker registration");
+        serviceWorkerRegistration.pushManager.getSubscription()
+        .then(function(subscription) {
             if (subscription)
             {
                 if (debug)console.log('[SW Registration] Already subscribed');
@@ -41,11 +62,7 @@ else {
                 PushSubscription.setIsUnsubscribed();
             }
         });
-    }
-    else {
-        document.dispatchEvent(new Event('huh_pwa_push_not_supported'));
-        if (debug)console.log('[SW Registration] Browser don\'t support push. Hide subscription button.');
-    }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

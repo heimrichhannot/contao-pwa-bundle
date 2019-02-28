@@ -16,16 +16,20 @@ class PushNotificationSubscription
 
     subscribe() {
         if (this.debug) console.log('[Push Notification Subscription] Trying to Subscribe');
-        navigator.serviceWorker.ready.then(async (registration) => {
-            let responce = await fetch('./api/notifications/publickey');
-            const publicKey = await responce.text();
-
-            return registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: PushNotificationSubscription.urlBase64ToUint8Array(publicKey),
-            }).then((subscription) => {
+        navigator.serviceWorker.ready.then((registration) => {
+            fetch('./api/notifications/publickey')
+            .then((responce) => {
+                return responce.text();
+            })
+            .then((publicKey) => {
+                return registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: PushNotificationSubscription.urlBase64ToUint8Array(publicKey),
+                });
+            })
+            .then((subscription) => {
                 if (this.debug) console.log('[Push Notification Subscription] Successful Subscribed', subscription.endpoint);
-                fetch(this.subscribePath, {
+                return fetch(this.subscribePath, {
                     method: 'post',
                     headers: {
                         'Content-type': 'application/json',
@@ -42,7 +46,7 @@ class PushNotificationSubscription
                     }}));
             });
         });
-    };
+    }
 
     unsubscribe() {
         if (this.debug) console.log('[Push Notification Subscription] Trying to unsubscribe');
@@ -66,25 +70,28 @@ class PushNotificationSubscription
         }).catch((reason) => {
             document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {detail: {'reason': reason}}));
         });
-    };
+    }
     setIsUnsubscribed() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
         if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
-    };
+    }
+
     setIsSubscribed() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
         if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
-    };
-    checkPermission() {
+    }
+
+    checkPermission()
+    {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
             return false;
         }
         return true;
-    };
+    }
 
     changeSubscriptionStatus (event)
     {
@@ -97,7 +104,7 @@ class PushNotificationSubscription
         else if (event.detail === 'unsubscribe') {
             this.unsubscribe();
         }
-    };
+    }
 
     static urlBase64ToUint8Array(base64String)
     {
@@ -111,7 +118,7 @@ class PushNotificationSubscription
             outputArray[i] = rawData.charCodeAt(i);
         }
         return outputArray;
-    };
+    }
 }
 
 export default PushNotificationSubscription

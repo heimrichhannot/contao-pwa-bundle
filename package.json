@@ -14,5 +14,8 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.2.5"
+  },
+  "jshintConfig": {
+    "esversion": 6
   }
 }

@@ -1,88 +1,47 @@
 {% block config_variables %}
-    let CACHE = 'cache-sw-{{ alias }}-{{ version }}';
+    const VERSION = '{{ alias }}-{{ version }}';
+    const CACHE = 'cache-sw-' + VERSION;
     let startUrl = '{{ startUrl|default('/') }}';
     let offlinePage = '{{ offlinePage|default('') }}';
 {% endblock %}
 
-class HuhPwaServiceWorker
-{
-    constructor() {
-        this.offlinePage = '';
-        this.debug = false;
-        this.pageTitle = '';
-    }
-
-    returnFromCache(request)
-    {
-        return caches.open(CACHE).then((cache) => {
-            return cache.match(request).then((matching) => {
-                if (!matching || matching.status == 404)
-                {
-                    return this.offlineFallback(cache);
-                }
-                return matching;
-            });
-        });
-    }
-
-    offlineFallback(cache) {
-        if (this.offlinePage != '')
-        {
-            return cache.match(this.offlinePage);
-        }
-        return Promise.reject('no-match');
-    }
-
-    notificationTitle(payload)
-    {
-        let title = this.pageTitle;
-        if (typeof payload.title === 'string')
-        {
-            title = payload.title;
-        }
-        return title;
-    }
-
-    log(event, message) {
-        if (this.debug) console.log('[Serviceworker ' + event.type + ' event] ' + message);
-    }
-}
+self.importScripts('{{ serviceworkerClass|default() }}');
 
 {% block configuration %}
 let SW = new HuhPwaServiceWorker();
 SW.offlinePage = offlinePage;
 SW.debug = {% if debug|default(false) %}true{% else %}false{% endif %};
 SW.pageTitle = '{{ pageTitle }}';
+SW.supportOfflineCaching = false;
+SW.startUrl = startUrl;
+SW.cache = CACHE;
+SW.updateSubscriptionPath = '{{ updateSubscriptionPath }}';
 {% endblock %}
 
-{% block install %}
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
     SW.log(event, 'Start install event');
-    e.waitUntil(
-        self.skipWaiting()
-    );
+    event.waitUntil(SW.installEvent(event).then(self.skipWaiting()));
 });
-{% endblock %}
 
 {% block activate %}
 self.addEventListener('activate', function(event) {
     SW.log(event, 'Start activate event');
-    {% block activate_inner %}
+
     event.waitUntil(
-        self.clients.claim().then(function() {
-            caches.open(CACHE).then(function(cache) {
-                // Delete old caches
-                caches.keys().then(function(names) {
-                    return Promise.all(names.filter(function(name) {
-                        return name !== CACHE;
-                    }).map(function(name) {
-                        return caches.delete(name)
-                    }))
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.map(function(cacheName) {
+                    if (cacheName !== CACHE) {
+                        SW.log(event, 'Deleting old cache:' + cacheName);
+                        return caches.delete(cacheName);
+                    }
                 })
-            })
+            );
+        }).then(function() {
+            SW.log(event, "Claiming clients for ServiceWorker " + VERSION);
+            return self.clients.claim();
         })
     );
-    {% endblock %}
 });
 {% endblock %}
 
@@ -134,17 +93,12 @@ self.addEventListener('push', /** @param {PushEvent} event */ function(event) {
 });
 {% endblock %}
 
-{#{% block pushsubscriptionchange %}#}
-{#self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChangeEvent} event */ function(event) {#}
-    {#SW.log(event, 'Start event');#}
-    {#event.waitUntil(#}
-        {#self.registration.pushManager.subscribe(e.oldSubscription.options)#}
-        {#.then(function(subscription) {#}
-            {##}
-        {#})#}
-    {#);#}
-{#});#}
-{#{% endblock %}#}
+{% block pushsubscriptionchange %}
+self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChangeEvent} event */ function(event) {
+    SW.log(event, 'Start event');
+    event.waitUntil(SW.pushSubscriptionChangeEvent(event, self));
+});
+{% endblock %}
 
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function(event) {

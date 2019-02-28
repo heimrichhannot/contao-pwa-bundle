@@ -59,13 +59,13 @@ class PushNotificationSender
 		{
 			/** @var PwaPushSubscriberModel[]|PwaPushSubscriberModel|Collection|null */
 			if (!$subscribers = PwaPushSubscriberModel::findByPid($config->id)) {
-				return ["success" => false, "message"=> "No subscribers"];
+                throw new \Exception("No subscribers found.");
 			}
 		}
 
 		if (!$this->bundleConfig || !isset($this->bundleConfig['vapid']['subject']) || !isset($this->bundleConfig['vapid']['publicKey']) && !isset($this->bundleConfig['vapid']['privateKey']))
 		{
-			return ["success" => false, "message" => "Bundle config not complete. Set vapid keys to use Push Notifications."];
+		    throw new \Exception("Bundle config not complete. Set vapid keys to use Push Notifications.");
 		}
 
 		$auth = [
@@ -140,40 +140,46 @@ class PushNotificationSender
 			    throw new \Exception("Error while sending push notification (Subscriber Id: {$subscriber->id}): ".$e->getMessage());
 			}
 		}
-		$result = $webPush->flush();
 
-		$successCount = 0;
-		$errors = [];
+		try {
+            $successCount = 0;
+            $errors = [];
 
-		/** @var MessageSentReport $report */
-        foreach ($result as $index =>$report)
-        {
-            $subscriber = $subscribers->offsetGet($index);
-            if ($report->isSuccess())
+            /** @var MessageSentReport $report */
+            foreach ($webPush->flush() as $index =>$report)
             {
-                $subscriber->lastSuccessfulSend = $sendDate;
-                $subscriber->save();
-                $successCount++;
-            }
-            else {
-                $error = [
-                    'endpoint' => $report->getEndpoint(),
-                    'response' => json_encode($report->getResponse()->getBody()),
-                ];
-                if ($report->isSubscriptionExpired())
+                $subscriber = $subscribers->offsetGet($index);
+                if ($report->isSuccess())
                 {
-                    // TODO
-                    $error['reason'] = 'Subscription expired';
+                    $subscriber->lastSuccessfulSend = $sendDate;
+                    $subscriber->save();
+                    $successCount++;
                 }
                 else {
-                    $error['reason'] = $report->getReason();
+                    $error = [
+                        'endpoint' => $report->getEndpoint(),
+                        'response' => json_encode($report->getResponse()->getBody()),
+                    ];
+                    if ($report->isSubscriptionExpired())
+                    {
+                        // TODO
+                        $error['reason'] = 'Subscription expired';
+                    }
+                    else {
+                        $error['reason'] = $report->getReason();
+                    }
+                    $errors[] = $error;
                 }
-                $errors[] = $error;
             }
+        } catch (\Exception $e) {
+            throw new \Exception("Error while sending push notification: ".$e->getMessage());
         }
+
+
 
 		if ($notification->getModel())
 		{
+		    $notification->getModel()->sent = true;
 			$notification->getModel()->dateSent      = $sendDate;
 			$notification->getModel()->receiverCount = $validSubscribers;
 			$notification->getModel()->save();

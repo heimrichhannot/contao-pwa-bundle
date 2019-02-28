@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2019-02-28
+
+#### Added
+* better output for build command
+* support for `pushsubscriptionchange` event (not tested)
+
+### Changed 
+* moved HuhPwaServiceWorker class from Serviceworker to own file
+* moved a lot of functionality out of twig templates to the HuhPwaServiceWorker class
+* some refactoring
+
+
+#### Fixed
+* undefined error on install event
+* some async errors
+* notifications not marked sent
+
 ## [0.3.2] - 2019-02-27
 
 #### Fixed

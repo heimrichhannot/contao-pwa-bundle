@@ -1,20 +1,8 @@
 {% extends "@HeimrichHannotContaoPwa/serviceworker/pwa_serviceworker_default.js.twig" %}
 
-{% block install %}
-self.addEventListener('install', function(event) {
-    SW.log(event, 'Start install event');
-    event.waitUntil(preLoad().then(self.skipWaiting()));
-
-    function preLoad(){
-        return caches.open(CACHE).then(function(cache) {
-            let files = [startUrl, offlinePage];
-            {% block preload_files %}
-            {% endblock %}
-            SW.log(event, 'Precache file list', files);
-            return cache.addAll(files);
-        });
-    }
-});
+{% block configuration %}
+    {{ parent() }}
+    SW.supportOfflineCaching = true;
 {% endblock %}
 
 {% block fetch_inner %}
