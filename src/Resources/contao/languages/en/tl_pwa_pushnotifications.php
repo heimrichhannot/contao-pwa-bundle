@@ -15,7 +15,7 @@ $lang['clickEvent'] = ["Notification click behavior","Select what to do if the n
 $lang['clickEvent'][\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE] = "Open page";
 $lang['clickJumpTo'] = ["Jump to page","Select the page that should be opened when the notification is clicked."];
 $lang['published'] = ["Publish notification","Activate the delivery of the push notification."];
-$lang['start'] = ["Shipping from","Do not send the push notification before this date."];
+$lang['start'] = ["Send date","If set, the push notification will not be sent before this date."];
 $lang['dateSent'] = ["Sent date","The date, when the notification was sent."];
 
 

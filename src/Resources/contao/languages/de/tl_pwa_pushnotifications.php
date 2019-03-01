@@ -15,7 +15,7 @@ $lang['clickEvent'] = ["Verhalten beim Klick auf die Benachrichtigung","Geben Si
 $lang['clickEvent'][\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE] = "Seite öffnen";
 $lang['clickJumpTo'] = ["Ziel-Seite","Geben Sie hier an, welche Seite beim Klick auf die Benachrichtigung geöffnet werden soll."];
 $lang['published'] = ["Benachrichtigung veröffentlichen","Die Push-Benachrichtigung wird zum Versand freigegeben."];
-$lang['start'] = ["Versand ab","Die Push-Benachrichtigung erst ab diesem Zeitpunkt senden."];
+$lang['start'] = ["Sendezeitpunkt","Wenn gesetzt, wird die Benachrichtigung erst ab diesem Zeitpunkt versendet."];
 $lang['dateSent'] = ["Sendedatum","Das Datum, an dem die Benachrichtigung gesendet wurde."];
 
 

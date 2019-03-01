@@ -163,7 +163,6 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'published'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['published'],
-            'exclude'   => true,
             'filter'    => true,
             'flag'      => 1,
             'inputType' => 'checkbox',
@@ -172,7 +171,6 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'start'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['start'],
-            'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard', 'doNotCopy' => true],
             'sql'       => "varchar(10) NOT NULL default ''"
