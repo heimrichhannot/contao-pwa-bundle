@@ -34,7 +34,7 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 Call `composer require heimrichhannot/contao-pwa-bundle` and update database afterwards.
 
 ### First Steps
-1. Your page template (typically `fe_page.html5`) must support [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). This means it must output at least `$this->meta` in head section. See bundle readme for more information
+1. Your page template (typically `fe_page.html5`) must support [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). This means it must output at least `$this->meta()` in head section. See [Head Bundle readme](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information
 1. _Only for encore bundle users:_ Add `contao-pwa-bundle` as active entry to the page root(s), where you want  to enable PWA
 1. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
 1. Create an PWA Configuration(Backend -> System -> PWA Configuration)
