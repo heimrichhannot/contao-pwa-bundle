@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.3] - 2019-07-16
+
+#### Fixed
+* removed package-lock.json file
+
 ## [0.4.2] - 2019-02-29
 
 #### Fixed
