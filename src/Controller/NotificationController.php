@@ -191,7 +191,7 @@ class NotificationController extends Controller
 
 	protected function getPublicKey()
 	{
-		$config = $this->getParameter("huh.pwa");
+		$config = $this->getParameter("huh_pwa");
 		if (!isset($config['vapid']) || !isset($config['vapid']['publicKey']))
 		{
 			return false;

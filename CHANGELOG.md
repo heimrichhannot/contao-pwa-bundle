@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2019-07-16
+
+* [INTERNAL] change config parameter from huh.pwa to huh_pwa
+* exchanged babel polyfill for corejs, used only in precompiled source
+* updated some dependencies
+* small enhancements
+* updated translations
+* added licence text
+
 ## [0.4.3] - 2019-07-16
 
 #### Fixed

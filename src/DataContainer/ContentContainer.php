@@ -31,6 +31,6 @@ class ContentContainer
 
 	public function getPwaSubscriptionButtonTemplate()
 	{
-		return $this->templateUtil->getTemplateGroup('ce_pushsubscription_');
+		return $this->templateUtil->getTemplateGroup('subscribe_button_');
 	}
 }

@@ -2,15 +2,13 @@ var Encore = require('@symfony/webpack-encore');
 
 Encore
     .setOutputPath('src/Resources/public/js/')
-    .addEntry('contao-pwa-bundle', './src/Resources/assets/js/contao-pwa-bundle.js')
-    .addEntry('babel-polyfill', [
-        '@babel/polyfill'
-    ])
+    .addEntry('contao-pwa-bundle', './src/Resources/assets/js/pwa_public_build.js')
     .setPublicPath('/public/js/')
-    .disableSingleRuntimeChunk()
-    .configureBabel(function(babelConfig) {
-        babelConfig.presets.push('minify');
+    .configureBabel(() => {}, {
+        useBuiltIns: 'entry',
+        corejs: 3
     })
+    .disableSingleRuntimeChunk()
     .enableSourceMaps(!Encore.isProduction())
 ;
 

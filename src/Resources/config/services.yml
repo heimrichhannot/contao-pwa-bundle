@@ -65,7 +65,7 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator
     public: true
     arguments:
-      ['@router.default', '%contao.web_dir%', '%huh.pwa%', '@translator']
+      ['@router.default', '%contao.web_dir%', '%huh_pwa%', '@translator']
   HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
 
   # Header Tags
@@ -97,4 +97,4 @@ services:
     class: HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender
     public: true
     arguments:
-      ['%huh.pwa%', '@huh.pwa.datacontainer.pwapushnotification']
+      ['%huh_pwa%', '@huh.pwa.datacontainer.pwapushnotification']

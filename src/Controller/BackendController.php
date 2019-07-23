@@ -46,7 +46,7 @@ class BackendController extends Controller
 	{
 		$this->container->get('contao.framework')->initialize();
 
-		$config = $this->container->getParameter('huh.pwa');
+		$config = $this->container->getParameter('huh_pwa');
 
 		$keys = isset($config["vapid"]) ? $config['vapid'] : null;
 		$generatedKeys = null;

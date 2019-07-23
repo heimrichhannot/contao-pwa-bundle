@@ -10,8 +10,9 @@
     </div>
     <div class="tl_listing_container">
         <h2 class="tl_header pwaBackend">Authentifizierung (VAPID-Keys)</h2>
-        <p></p>
+        <br/>
         {% if vapidkeys|default %}
+
             <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
             <p>
                 Public: {{ vapidkeys.publicKey }}<br>
@@ -25,12 +26,12 @@
         {% endif %}
 
         <h2 class="tl_header pwaBackend">Notifications</h2>
-        <p><button id="huhPwaSendPushNotificationButton">Send unsend push notifications</button></p>
+        <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
         <p id="huhPwaSendPushNotificationStatus"></p>
 
         <h2 class="tl_header pwaBackend">Files</h2>
         <p>Rebuild manifest and serviceworker files</p>
-        <p><button id="huhPwaRebuildFilesButton">Rebuild files</button></p>
+        <p><button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button></p>
         <p id="huhPwaRebuildFilesStatus"></p>
 
     </div>

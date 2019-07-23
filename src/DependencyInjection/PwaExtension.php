@@ -28,7 +28,7 @@ class PwaExtension extends Extension
 	{
 		$configuration = new Configuration();
 		$config = $this->processConfiguration($configuration, $configs);
-		$container->setParameter('huh.pwa', $config);
+		$container->setParameter('huh_pwa', $config);
 	}
 
 	public function getAlias()

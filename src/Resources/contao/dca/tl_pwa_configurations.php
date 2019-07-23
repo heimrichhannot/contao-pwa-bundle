@@ -208,7 +208,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'sql'       => "varchar(64) NOT NULL default ''",
 		],
 		'pwaDescription'              => [
-			'label'     => &$GLOBALS['TL_LANG'][$table]['manifestDescription'],
+			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaDescription'],
 			'inputType' => 'textarea',
 			'eval'      => [
 				'tl_class' => 'clr',
@@ -227,14 +227,18 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'sql'       => "varchar(4) NOT NULL default ''",
 		],
-		'pwaDisplay'                  => [
-			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaDisplay'],
-			'inputType' => 'select',
-			'options'   => \HeimrichHannot\ContaoPwaBundle\Manifest\Manifest::DISPLAY_VALUES,
-			'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDisplay'],
-			'eval'      => ['tl_class' => 'w50','includeBlankOption' => true,],
-			'sql'       => "varchar(16) NOT NULL default ''",
-		],
+        'pwaDisplay' => [
+            'label'     => &$GLOBALS['TL_LANG'][$table]['pwaDisplay'],
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\ContaoPwaBundle\Manifest\Manifest::DISPLAY_VALUES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDisplay'],
+            'eval'      => [
+                'tl_class'           => 'w50',
+                'includeBlankOption' => true,
+                'mandatory'          => true,
+            ],
+            'sql'       => "varchar(16) NOT NULL default ''",
+        ],
 		'pwaIcons'                    => [
 			'label'     => &$GLOBALS['TL_LANG'][$table]['pwaIcons'],
 			'inputType' => 'fileTree',
