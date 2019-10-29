@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2019-10-29
+
+* fixed exception handling
+
 ## [0.6.0] - 2019-10-29
 
 * made minishlink/web-push optional as not working in all hosting environments

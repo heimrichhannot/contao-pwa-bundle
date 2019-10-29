@@ -11,7 +11,7 @@
 
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
-
+use Contao\CoreBundle\Monolog\ContaoContext;
 use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
@@ -44,7 +44,7 @@ class BackendController extends Controller
     public function huhBackendControlAction(Request $request)
     {
         if (!class_exists('Minishlink\WebPush\WebPush')) {
-            throw new \Exception('Please install webpush using "composer require minishlink/web-push ^5.0".');
+            return new Response('Please install webpush using "composer require minishlink/web-push ^5.0".');
         }
 
         $this->container->get('contao.framework')->initialize();

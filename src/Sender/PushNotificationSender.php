@@ -12,11 +12,13 @@
 namespace HeimrichHannot\ContaoPwaBundle\Sender;
 
 
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Model\Collection;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 
 class PushNotificationSender
 {
@@ -28,15 +30,20 @@ class PushNotificationSender
      * @var PwaPushNotificationContainer
      */
     private $notificationContainer;
+    /**
+     * @var ContainerUtil
+     */
+    private $containerUtil;
 
     /**
      * PushNotificationSender constructor.
      */
-    public function __construct(?array $bundleConfig, PwaPushNotificationContainer $notificationContainer)
+    public function __construct(?array $bundleConfig, PwaPushNotificationContainer $notificationContainer, ContainerUtil $containerUtil)
     {
 
         $this->bundleConfig          = $bundleConfig;
         $this->notificationContainer = $notificationContainer;
+        $this->containerUtil         = $containerUtil;
     }
 
     /**
@@ -51,7 +58,13 @@ class PushNotificationSender
     public function send(AbstractNotification $notification, PwaConfigurationsModel $config, ?array $subscribers = null)
     {
         if (!class_exists('Minishlink\WebPush\WebPush')) {
-            throw new \Exception('Please install webpush using "composer require minishlink/web-push ^5.0".');
+            $this->containerUtil->log(
+                'Please install webpush using "composer require minishlink/web-push ^5.0".',
+                'HeimrichHannot\ContaoPwaBundle\Controller\BackendController::huhBackendControlAction',
+                ContaoContext::ERROR
+            );
+
+            return false;
         }
 
         if (!$subscribers) {
