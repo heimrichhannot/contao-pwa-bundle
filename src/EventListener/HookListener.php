@@ -30,22 +30,22 @@ class HookListener implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-	/**
-	 * @var ManifestLinkTag
-	 */
-	private $manifestLinkTag;
-	/**
-	 * @var ThemeColorMetaTag
-	 */
-	private $colorMetaTag;
-	/**
-	 * @var \Twig_Environment
-	 */
-	private $twig;
-	/**
-	 * @var RouterInterface
-	 */
-	private $router;
+    /**
+     * @var ManifestLinkTag
+     */
+    private $manifestLinkTag;
+    /**
+     * @var ThemeColorMetaTag
+     */
+    private $colorMetaTag;
+    /**
+     * @var \Twig_Environment
+     */
+    private $twig;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
     /**
      * @var ConfigurationFileGenerator
      */
@@ -61,54 +61,55 @@ class HookListener implements ContainerAwareInterface
 
 
     /**
-	 * HookListener constructor.
-	 */
-	public function __construct(
-	    ManifestLinkTag $manifestLinkTag,
+     * HookListener constructor.
+     */
+    public function __construct(
+        ManifestLinkTag $manifestLinkTag,
         ThemeColorMetaTag $colorMetaTag,
         PwaHeadScriptTags $pwaHeadScriptTags,
-        \Twig_Environment $twig, RouterInterface $router, ConfigurationFileGenerator $configurationGenerator, ContainerUtil $containerUtil)
-	{
-		$this->manifestLinkTag = $manifestLinkTag;
-		$this->colorMetaTag = $colorMetaTag;
-		$this->twig = $twig;
-		$this->router = $router;
+        \Twig_Environment $twig,
+        RouterInterface $router,
+        ConfigurationFileGenerator $configurationGenerator,
+        ContainerUtil $containerUtil
+    ) {
+        $this->manifestLinkTag        = $manifestLinkTag;
+        $this->colorMetaTag           = $colorMetaTag;
+        $this->twig                   = $twig;
+        $this->router                 = $router;
         $this->configurationGenerator = $configurationGenerator;
-        $this->containerUtil = $containerUtil;
-        $this->pwaHeadScriptTags = $pwaHeadScriptTags;
+        $this->containerUtil          = $containerUtil;
+        $this->pwaHeadScriptTags      = $pwaHeadScriptTags;
     }
 
-	/**
-	 * @param PageModel $page
-	 * @param LayoutModel $layout
-	 * @param PageRegular $pageRegular
-	 * @throws \Twig_Error_Loader
-	 * @throws \Twig_Error_Runtime
-	 * @throws \Twig_Error_Syntax
-	 */
-	public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
-	{
-	    if ($this->containerUtil->isBackend() || ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive()))
-        {
+    /**
+     * @param PageModel $page
+     * @param LayoutModel $layout
+     * @param PageRegular $pageRegular
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
+    {
+        if ($this->containerUtil->isBackend() || ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive())) {
             return;
         }
-		$rootPage = PageModel::findByPk($page->rootId);
 
-		if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration)
-		{
-			$config = PwaConfigurationsModel::findByPk($rootPage->pwaConfiguration);
-			if (!$config)
-			{
-				return;
-			}
+        $rootPage = PageModel::findByPk($page->rootId);
 
-			$this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
-			$this->colorMetaTag->setContent('#'.$config->pwaThemeColor);
+        if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration) {
+            $config = PwaConfigurationsModel::findByPk($rootPage->pwaConfiguration);
+            if (!$config) {
+                return;
+            }
 
-			$this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=".json_encode(
-			    $this->configurationGenerator->generateConfiguration($rootPage, $config),
-                JSON_UNESCAPED_UNICODE
-            ));
-		}
-	}
+            $this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
+            $this->colorMetaTag->setContent('#' . $config->pwaThemeColor);
+
+            $this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=" . json_encode(
+                    $this->configurationGenerator->generateConfiguration($rootPage, $config),
+                    JSON_UNESCAPED_UNICODE
+                ));
+        }
+    }
 }
