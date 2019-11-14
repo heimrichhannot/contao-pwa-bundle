@@ -21,13 +21,17 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 ### Requirements
 
 * PHP >= 7.1
-* PHP extensions:
+* Contao >=4.4 
+* [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
+
+For web push notifications:
+- Composer package [`"minishlink/web-push": "^5.0"`](https://github.com/web-push-libs/web-push-php)
+- PHP extensions:
     * gmp
     * mbstring
     * curl
     * openssl
-* Contao >=4.4 
-* [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
+
 
 ### Install
 

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2019-11-14
+* added service definitions for symfony 4
+
 ## [0.6.1] - 2019-10-29
 
 * fixed exception handling
