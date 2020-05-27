@@ -73,6 +73,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	],
 	'subpalettes' => [
 		'clickEvent_' . \HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
+		'clickEvent_' . \HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_URL => 'clickUrl',
 	],
 	'fields'      => [
 		'id'            => [
@@ -140,6 +141,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			'inputType' => 'select',
 			'options'   => [
 				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE,
+				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_URL,
 			],
 			'reference' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickEvent'],
 			'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],
@@ -153,6 +155,12 @@ $GLOBALS['TL_DCA'][$table] = [
             'eval'       => ['fieldType' => 'radio'],
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'hasOne', 'load' => 'eager']
+        ],
+        'clickUrl' => [
+            'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickUrl'],
+            'inputType'  => 'text',
+            'eval'       => ['dcaPicker' => true, 'tl_class' => 'w50', 'maxlength'=>128],
+            'sql'        => "varchar(128) NOT NULL default ''",
         ],
         'sent'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],

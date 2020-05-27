@@ -13,14 +13,20 @@ namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
 use Contao\Config;
+use Contao\Controller;
 use Contao\Date;
+use Contao\News;
+use Contao\NewsModel;
 use Contao\PageModel;
+use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints\Url;
 
 class PwaPushNotificationContainer
 {
 	const CLICKEVENT_OPEN_PAGE = 'openPage';
+	const CLICKEVENT_OPEN_URL = 'openUrl';
 
 	/**
 	 * @var TranslatorInterface
