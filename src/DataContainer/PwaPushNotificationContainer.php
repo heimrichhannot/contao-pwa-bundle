@@ -108,6 +108,24 @@ class PwaPushNotificationContainer
 					$payload['data']['clickJumpTo'] = $page->getAbsoluteUrl();
 				}
 				break;
+			case static::CLICKEVENT_OPEN_URL:
+                $tags = preg_split('~{{([a-zA-Z0-9\x80-\xFF][^{}]*)}}~', $notificationsModel->clickUrl, -1, PREG_SPLIT_DELIM_CAPTURE);
+                $tags = array_filter($tags);
+                $tags = array_values($tags);
+                if (1 == count($tags) && strpos($tags[0], 'news_url') !== false) {
+                    $tag = explode('::', $tags[0]);
+                    $news = NewsModel::findById($tag[1]);
+                    $page = PageModel::findByPk($news->getRelated('pid')->jumpTo);
+                    if ($page) {
+                        $params = (Config::get('useAutoItem') ? '/' : '/items/') . ($news->alias ?: $news->id);
+                        $url = ampersand($page->getAbsoluteUrl($params));
+                        $payload['data']['clickJumpTo'] = $url;
+                        return;
+                    }
+                }
+			    $url = Controller::replaceInsertTags($notificationsModel->clickUrl);
+			    $payload['data']['clickJumpTo'] = $url;
+			    break;
 		}
 	}
 

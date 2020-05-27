@@ -98,11 +98,7 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 					unset($tableResult['success']);
 					if (!empty($tableResult['errors']))
                     {
-                        $errors = implode("\n",$tableResult['errors']);
-                        if (strlen($errors) > 120)
-                        {
-                            $errors = substr($errors, 0, 100).'... (truncated)';
-                        }
+                        $errors = count($tableResult['errors']);
                         $tableResult['errors'] = $errors;
                     }
 					else {

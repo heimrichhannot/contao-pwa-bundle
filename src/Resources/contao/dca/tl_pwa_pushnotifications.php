@@ -159,7 +159,7 @@ $GLOBALS['TL_DCA'][$table] = [
         'clickUrl' => [
             'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickUrl'],
             'inputType'  => 'text',
-            'eval'       => ['dcaPicker' => true, 'tl_class' => 'w50', 'maxlength'=>128],
+            'eval'       => ['dcaPicker' => ['providers' => ['newsPicker']], 'tl_class' => 'w50', 'maxlength'=>128],
             'sql'        => "varchar(128) NOT NULL default ''",
         ],
         'sent'          => [
