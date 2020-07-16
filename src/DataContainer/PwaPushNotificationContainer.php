@@ -59,7 +59,7 @@ class PwaPushNotificationContainer
                 {
                     $label .= $this->translator->trans(
                         'huh.pwa.tl_pwa_pushnotifications.label.notificationUnsentPublishedDate',
-                        ['%date%' => Date::parse($dateFormat, $row['date'])]
+                        ['%date%' => Date::parse($dateFormat, $row['start'])]
                     );
                 }
                 else {

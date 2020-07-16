@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.7.1-DEV] - 2020-07-16
+- fixed send date not correct displayed for non published messages in backend
+
 ## [0.7.0] - 2020-05-27
 - added open url option to push notification click event
 - added dca picker for news to open url on click field
