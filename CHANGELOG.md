@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.7.2] - 2020-07-17
+- fixed wrong variable name
+
 ## [0.7.1] - 2020-07-16
 - fixed send date not correct displayed for non published messages in backend
 - fixed support for contao 4.9 (tl_page rootfallback palette) (#8)

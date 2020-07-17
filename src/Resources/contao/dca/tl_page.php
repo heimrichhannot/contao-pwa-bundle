@@ -14,7 +14,7 @@ $dca['config']['oncreate_version_callback'][] = ['huh.pwa.datacontainer.page', '
 
 $dca['palettes']['__selector__'][] = 'addPwa';
 $dca['palettes']['root']           = str_replace('{publish_legend', '{pwa_legend},addPwa;{publish_legend', $dca['palettes']['root']);
-if (isset($arrDca['palettes']['rootfallback'])) {
+if (isset($dca['palettes']['rootfallback'])) {
     $dca['palettes']['rootfallback']           = str_replace('{publish_legend', '{pwa_legend},addPwa;{publish_legend', $dca['palettes']['rootfallback']);
 }
 $dca['subpalettes']['addPwa_yes']      = 'pwaConfiguration';
