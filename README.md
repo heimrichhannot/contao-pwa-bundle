@@ -120,7 +120,7 @@ It is possible to add additional js code to the head section by using the `PwaHe
 
 Funtion | Example Polyfill | Description
 ------- | ---------------- | -----------
-CustomEvent | [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill) | Custom events are needed to update the subscribe button (to inform the user that the browser not supporting push notifications). Also an error is throws if the browser not supporting CustomEvents.
+CustomEvent | [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill) | Custom events are needed to update the subscribe button (to inform the user that the browser not supporting push notifications). Also an error is thrown if the browser not supporting CustomEvents.
 
 ## Todo
 * image size config
