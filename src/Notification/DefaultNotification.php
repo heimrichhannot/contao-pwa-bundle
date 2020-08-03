@@ -121,8 +121,12 @@ class DefaultNotification extends AbstractNotification
 		{
 			$iconSize = deserialize($iconSize);
 		}
-		$file = FilesModel::findByUuid($icon);
-		$image = System::getContainer()->get('contao.image.image_factory')->create($file->path, $iconSize);
-		$this->setIcon($image->getUrl(System::getContainer()->getParameter('kernel.project_dir')));
-	}
+                       
+        $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+        $imageFactory = System::getContainer()->get('contao.image.image_factory');
+        if (($objModel = FilesModel::findByUuid($icon)) != null && is_file($rootDir . '/' . $objModel->path)) {
+            $image = $imageFactory->create($rootDir . '/' . $objModel->path, $iconSize);
+            $this->setIcon($image->getUrl($rootDir));
+        }
+    }
 }
