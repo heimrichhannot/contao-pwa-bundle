@@ -13,12 +13,7 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 /**
  * Hooks
  */
-\HeimrichHannot\UtilsBundle\Arrays\ArrayUtil::insertBeforeKey(
-	$GLOBALS['TL_HOOKS']['generatePage'],
-	'huh.head-bundle',
-	'huh.pwa',
-	['huh.pwa.listener.hook', 'onGeneratePage']
-);
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = [\HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener::class, '__invoke'];
 
 /**
  * Models

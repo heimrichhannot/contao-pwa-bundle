@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.7.4-DEV] - 2020-09-23
+- fixed error in config.php in contao 4.9 
+
 ## [0.7.3] - 2020-08-04
 - [#10](https://github.com/heimrichhannot/contao-pwa-bundle/pull/10) fixed InvalidArgumentException in contao 4.9 when using notification icon (jelomada)
 

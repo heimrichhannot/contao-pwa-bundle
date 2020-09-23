@@ -7,6 +7,10 @@ services:
       calls:
         - ["setContainer", ["@service_container"]]
 
+  HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener:
+    autowire: true
+    public: true
+
   huh.pwa.listener.hook:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\HookListener
     public: true
