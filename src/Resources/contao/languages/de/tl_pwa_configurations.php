@@ -42,6 +42,7 @@ $lang['pwaRelatedApplications_id'] = ["ID","Die ID, die verwendet wird, um die A
 
 $lang['general_legend'] = 'Allgemein';
 $lang['manifest_legend'] = 'Manifest';
+$lang['serviceworker_legend'] = 'Service-Worker';
 
 /**
  * Buttons
