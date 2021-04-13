@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [DEV] - 2021-04-13
+- updated encore bundle integration, minimum supported encore bundle version is now 1.5
+- removed empty parameters.yml file
+
 ## [0.7.4] - 2020-09-23
 - fixed error in config.php in contao 4.9 
 - fixed missing block in backend template (#11)

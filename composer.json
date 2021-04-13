@@ -13,8 +13,10 @@
     "heimrichhannot/contao-utils-bundle": "^2.70",
     "sensio/framework-extra-bundle": "^5.0"
   },
+  "conflict": {
+    "heimrichhannot/contao-encore-bundle": "<1.5"
+  },
   "suggest": {
-    "heimrichhannot/contao-encore-bundle": "Manage dependencies with Symfony Webpack Encore",
     "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\"."
   },
   "autoload": {

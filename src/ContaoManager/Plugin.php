@@ -18,16 +18,13 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Config\ConfigInterface;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ConfigPluginInterface;
-use Contao\ManagerPlugin\Config\ContainerBuilder;
-use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use HeimrichHannot\ContaoPwaBundle\HeimrichHannotContaoPwaBundle;
-use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPluginInterface
 {
 
 	/**
@@ -51,6 +48,9 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 	public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
 	{
 		$loader->load('@HeimrichHannotContaoPwaBundle/Resources/config/services.yml');
+		if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
+            $loader->load('@HeimrichHannotContaoPwaBundle/Resources/config/encore_config.yml');
+        }
 	}
 
 	/**
@@ -64,22 +64,5 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 	{
 		$file = "@HeimrichHannotContaoPwaBundle/Resources/config/routing.yml";
 		return $resolver->resolve($file)->load($file);
-	}
-
-	/**
-	 * Allows a plugin to override extension configuration.
-	 *
-	 * @param string $extensionName
-	 *
-	 * @return array<string,mixed>
-	 */
-	public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
-	{
-		return ContainerUtil::mergeConfigFile(
-			'huh_encore',
-			$extensionName,
-			$extensionConfigs,
-			__DIR__.'/../Resources/config/encore_config.yml'
-		);
 	}
 }
