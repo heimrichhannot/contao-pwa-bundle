@@ -1,0 +1,18 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('headline'); ?>
+<?php $this->endblock(); ?>
+
+<?php $this->block('content'); ?>
+
+    <?php $this->block('popup_open'); ?>
+
+
+    <?php $this->endblock(); ?>
+    <?php $this->block('popup_content'); ?>
+
+    <?php $this->endblock(); ?>
+    <?php $this->block('popup_content'); ?>
+    <?php $this->endblock(); ?>
+
+<?php $this->endblock(); ?>

@@ -16,6 +16,7 @@ use Contao\BackendTemplate;
 use Contao\ContentElement;
 use Contao\ContentModel;
 use Contao\System;
+use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
 class PushSubscriptionElement extends ContentElement
 {
@@ -50,15 +51,10 @@ class PushSubscriptionElement extends ContentElement
 			return $this->Template->parse();
 		}
 
-		$template = $this->pwaSubscribeButtonTemplate ?: 'pwa_subscription_default';
-		$templatePath = $this->templateUtil->getTemplate($template);
+		$container = System::getContainer();
+		$buttonTemplate = $this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default';
 
-		try
-		{
-			$this->Template->button = $this->twig->render($templatePath);
-		} catch (\Twig_Error $e){
-			$this->Template->button = '<button class="huhPwaWebSubscription" disabled="disabled"><span class="label">Push Notifications</span></button>';
-		}
+		$this->Template->button = $container->get(TwigTemplateRenderer::class)->render($buttonTemplate);
 
 		return $this->Template->parse();
 	}
