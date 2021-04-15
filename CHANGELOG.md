@@ -1,7 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [DEV] - 2021-04-13
+## [0.8.0] - 2021-04-15
+- Add push notification popup module ([#13])
 - updated encore bundle integration, minimum supported encore bundle version is now 1.5
 - removed empty parameters.yml file
 - fixed a missing locale
@@ -11,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - fixed missing block in backend template (#11)
 
 ## [0.7.3] - 2020-08-04
-- [#10](https://github.com/heimrichhannot/contao-pwa-bundle/pull/10) fixed InvalidArgumentException in contao 4.9 when using notification icon (jelomada)
+- fixed InvalidArgumentException in contao 4.9 when using notification icon ([#10], jelomada)
 
 ## [0.7.2] - 2020-07-17
 - fixed wrong variable name
@@ -157,3 +158,6 @@ All notable changes to this project will be documented in this file.
 ## [0.1.0] - 2019-01-22
 
 Initial release
+
+[#13]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/13
+[#10]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/10
