@@ -2,14 +2,14 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener;
+namespace HeimrichHannot\ContaoPwaBundle\EventListener\Contao;
 
 
 use Contao\LayoutModel;
@@ -21,86 +21,80 @@ use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\Routing\RouterInterface;
+use Psr\Container\ContainerInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-class HookListener implements ContainerAwareInterface
+/**
+ * Hook("generatePage")
+ */
+class GeneratePageListener implements ServiceSubscriberInterface
 {
-    use ContainerAwareTrait;
-
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
     /**
      * @var ManifestLinkTag
      */
-    private $manifestLinkTag;
+    protected $manifestLinkTag;
     /**
      * @var ThemeColorMetaTag
      */
-    private $colorMetaTag;
-    /**
-     * @var \Twig_Environment
-     */
-    private $twig;
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-    /**
-     * @var ConfigurationFileGenerator
-     */
-    private $configurationGenerator;
-    /**
-     * @var ContainerUtil
-     */
-    private $containerUtil;
+    protected $colorMetaTag;
     /**
      * @var PwaHeadScriptTags
      */
-    private $pwaHeadScriptTags;
-
+    protected $pwaHeadScriptTags;
+    /**
+     * @var ConfigurationFileGenerator
+     */
+    protected $configurationGenerator;
+    /**
+     * @var ContainerUtil
+     */
+    protected $containerUtil;
 
     /**
-     * HookListener constructor.
+     * GeneratePageListener constructor.
      */
     public function __construct(
+        ContainerInterface $container,
         ManifestLinkTag $manifestLinkTag,
         ThemeColorMetaTag $colorMetaTag,
         PwaHeadScriptTags $pwaHeadScriptTags,
-        \Twig_Environment $twig,
-        RouterInterface $router,
         ConfigurationFileGenerator $configurationGenerator,
         ContainerUtil $containerUtil
     ) {
-        $this->manifestLinkTag        = $manifestLinkTag;
-        $this->colorMetaTag           = $colorMetaTag;
-        $this->twig                   = $twig;
-        $this->router                 = $router;
+        $this->container = $container;
+        $this->manifestLinkTag = $manifestLinkTag;
+        $this->colorMetaTag = $colorMetaTag;
+        $this->pwaHeadScriptTags = $pwaHeadScriptTags;
         $this->configurationGenerator = $configurationGenerator;
-        $this->containerUtil          = $containerUtil;
-        $this->pwaHeadScriptTags      = $pwaHeadScriptTags;
+        $this->containerUtil = $containerUtil;
     }
 
-    /**
-     * @param PageModel $page
-     * @param LayoutModel $layout
-     * @param PageRegular $pageRegular
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     */
-    public function onGeneratePage(PageModel $page, LayoutModel $layout, PageRegular $pageRegular)
+    public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
     {
-        if ($this->containerUtil->isBackend() || ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive())) {
+        if (
+            $this->containerUtil->isBackend() ||
+            ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive()))
+        {
             return;
         }
 
-        $rootPage = PageModel::findByPk($page->rootId);
+        $rootPage = PageModel::findByPk($pageModel->rootId);
 
         if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration) {
+
             $config = PwaConfigurationsModel::findByPk($rootPage->pwaConfiguration);
             if (!$config) {
                 return;
+            }
+
+            if ($this->container->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
+                $this->container->get(FrontendAsset::class)->addActiveEntrypoint('contao-pwa-bundle');
             }
 
             $this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
@@ -111,5 +105,13 @@ class HookListener implements ContainerAwareInterface
                     JSON_UNESCAPED_UNICODE
                 ));
         }
+    }
+
+    public static function getSubscribedServices()
+    {
+        return [
+            '?huh.amp.manager.amp_manager',
+            '?HeimrichHannot\EncoreBundle\Asset\FrontendAsset',
+        ];
     }
 }

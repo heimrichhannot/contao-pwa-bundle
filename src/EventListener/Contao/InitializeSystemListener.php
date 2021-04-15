@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener;
+namespace HeimrichHannot\ContaoPwaBundle\EventListener\Contao;
 
 use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 
@@ -23,8 +23,8 @@ class InitializeSystemListener
         ArrayUtil::insertBeforeKey(
             $GLOBALS['TL_HOOKS']['generatePage'],
             'huh.head-bundle',
-            'huh.pwa',
-            ['huh.pwa.listener.hook', 'onGeneratePage']
+            'huh_pwa',
+            [GeneratePageListener::class, '__invoke']
         );
     }
 }
