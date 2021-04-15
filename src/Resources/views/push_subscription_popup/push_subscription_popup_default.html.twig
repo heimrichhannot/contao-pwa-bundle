@@ -4,7 +4,6 @@
         /** @var {CustomEvent} event */
         document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
             let shown = (null !== localStorage.getItem('huh_pwa.push_popup.{{ cssId|default('mod_push_popup') }}.displayed'));
-            shown = false;
             if ('init' === event.detail.context && !shown) {
                 {% block script_init %}
                 let popupElement = document.getElementById('{{ cssId|default('mod_push_popup') }}');

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.1] - 2021-04-15
+- removed a dev leftover
+
 ## [0.8.0] - 2021-04-15
 - Add push notification popup module ([#13])
 - updated encore bundle integration, minimum supported encore bundle version is now 1.5
