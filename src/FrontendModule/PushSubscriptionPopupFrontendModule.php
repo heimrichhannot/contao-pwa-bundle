@@ -21,6 +21,7 @@ class PushSubscriptionPopupFrontendModule extends Module
     const TYPE = 'huh_pwa_push_popup';
 
     const TOGGLE_EVENT = 'event';
+    const TOGGLE_CUSTOM = 'custom';
 
     protected $strTemplate = 'mod_push_subscription_popup';
 
@@ -45,6 +46,7 @@ class PushSubscriptionPopupFrontendModule extends Module
             'hl' => $this->Template->hl,
             'text' => $this->pwaText,
             'cssId' => $cssId,
+            'openOnInit' => (static::TOGGLE_EVENT === $this->pwaPopupToggle),
         ]);
 
         $this->cssID[0] = $cssId.'_wrapper';

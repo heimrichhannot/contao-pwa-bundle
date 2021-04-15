@@ -32,15 +32,17 @@ $dc['fields']['pwaPopupTemplate'] = [
     'sql'              => "varchar(64) NOT NULL default ''",
 ];
 $dc['fields']['pwaPopupToggle'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_module']['pwaPopupToggle'],
-    'exclude'   => true,
-    'inputType' => 'select',
-    'options'   => [
-        'event',
-        'custom'
+    'label'       => &$GLOBALS['TL_LANG']['tl_module']['pwaPopupToggle'],
+    'exclude'     => true,
+    'inputType'   => 'select',
+    'options'     => [
+        PushSubscriptionPopupFrontendModule::TOGGLE_EVENT,
+        PushSubscriptionPopupFrontendModule::TOGGLE_CUSTOM,
     ],
-    'eval'      => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
-    'sql'       => "varchar(64) NOT NULL default ''",
+    'default' => PushSubscriptionPopupFrontendModule::TOGGLE_EVENT,
+    'eval'        => ['tl_class' => 'w50 clr', 'helpwizard' => true],
+    'explanation' => 'pwaPopupToggle',
+    'sql'         => "varchar(64) NOT NULL default ''",
 ];
 $dc['fields']['pwaText'] = [
     'label'                   => &$GLOBALS['TL_LANG']['tl_content']['text'],
