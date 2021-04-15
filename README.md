@@ -10,10 +10,10 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 
 * Create and register manifest file for each page root
 * Create and register service worker for each page root
-* set an offline fallback page
-* Subscribe to Push Notifications button as Content Element
 * send custom push notifications from backend
-* [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support, inclusive asset precaching
+* set an offline fallback page
+* Frontend module and content element to subscribe to push notifications
+* [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support, including asset precaching
 * expandable architecture
 
 ## Setup
@@ -44,7 +44,7 @@ Call `composer require heimrichhannot/contao-pwa-bundle` and update database aft
 1. Create an PWA Configuration(Backend -> System -> PWA Configuration)
 1. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
     * On saving the page the page manifest and the serviceworker will be generated
-1. To provide an option to register to your push notifications, you need to add the Push Notification Subscribe Button content element on your page
+1. To provide an option to register to your push notifications, add the Push Subscription Button content element or the push notification popup frontend module to your page.
  
 ### Push Notifications
 
