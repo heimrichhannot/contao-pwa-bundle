@@ -11,7 +11,6 @@
 
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
-use Contao\CoreBundle\Monolog\ContaoContext;
 use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
