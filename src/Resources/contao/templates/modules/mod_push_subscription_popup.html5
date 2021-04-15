@@ -5,14 +5,6 @@
 
 <?php $this->block('content'); ?>
 
-    <?php $this->block('popup_open'); ?>
-
-
-    <?php $this->endblock(); ?>
-    <?php $this->block('popup_content'); ?>
-
-    <?php $this->endblock(); ?>
-    <?php $this->block('popup_content'); ?>
-    <?php $this->endblock(); ?>
+<?= $this->popup; ?>
 
 <?php $this->endblock(); ?>

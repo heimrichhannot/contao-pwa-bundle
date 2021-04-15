@@ -11,7 +11,8 @@
     "heimrichhannot/contao-head-bundle": "^1.2",
     "menatwork/contao-multicolumnwizard": "^3.3",
     "heimrichhannot/contao-utils-bundle": "^2.70",
-    "sensio/framework-extra-bundle": "^5.0"
+    "sensio/framework-extra-bundle": "^5.0",
+    "heimrichhannot/contao-twig-support-bundle": "^0.2.16|^1.0"
   },
   "conflict": {
     "heimrichhannot/contao-encore-bundle": "<1.5"

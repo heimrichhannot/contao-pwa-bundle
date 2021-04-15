@@ -71,9 +71,13 @@ class PushNotificationSubscription
             document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {detail: {'reason': reason}}));
         });
     }
-    setIsUnsubscribed() {
+    setIsUnsubscribed(context = null) {
         if (!this.checkPermission()) return;
-        document.dispatchEvent(new Event('huh_pwa_push_isUnsubscribed'));
+        document.dispatchEvent(new CustomEvent('huh_pwa_push_isUnsubscribed',{
+            detail: {
+                context: context
+            }
+        }));
         if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isUnsubscribed');
     }
 

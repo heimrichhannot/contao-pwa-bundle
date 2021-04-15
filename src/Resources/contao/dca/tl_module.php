@@ -13,7 +13,7 @@ use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendM
 
 $dca = &$GLOBALS['TL_DCA']['tl_module'];
 
-$dca['palettes'][PushSubscriptionPopupFrontendModule::TYPE] = '{title_legend},name,headline,type;{content_legend},pwaText;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$dca['palettes'][PushSubscriptionPopupFrontendModule::TYPE] = '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $dc['fields']['pwaSubscribeButtonTemplate'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_module']['pwaSubscribeButtonTemplate'],
@@ -30,6 +30,17 @@ $dc['fields']['pwaPopupTemplate'] = [
     'options_callback' => [ModuleContainer::class, 'onPwaPopupTemplateOptionsCallback'],
     'eval'             => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
     'sql'              => "varchar(64) NOT NULL default ''",
+];
+$dc['fields']['pwaPopupToggle'] = [
+    'label'     => &$GLOBALS['TL_LANG']['tl_module']['pwaPopupToggle'],
+    'exclude'   => true,
+    'inputType' => 'select',
+    'options'   => [
+        'event',
+        'custom'
+    ],
+    'eval'      => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
+    'sql'       => "varchar(64) NOT NULL default ''",
 ];
 $dc['fields']['pwaText'] = [
     'label'                   => &$GLOBALS['TL_LANG']['tl_content']['text'],
