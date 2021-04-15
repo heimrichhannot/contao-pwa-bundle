@@ -10,4 +10,4 @@
 
 $lang = &$GLOBALS['TL_LANG']['tl_content'];
 
-$lang['pwaSubscribeButtonTemplate'] = ["Button-Template", 'Template fpr den "Benachrichtigungen abonnieren"-Button auswählen.'];
+$lang['pwaSubscribeButtonTemplate'] = ["Button-Template", 'Template für den "Benachrichtigungen abonnieren"-Button auswählen.'];

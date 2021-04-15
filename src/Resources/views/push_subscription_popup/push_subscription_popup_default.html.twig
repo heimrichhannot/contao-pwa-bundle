@@ -1,0 +1,90 @@
+{% if openOnInit|default %}
+    {% block script -%}
+    <script>
+        /** @var {CustomEvent} event */
+        document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
+            let shown = (null !== localStorage.getItem('huh_pwa.push_popup.{{ cssId|default('mod_push_popup') }}.displayed'));
+            shown = false;
+            if ('init' === event.detail.context && !shown) {
+                {% block script_init %}
+                let popupElement = document.getElementById('{{ cssId|default('mod_push_popup') }}');
+                if (popupElement !== null) {
+                    popupElement.classList.add('in');
+                }
+                {% endblock %}
+                localStorage.setItem('huh_pwa.push_popup.{{ cssId|default('mod_push_popup') }}.displayed', '1')
+            }
+        });
+    </script>
+    {%- endblock %}
+{% endif %}
+
+{% block before %}
+<style>
+    .modal-window {
+        position: fixed;
+        background-color: rgba(255, 255, 255, 0.25);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 9999;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+    }
+    .modal-window.in {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .modal-window > div {
+        width: 400px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2em;
+        background: white;
+        box-shadow: 0px 0px 10px;
+    }
+    .modal-window header {
+        font-weight: bold;
+    }
+    .modal-window h1 {
+        font-size: 150%;
+        margin: 0 0 15px;
+    }
+
+    .modal-close {
+        color: #aaa;
+        line-height: 50px;
+        position: absolute;
+        right: 0;
+        text-align: center;
+        top: 0;
+        width: 70px;
+        text-decoration: none;
+        background-color: transparent;
+        border: none;
+    }
+    .modal-close:hover {
+        color: black;
+    }
+</style>
+<div id="{{ cssId|default('mod_push_popup') }}" class="modal-window">
+    <div>
+        <button onclick="document.getElementById('{{ cssId|default('mod_push_popup') }}').classList.remove('in');" title="Close" class="modal-close">x</button>
+{% endblock %}
+{% block content %}
+        {% if headline is defined and headline is not empty %}
+            <{{ hl|default('h1') }}>{{ headline|raw }}!</{{ hl|default('h1') }}>
+        {% endif %}
+        {{ text|default|raw }}
+        {{ button|default|raw }}
+{% endblock %}
+{% block after %}
+    </div>
+</div>
+{% endblock %}

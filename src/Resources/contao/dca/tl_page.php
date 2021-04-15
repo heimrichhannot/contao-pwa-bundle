@@ -10,7 +10,7 @@
 
 $dca = &$GLOBALS['TL_DCA']['tl_page'];
 
-$dca['config']['oncreate_version_callback'][] = ['huh.pwa.datacontainer.page', 'onCreateVersionCallback'];
+$dca['config']['oncreate_version_callback'][] = [\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::class, 'onCreateVersionCallback'];
 
 $dca['palettes']['__selector__'][] = 'addPwa';
 $dca['palettes']['root']           = str_replace('{publish_legend', '{pwa_legend},addPwa;{publish_legend', $dca['palettes']['root']);
@@ -41,14 +41,14 @@ $fields = [
 	'pwaConfiguration' => [
 		'label'            => &$GLOBALS['TL_LANG']['tl_page']['pwaConfiguration'],
 		'inputType'        => 'select',
-		'options_callback' => ['huh.pwa.datacontainer.page', 'getPwaConfigurationsAsOptions'],
+		'options_callback' => [\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::class, 'getPwaConfigurationsAsOptions'],
 		'eval'             => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
 		'sql'              => "int(10) unsigned NOT NULL default '0'",
 	],
 	'pwaParent'        => [
 		'label'            => &$GLOBALS['TL_LANG']['tl_page']['pwaParent'],
 		'inputType'        => 'select',
-		'options_callback' => ['huh.pwa.datacontainer.page', 'getInheritPwaPageConfigOptions'],
+		'options_callback' => [\HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer::class, 'getInheritPwaPageConfigOptions'],
 		'eval'             => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
 		'sql'              => "int(10) unsigned NOT NULL default '0'",
 	],

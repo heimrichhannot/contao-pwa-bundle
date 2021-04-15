@@ -7,6 +7,11 @@ services:
       calls:
         - ["setContainer", ["@service_container"]]
 
+  HeimrichHannot\ContaoPwaBundle\DataContainer\:
+    resource: '../../DataContainer/*'
+    public: true
+    autowire: true
+
   HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener:
     autowire: true
     public: true
@@ -23,12 +28,6 @@ services:
     arguments:
       ['@huh.pwa.sender.pushnotification', '@logger']
   HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener: '@huh.pwa.listener.commandscheduler'
-
-  huh.pwa.datacontainer.page:
-    class: HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer: '@huh.pwa.datacontainer.page'
 
   huh.pwalist.choice.template.item:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\ContentContainer

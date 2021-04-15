@@ -12,25 +12,25 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
-use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
+use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ContentContainer
 {
-	/**
-	 * @var TemplateUtil
-	 */
-	private $templateUtil;
+    /**
+     * @var TwigTemplateLocator
+     */
+    protected $templateLocator;
 
-	/**
+    /**
 	 * ContentContainer constructor.
 	 */
-	public function __construct(TemplateUtil $templateUtil)
+	public function __construct(TwigTemplateLocator $templateLocator)
 	{
-		$this->templateUtil = $templateUtil;
-	}
+        $this->templateLocator = $templateLocator;
+    }
 
 	public function getPwaSubscriptionButtonTemplate()
 	{
-		return $this->templateUtil->getTemplateGroup('subscribe_button_');
+		return $this->templateLocator->getTemplateGroup('subscribe_button_');
 	}
 }

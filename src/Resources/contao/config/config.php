@@ -1,9 +1,10 @@
 <?php
 
+use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
+
 /**
  * Backend modules
  */
-
 $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 	'tables' => ['tl_pwa_configurations', 'tl_pwa_pushsubscriber', 'tl_pwa_pushnotifications']
 ];
@@ -26,6 +27,13 @@ $GLOBALS['TL_MODELS']['tl_pwa_pushnotifications'] = \HeimrichHannot\ContaoPwaBun
  * Content Elements
  */
 $GLOBALS['TL_CTE']['links'][\HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::TYPE] = \HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::class;
+
+/**
+ * Frontend Modules
+ */
+
+$GLOBALS['FE_MOD']['miscellaneous'][PushSubscriptionPopupFrontendModule::TYPE] = PushSubscriptionPopupFrontendModule::class;
+
 
 /**
  * Assets

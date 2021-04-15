@@ -1,0 +1,35 @@
+{% extends '@HeimrichHannotContaoPwa/push_subscription_popup/push_subscription_popup_default.html.twig' %}
+
+{% block script_init %}
+    $('#{{ cssId|default('mod_push_popup') }}').modal({backdrop: false, show: true});
+{% endblock %}
+
+{% block before %}
+    <div class="modal fade {{modelCssClasses|default}}" id="{{ cssId|default('mod_push_popup') }}" tabindex="-1" aria-labelledby="{{ cssId|default('mod_push_popup') }}Label" aria-hidden="true">
+        <div class="modal-dialog">
+{% endblock %}
+{% block content %}
+            <div class="modal-content">
+                {% if headline is defined and headline is not empty %}
+                <div class="modal-header">
+                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}Label">{{ headline|raw }}!</{{ hl|default('h5') }}>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                <div class="modal-body">
+                    {{ text|default|raw }}
+                    {{ button|default|raw }}
+                </div>
+                <div class="modal-footer">
+                    {% block modal_footer_content %}
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'Close'|trans }}</button>
+                    {% endblock %}
+                </div>
+            </div>
+{% endblock %}
+{% block after %}
+    </div>
+</div>
+{% endblock %}

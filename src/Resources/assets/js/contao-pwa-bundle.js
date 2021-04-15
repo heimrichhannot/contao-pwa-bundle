@@ -58,7 +58,7 @@ function initializePush()
             else
             {
                 if (debug)console.log('[SW Registration] Not subscribed');
-                PushSubscription.setIsUnsubscribed();
+                PushSubscription.setIsUnsubscribed('init');
             }
         });
     });
