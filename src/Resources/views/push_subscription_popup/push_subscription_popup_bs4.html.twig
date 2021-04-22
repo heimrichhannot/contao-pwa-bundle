@@ -12,7 +12,7 @@
             <div class="modal-content">
                 {% if headline is defined and headline is not empty %}
                 <div class="modal-header">
-                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}Label">{{ headline|raw }}!</{{ hl|default('h5') }}>
+                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}Label">{{ headline|raw }}</{{ hl|default('h5') }}>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

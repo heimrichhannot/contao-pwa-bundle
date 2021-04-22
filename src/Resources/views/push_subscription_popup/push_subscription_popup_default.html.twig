@@ -27,7 +27,6 @@
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: 9999;
         visibility: hidden;
         opacity: 0;
         pointer-events: none;
@@ -78,7 +77,7 @@
 {% endblock %}
 {% block content %}
         {% if headline is defined and headline is not empty %}
-            <{{ hl|default('h1') }}>{{ headline|raw }}!</{{ hl|default('h1') }}>
+            <{{ hl|default('h1') }}>{{ headline|raw }}</{{ hl|default('h1') }}>
         {% endif %}
         {{ text|default|raw }}
         {{ button|default|raw }}
