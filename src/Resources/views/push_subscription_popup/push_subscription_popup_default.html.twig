@@ -79,6 +79,9 @@
         {% if headline is defined and headline is not empty %}
             <{{ hl|default('h1') }}>{{ headline|raw }}</{{ hl|default('h1') }}>
         {% endif %}
+        {% if image is defined %}
+            {{ image.buffer|raw }}
+        {% endif %}
         {{ text|default|raw }}
         {{ button|default|raw }}
 {% endblock %}
