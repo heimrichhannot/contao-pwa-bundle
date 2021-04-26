@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.3] - 2021-04-26
+- added image support to push notification popup module
+
 ## [0.8.2] - 2021-04-22
 - removed trailing ! in push_subscription templates
 

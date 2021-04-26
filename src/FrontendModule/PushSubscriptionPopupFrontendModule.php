@@ -12,7 +12,11 @@
 namespace HeimrichHannot\ContaoPwaBundle\FrontendModule;
 
 
+use Contao\Controller;
+use Contao\FilesModel;
+use Contao\FrontendTemplate;
 use Contao\Module;
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
@@ -28,26 +32,41 @@ class PushSubscriptionPopupFrontendModule extends Module
     protected function compile()
     {
         $container = System::getContainer();
+        $templateData = [
+            'headline' => $this->Template->headline,
+            'hl' => $this->Template->hl,
+            'text' => $this->pwaText,
+            'openOnInit' => (static::TOGGLE_EVENT === $this->pwaPopupToggle),
+            'singleSRC' => $this->singleSRC,
+        ];
 
         $buttonTemplate = $this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default';
-
-        $buttonBuffer = $container->get(TwigTemplateRenderer::class)->render($buttonTemplate);
-
-        $modalTemplate = $this->pwaPopupTemplate ?: 'push_subscription_popup_default';
+        $templateData['button'] = $container->get(TwigTemplateRenderer::class)->render($buttonTemplate);
 
         $cssId = $this->cssID[0];
         if (empty($cssId)) {
             $cssId = 'mod_' . $this->type.'_'.$this->id;
         }
+        $templateData['cssId'] = $cssId;
 
-        $this->Template->popup = $container->get(TwigTemplateRenderer::class)->render($modalTemplate, [
-            'button' => $buttonBuffer,
-            'headline' => $this->Template->headline,
-            'hl' => $this->Template->hl,
-            'text' => $this->pwaText,
-            'cssId' => $cssId,
-            'openOnInit' => (static::TOGGLE_EVENT === $this->pwaPopupToggle),
-        ]);
+        // Add an image
+        if ($this->addImage && $this->singleSRC != '')
+        {
+            $filesModel = FilesModel::findByUuid($this->singleSRC);
+            $template = new FrontendTemplate('image');
+            Controller::addImageToTemplate($template, [
+                'singleSRC' => $filesModel->path,
+                'size' => $this->imgSize,
+            ], null, null, $filesModel);
+            $image = $template->getData();
+            $image['buffer'] = $template->parse();
+            $image['size'] = StringUtil::deserialize($this->imgSize);
+            $templateData['image'] = $image;
+        }
+
+        $modalTemplate = $this->pwaPopupTemplate ?: 'push_subscription_popup_default';
+
+        $this->Template->popup = $container->get(TwigTemplateRenderer::class)->render($modalTemplate, $templateData);
 
         $this->cssID[0] = $cssId.'_wrapper';
     }

@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\ContaoPwaBundle\EventListener\Contao\LoadDataContainerListener;
+use HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener;
 use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
 
 /**
@@ -14,7 +16,8 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = [\HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener::class, '__invoke'];
+$GLOBALS['TL_HOOKS']['initializeSystem']['huh_pwa'] = [InitializeSystemListener::class, '__invoke'];
+$GLOBALS['TL_HOOKS']['loadDataContainer']['huh_pwa'] = [LoadDataContainerListener::class, '__invoke'];
 
 /**
  * Models

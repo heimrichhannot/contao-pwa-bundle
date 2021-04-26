@@ -12,6 +12,10 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\DataContainer;
+use Contao\DC_Table;
+use Contao\ModuleModel;
+use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ModuleContainer
@@ -27,6 +31,21 @@ class ModuleContainer
     public function __construct(TwigTemplateLocator $templateLocator)
     {
         $this->templateLocator = $templateLocator;
+    }
+
+    /**
+     * @param DataContainer|DC_Table|null $dc
+     */
+    public function onLoadCallback(?DataContainer $dc = null): void
+    {
+        if (!$dc || !$dc->id) {
+            return;
+        }
+        $module = ModuleModel::findByPk($dc->id);
+        if (!$module || PushSubscriptionPopupFrontendModule::TYPE !== $module->type) {
+            return;
+        }
+        $GLOBALS['TL_DCA']['tl_module']['subpalettes']['addImage'] = 'singleSRC,imgSize';
     }
 
     public function onPwaSubscribeButtonTemplateOptionsCallback(): array

@@ -13,7 +13,9 @@ use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendM
 
 $dca = &$GLOBALS['TL_DCA']['tl_module'];
 
-$dca['palettes'][PushSubscriptionPopupFrontendModule::TYPE] = '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$dca['config']['onload_callback']['huh_pwa'] = [ModuleContainer::class, 'onLoadCallback'];
+
+$dca['palettes'][PushSubscriptionPopupFrontendModule::TYPE] = '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{image_legend},addImage;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $dc['fields']['pwaSubscribeButtonTemplate'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_module']['pwaSubscribeButtonTemplate'],

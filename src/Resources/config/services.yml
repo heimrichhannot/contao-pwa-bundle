@@ -12,6 +12,11 @@ services:
     public: true
     autowire: true
 
+  HeimrichHannot\ContaoPwaBundle\EventListener\Contao\:
+    resource: '../../EventListener/Contao/*'
+    public: true
+    autowire: true
+
   HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener:
     autowire: true
     public: true

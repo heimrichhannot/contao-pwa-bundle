@@ -19,8 +19,12 @@
                 </div>
                 {% endif %}
                 <div class="modal-body">
+                    {% if image is defined %}
+                        {{ image.buffer|raw }}
+                    {% endif %}
                     {{ text|default|raw }}
                     {{ button|default|raw }}
+
                 </div>
                 <div class="modal-footer">
                     {% block modal_footer_content %}
