@@ -169,7 +169,7 @@ $GLOBALS['TL_DCA'][$table] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['sent'],
             'inputType' => 'checkbox',
             'filter'    => true,
-            'eval'      => [],
+            'eval'      => ['doNotCopy' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'published'   => [
