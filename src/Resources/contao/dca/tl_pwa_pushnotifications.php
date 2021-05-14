@@ -20,6 +20,9 @@ $GLOBALS['TL_DCA'][$table] = [
 				'id' => 'primary',
 			],
 		],
+        'onsubmit_callback' => [
+            ['huh.utils.dca', 'setDateAdded'],
+        ],
 	],
 	'list'        => [
 		'sorting'           => [

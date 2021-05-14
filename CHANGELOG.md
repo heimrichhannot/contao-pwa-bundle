@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [DEV] - 2021-05-14
+- fixed missing dateAdded setup in tl_pwa_pushnotifications
+
 ## [0.8.4] - 2021-04-26
 - added image support to push notification popup module default template
 
