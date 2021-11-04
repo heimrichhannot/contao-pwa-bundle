@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 use Contao\FilesModel;
 use Contao\PageModel;
+use Contao\StringUtil;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
@@ -98,7 +99,7 @@ class ManifestGenerator
 		{
 			$manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);
 		}
-		$applications = deserialize($config->pwaRelatedApplications);
+		$applications = StringUtil::deserialize($config->pwaRelatedApplications);
 		foreach ($applications as $application)
 		{
 			$manifest->addRelatedApplication($application['plattform'], $application['url'], $application['id']);

@@ -12,6 +12,7 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\Message;
 use Contao\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
 use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
@@ -76,7 +77,11 @@ class PageContainer
 			return;
 		}
 
-		$this->manifestGenerator->generatePageManifest($page);
+		try {
+            $this->manifestGenerator->generatePageManifest($page);
+        } catch (\Exception $e) {
+            Message::addError(str_replace('%error%', $e->getMessage(), $GLOBALS['TL_LANG']['ERR']['huhPwaGenerateManifest']));
+        }
 		$this->serviceWorkerGenerator->generatePageServiceworker($page);
 	}
 
