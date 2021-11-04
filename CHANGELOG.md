@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.8.6] - 2021-11-04
 - Changed: show error message when an exception occurs when generating a manifest file while saving a page instead of throwing the exception
+- Fixed: a deprecation warning
 
 ## [0.8.5] - 2021-05-14
 - fixed missing dateAdded setup in tl_pwa_pushnotifications
