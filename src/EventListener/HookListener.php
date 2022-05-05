@@ -25,6 +25,7 @@ use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class HookListener implements ContainerAwareInterface
 {
@@ -39,7 +40,7 @@ class HookListener implements ContainerAwareInterface
      */
     private $colorMetaTag;
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $twig;
     /**
@@ -67,7 +68,7 @@ class HookListener implements ContainerAwareInterface
         ManifestLinkTag $manifestLinkTag,
         ThemeColorMetaTag $colorMetaTag,
         PwaHeadScriptTags $pwaHeadScriptTags,
-        \Twig_Environment $twig,
+        Environment $twig,
         RouterInterface $router,
         ConfigurationFileGenerator $configurationGenerator,
         ContainerUtil $containerUtil

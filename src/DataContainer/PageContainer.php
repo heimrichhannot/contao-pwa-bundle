@@ -19,6 +19,7 @@ use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
+use Twig\Environment;
 
 class PageContainer
 {
@@ -39,7 +40,7 @@ class PageContainer
 	 */
 	private $container;
 	/**
-	 * @var \Twig_Environment
+	 * @var Environment
 	 */
 	private $twig;
 	/**
@@ -51,7 +52,7 @@ class PageContainer
 	/**
 	 * PageContainer constructor.
 	 */
-	public function __construct(ManifestGenerator $manifestGenerator, FileLocator $fileLocator, ContainerInterface $container, \Twig_Environment $twig, ServiceWorkerGenerator $serviceWorkerGenerator)
+	public function __construct(ManifestGenerator $manifestGenerator, FileLocator $fileLocator, ContainerInterface $container, Environment $twig, ServiceWorkerGenerator $serviceWorkerGenerator)
 	{
 		$this->manifestGenerator = $manifestGenerator;
 		$this->fileLocator = $fileLocator;

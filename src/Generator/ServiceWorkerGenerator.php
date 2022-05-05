@@ -21,6 +21,7 @@ use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Twig\Environment;
 
 class ServiceWorkerGenerator implements ContainerAwareInterface
 {
@@ -33,7 +34,7 @@ class ServiceWorkerGenerator implements ContainerAwareInterface
 	 */
 	protected $webDir;
 	/**
-	 * @var \Twig_Environment
+	 * @var Environment
 	 */
 	protected $twig;
 	/**
@@ -47,7 +48,7 @@ class ServiceWorkerGenerator implements ContainerAwareInterface
 	 * @param string $webDir
 	 * @param \Twig_Environment $twig
 	 */
-	public function __construct(string $webDir, \Twig_Environment $twig, Logger $logger)
+	public function __construct(string $webDir, Environment $twig, Logger $logger)
 	{
 		$this->webDir = $webDir;
 		$this->twig = $twig;
