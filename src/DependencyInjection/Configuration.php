@@ -27,8 +27,12 @@ class Configuration implements ConfigurationInterface
 	 */
 	public function getConfigTreeBuilder()
 	{
-		$treeBuilder = new TreeBuilder();
-		$rootNode = $treeBuilder->root(PwaExtension::ALIAS);
+		$treeBuilder = new TreeBuilder(PwaExtension::ALIAS);
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $rootNode = $treeBuilder->root(PwaExtension::ALIAS);
+        }
 
 		$rootNode->children()
 			->arrayNode('vapid')

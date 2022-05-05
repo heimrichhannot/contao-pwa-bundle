@@ -13,11 +13,9 @@ namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/api/notifications")
  */
-class NotificationController extends Controller
+class NotificationController extends AbstractController
 {
 	/**
 	 * @Route("/subscribe/{config}", name="push_notification_subscription", methods={"POST"})

@@ -11,12 +11,11 @@
 
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
-use Contao\CoreBundle\Monolog\ContaoContext;
 use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +35,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @property ContainerInterface $container
  */
-class BackendController extends Controller
+class BackendController extends AbstractController
 {
     /**
      * @Route("/pwa/control", name="huh_pwa_backend_control")

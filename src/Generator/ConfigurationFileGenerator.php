@@ -13,13 +13,12 @@ namespace HeimrichHannot\ContaoPwaBundle\Generator;
 
 
 use Contao\PageModel;
-use Contao\System;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\EventDispatcher\Tests\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ConfigurationFileGenerator
 {

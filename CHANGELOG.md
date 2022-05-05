@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2022-05-05
+- Changed: minimum contao version is now 4.9
+- Fixed: symfony 5 compatibility
+
 ## [0.8.6] - 2021-11-04
 - Changed: show error message when an exception occurs when generating a manifest file while saving a page instead of throwing the exception
 - Fixed: a deprecation warning
