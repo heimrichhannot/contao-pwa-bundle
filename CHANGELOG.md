@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2022-05-05
+## [0.8.7] - 2022-05-09
 - Changed: minimum contao version is now 4.9
 - Fixed: symfony 5 compatibility
 
