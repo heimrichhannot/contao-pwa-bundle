@@ -14,18 +14,7 @@ services:
 
   HeimrichHannot\ContaoPwaBundle\EventListener\Contao\:
     resource: '../../EventListener/Contao/*'
-    public: true
     autowire: true
-
-  HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener:
-    autowire: true
-    public: true
-
-  huh.pwa.listener.hook:
-    class: HeimrichHannot\ContaoPwaBundle\EventListener\HookListener
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\EventListener\HookListener: '@huh.pwa.listener.hook'
 
   huh.pwa.listener.commandscheduler:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener

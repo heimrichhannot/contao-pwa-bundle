@@ -1,8 +1,9 @@
 <?php
 
-use HeimrichHannot\ContaoPwaBundle\EventListener\Contao\LoadDataContainerListener;
-use HeimrichHannot\ContaoPwaBundle\EventListener\InitializeSystemListener;
 use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 
 /**
  * Backend modules
@@ -11,20 +12,12 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 	'tables' => ['tl_pwa_configurations', 'tl_pwa_pushsubscriber', 'tl_pwa_pushnotifications']
 ];
 
-
-
-/**
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['initializeSystem']['huh_pwa'] = [InitializeSystemListener::class, '__invoke'];
-$GLOBALS['TL_HOOKS']['loadDataContainer']['huh_pwa'] = [LoadDataContainerListener::class, '__invoke'];
-
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_pwa_configurations'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::class;
-$GLOBALS['TL_MODELS']['tl_pwa_pushsubscriber'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel::class;
-$GLOBALS['TL_MODELS']['tl_pwa_pushnotifications'] = \HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_configurations'] = PwaConfigurationsModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_pushsubscriber'] = PwaPushSubscriberModel::class;
+$GLOBALS['TL_MODELS']['tl_pwa_pushnotifications'] = PwaPushNotificationsModel::class;
 
 /**
  * Content Elements

@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.8] - 2022-05-10
+- Added: encore entry is now added from code
+- Changed: some code refactoring
+
 ## [0.8.7] - 2022-05-09
 - Changed: minimum contao version is now 4.9
 - Fixed: symfony 5 compatibility

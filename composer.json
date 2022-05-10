@@ -10,7 +10,7 @@
     "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-head-bundle": "^1.2",
     "menatwork/contao-multicolumnwizard": "^3.3",
-    "heimrichhannot/contao-utils-bundle": "^2.70",
+    "heimrichhannot/contao-utils-bundle": "^2.215",
     "heimrichhannot/contao-twig-support-bundle": "^0.2.16|^1.0",
     "symfony/framework-bundle": "^4.4 || ^5.4",
     "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",

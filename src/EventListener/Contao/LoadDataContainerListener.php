@@ -13,6 +13,7 @@ namespace HeimrichHannot\ContaoPwaBundle\EventListener\Contao;
 
 
 use Contao\Controller;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 
 /**
  * @Hook("loadDataContainer")
