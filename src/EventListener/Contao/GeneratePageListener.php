@@ -6,6 +6,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
+use HeimrichHannot\AmpBundle\Manager\AmpManager;
 use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
@@ -75,9 +76,10 @@ class GeneratePageListener implements ServiceSubscriberInterface
 
     public static function getSubscribedServices()
     {
-        $services = [
-            '?huh.amp.manager.amp_manager',
-        ];
+        $services = [];
+        if (class_exists(AmpManager::class)) {
+            $services[] = '?'.AmpManager::class;
+        }
         if (class_exists(FrontendAsset::class)) {
             $services[] = '?'.FrontendAsset::class;
         }

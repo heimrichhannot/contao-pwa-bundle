@@ -12,24 +12,39 @@
 namespace HeimrichHannot\ContaoPwaBundle\Command;
 
 
-use Contao\CoreBundle\Command\AbstractLockedCommand;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class PushNotificationSendCommand extends AbstractLockedCommand
+class PushNotificationSendCommand extends Command
 {
-	protected $dryRun = false;
+    protected static $defaultName = 'huh:pwa:sendpush';
+    protected static $defaultDescription = 'Send unsent push notifications.';
 
-	protected function configure()
+	protected                      $dryRun = false;
+    private ContaoFramework        $contaoFramework;
+    private PushNotificationSender $notificationSender;
+
+    public function __construct(ContaoFramework $contaoFramework, PushNotificationSender $notificationSender)
+    {
+        parent::__construct();
+        $this->contaoFramework = $contaoFramework;
+        $this->notificationSender = $notificationSender;
+    }
+
+
+    protected function configure()
 	{
-		$this->setName('huh:pwa:sendpush')
-			->setDescription('Send unsent push notifications.')
+		$this
+			->setDescription(static::$defaultDescription)
 			->addOption('dry-run', null, InputOption::VALUE_NONE, "Performs a run without actually send notifications and making changes to the database.")
 		;
 
@@ -44,9 +59,9 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 	 *
 	 * @return int|null
 	 */
-	protected function executeLocked(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$this->getContainer()->get('contao.framework')->initialize();
+		$this->contaoFramework->initialize();
 		$io = new SymfonyStyle($input, $output);
 
 		$io->title("Send unsend push notifications");
@@ -57,8 +72,6 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 			$io->note("Dry run enabled, no data will be changed.");
 			$io->newLine();
 		}
-
-		$sender = $this->getContainer()->get('huh.pwa.sender.pushnotification');
 
         $unsent = PwaPushNotificationsModel::findUnsentPublishedNotifications();
 
@@ -92,7 +105,7 @@ class PushNotificationSendCommand extends AbstractLockedCommand
 			{
 				try
 				{
-					$result = $sender->send($pushNotification, $configuration);
+					$result = $this->notificationSender->send($pushNotification, $configuration);
 					$tableResult = ["notification" => $notification->title.' (ID: '.$notification->id.')'];
 					$tableResult = array_merge($tableResult, $result);
 					unset($tableResult['success']);

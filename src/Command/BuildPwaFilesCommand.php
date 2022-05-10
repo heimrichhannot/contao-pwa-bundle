@@ -13,20 +13,47 @@ namespace HeimrichHannot\ContaoPwaBundle\Command;
 
 
 use Contao\CoreBundle\Command\AbstractLockedCommand;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
+use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class BuildPwaFilesCommand extends AbstractLockedCommand
+class BuildPwaFilesCommand extends Command
 {
+    protected static                   $defaultName = 'huh:pwa:build';
+    protected static                   $defaultDescription = 'Build or rebuild file for pwa.';
+    private ContaoFramework            $contaoFramework;
+    private ManifestGenerator          $manifestGenerator;
+    private ServiceWorkerGenerator     $serviceWorkerGenerator;
+    private ConfigurationFileGenerator $configurationFileGenerator;
+
+    public function __construct(
+        ContaoFramework $contaoFramework,
+        ManifestGenerator $manifestGenerator,
+        ServiceWorkerGenerator $serviceWorkerGenerator,
+        ConfigurationFileGenerator $configurationFileGenerator
+    )
+    {
+        parent::__construct();
+
+        $this->contaoFramework = $contaoFramework;
+        $this->manifestGenerator = $manifestGenerator;
+        $this->serviceWorkerGenerator = $serviceWorkerGenerator;
+        $this->configurationFileGenerator = $configurationFileGenerator;
+    }
+
 
     protected function configure()
     {
-        $this->setName('huh:pwa:build')
-            ->setDescription('Build or rebuild file for pwa.')
+        $this
+            ->setDescription(static::$defaultDescription)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, "Performs a run without actually send notifications and making changes to the database.")
         ;
 
@@ -38,11 +65,11 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return int|null
+     * @return int
      */
-    protected function executeLocked(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getContainer()->get('contao.framework')->initialize();
+        $this->contaoFramework->initialize();
         $io = new SymfonyStyle($input, $output);
 
         $io->title("Build PWA files");
@@ -71,7 +98,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
             }
             $io->text("Use Configuration \"".$config->title."\" (ID: ".$config->id.")");
 
-            if (!$manifest = $this->getContainer()->get('huh.pwa.generator.manifest')->generatePageManifest($page))
+            if (!$manifest = $this->manifestGenerator->generatePageManifest($page))
             {
                 $io->error("Error on generating manifest file for page. Continue with next page...");
                 $hasErrors = true;
@@ -79,7 +106,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
             }
             $io->text("Generated manifest file");
 
-            if (!$this->getContainer()->get('huh.pwa.generator.serviceworker')->generatePageServiceworker($page))
+            if (!$this->serviceWorkerGenerator->generatePageServiceworker($page))
             {
                 $io->error("Error on generating service worker file for page. Continue with next page...");
                 $hasErrors = true;
@@ -87,7 +114,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
             }
             $io->text("Generated service worker file");
 
-            if (!$this->getContainer()->get('huh.pwa.generator.configurationfile')->generateConfigurationFile($page))
+            if (!$this->configurationFileGenerator->generateConfigurationFile($page))
             {
                 $io->error("Error on generating configuration file for page. Continue with next page...");
                 $hasErrors = true;
@@ -103,5 +130,7 @@ class BuildPwaFilesCommand extends AbstractLockedCommand
         }
 
         $io->success("Successfully created PWA files!");
+
+        return 0;
     }
 }

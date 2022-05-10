@@ -7,14 +7,11 @@ services:
       calls:
         - ["setContainer", ["@service_container"]]
 
-  HeimrichHannot\ContaoPwaBundle\DataContainer\:
-    resource: '../../DataContainer/*'
+  HeimrichHannot\ContaoPwaBundle\:
+    resource: '../../{Command,DataContainer,EventListener}/*'
     public: true
     autowire: true
-
-  HeimrichHannot\ContaoPwaBundle\EventListener\Contao\:
-    resource: '../../EventListener/Contao/*'
-    autowire: true
+    autoconfigure: true
 
   huh.pwa.listener.commandscheduler:
     class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener

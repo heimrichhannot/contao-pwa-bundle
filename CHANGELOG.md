@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.9] - 2022-05-10
+- Changed: refactored commands to command class
+- Fixed: command registration
+- Fixed: service subscriber
+
 ## [0.8.8] - 2022-05-10
 - Added: encore entry is now added from code
 - Changed: some code refactoring
