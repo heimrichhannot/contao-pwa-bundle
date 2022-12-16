@@ -13,23 +13,10 @@ namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
 use HeimrichHannot\UtilsBundle\String\StringUtil;
+use function Symfony\Component\String\u;
 
 class PwaPushSubscriberContainer
 {
-    /**
-     * @var StringUtil
-     */
-    private $stringUtil;
-
-    /**
-     * PwaPushSubscriberContainer constructor.
-     */
-    public function __construct(StringUtil $stringUtil)
-    {
-        $this->stringUtil = $stringUtil;
-    }
-
-
     /**
      * @param array $row
      * @param string $label
@@ -37,6 +24,6 @@ class PwaPushSubscriberContainer
      */
     public function onLabelCallback($row, $label)
     {
-        return $this->stringUtil->truncateHtml($label, 80, "…", true, false);
+        return u($label)->truncate(80, "…");
     }
 }

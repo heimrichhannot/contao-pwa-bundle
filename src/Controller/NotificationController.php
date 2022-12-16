@@ -12,6 +12,7 @@
 namespace HeimrichHannot\ContaoPwaBundle\Controller;
 
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
@@ -28,7 +29,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class NotificationController extends AbstractController
 {
-	/**
+    private ContaoFramework $contaoFramework;
+
+    public function __construct(ContaoFramework $contaoFramework)
+    {
+        $this->contaoFramework = $contaoFramework;
+    }
+
+
+    /**
 	 * @Route("/subscribe/{config}", name="push_notification_subscription", methods={"POST"})
 	 *
 	 * @param Request $request
@@ -37,7 +46,7 @@ class NotificationController extends AbstractController
 	 */
 	public function subscribeAction(Request $request, $config)
 	{
-		$this->container->get('contao.framework')->initialize();
+		$this->contaoFramework->initialize();
 
 		/** @var PwaConfigurationsModel $pwaConfig */
 		$pwaConfig = PwaConfigurationsModel::findByPk($config);
@@ -84,12 +93,7 @@ class NotificationController extends AbstractController
      */
     public function updateSubscriptionAction(Request $request, $config)
     {
-        ob_start();
-        echo "IN";
-        file_put_contents(__DIR__.'/debug.txt', ob_get_contents(), FILE_APPEND);
-        ob_end_clean();
-
-        $this->container->get('contao.framework')->initialize();
+        $this->contaoFramework->initialize();
 
         /** @var PwaConfigurationsModel $pwaConfig */
         $pwaConfig = PwaConfigurationsModel::findByPk($config);
@@ -137,7 +141,7 @@ class NotificationController extends AbstractController
 	 */
 	public function unsubscribeAction(Request $request, $config)
 	{
-		$this->container->get('contao.framework')->initialize();
+		$this->contaoFramework->initialize();
 
 		/** @var PwaConfigurationsModel $pwaConfig */
 		$pwaConfig = PwaConfigurationsModel::findByPk($config);

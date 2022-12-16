@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.10] - 2022-12-16
+- Fixed: Push subscription not working with contao 4.13
+- Fixed: exception in backend
+
 ## [0.8.9] - 2022-05-10
 - Changed: refactored commands to command class
 - Fixed: command registration
