@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.11] - 2023-02-08
+- Changed: allow php 8.0
+
 ## [0.8.10] - 2022-12-16
 - Fixed: Push subscription not working with contao 4.13
 - Fixed: exception in backend
