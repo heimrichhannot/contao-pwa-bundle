@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.12] - 2023-03-14
+- Fixed: array index issue
+
 ## [0.8.11] - 2023-02-08
 - Changed: allow php 8.0
 

@@ -70,7 +70,7 @@ $GLOBALS['TL_DCA'][$table] = [
 				'label'      => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
-				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['tl_pwa_configurations']['deleteConfirm']
+				'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['tl_pwa_configurations']['deleteConfirm'] ?? '')
 					. '\'))return false;Backend.getScrollOffset()"',
 			],
 			'show'   => [
