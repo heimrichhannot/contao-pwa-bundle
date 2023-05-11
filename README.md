@@ -20,8 +20,8 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 
 ### Requirements
 
-* PHP >= 7.1
-* Contao >=4.4 
+* PHP >= 7.4
+* Contao >=4.9 
 * [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
 For web push notifications:
@@ -35,7 +35,12 @@ For web push notifications:
 
 ### Install
 
-Call `composer require heimrichhannot/contao-pwa-bundle` and update database afterwards.
+1. Install via composer or contao manager 
+
+        composer require heimrichhannot/contao-pwa-bundle
+
+2. Update your database
+
 
 ### First Steps
 1. Your page template (typically `fe_page.html5`) must support [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). This means it must output at least `$this->meta()` in head section. See [Head Bundle readme](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information

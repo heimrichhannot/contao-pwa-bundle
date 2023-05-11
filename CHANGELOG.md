@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-05-11
+- Changed: add encore contracts support
+
 ## [0.8.12] - 2023-03-14
 - Fixed: array index issue
 

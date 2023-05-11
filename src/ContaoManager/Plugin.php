@@ -48,9 +48,6 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
 	public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
 	{
 		$loader->load('@HeimrichHannotContaoPwaBundle/Resources/config/services.yml');
-		if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $loader->load('@HeimrichHannotContaoPwaBundle/Resources/config/encore_config.yml');
-        }
 	}
 
 	/**
