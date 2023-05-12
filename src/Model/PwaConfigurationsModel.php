@@ -23,6 +23,7 @@ use Contao\Model;
  * @property int $dateAdded
  * @property string $title
  * @property string $addDebugLog
+ * @property bool|string $hideInstallPrompt
  * @property string $serviceWorkerTemplate
  * @property string $offlinePage
  * @property string $supportPush

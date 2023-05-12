@@ -1,10 +1,15 @@
 <?php
 
-$dc                                                                                           = &$GLOBALS['TL_DCA']['tl_content'];
-$dc['palettes'][\HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement::TYPE] =
-	'{type_legend},type,headline;{template_legend:hide},pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
+use HeimrichHannot\ContaoPwaBundle\ContentElement\PushSubscriptionElement;
+use HeimrichHannot\ContaoPwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 
-$dc['fields']['pwaSubscribeButtonTemplate'] = [
+$dca = &$GLOBALS['TL_DCA']['tl_content'];
+
+$dca['palettes'][PushSubscriptionElement::TYPE] =
+	'{type_legend},type,headline;{template_legend:hide},pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
+$dca['palettes'][InstallPwaButtonElementController::TYPE] = '{type_legend},type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible;';
+
+$dca['fields']['pwaSubscribeButtonTemplate'] = [
 	'label'            => &$GLOBALS['TL_LANG']['tl_content']['pwaSubscribeButtonTemplate'],
 	'exclude'          => true,
 	'inputType'        => 'select',

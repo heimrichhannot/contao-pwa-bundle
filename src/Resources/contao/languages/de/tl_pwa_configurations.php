@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+
 $lang = &$GLOBALS['TL_LANG']['tl_pwa_configurations'];
 
 /**
@@ -11,14 +13,17 @@ $lang['addDebugLog'] = ["Debug-Ausgabe aktivieren","Wenn aktiviert, werden umfan
 $lang['sendWithCron'] = ["Benachrichtigungen automatisch per Cron senden","Wenn aktiviert, werden Push-Benachrichtigungen automatisch per Cronjob im festgelegten Interval sendet"];
 $lang['cronIntervall'] = ["Sende-Intervall","Intervall in welchem nach ungesendeten Push-Benachrichtigungen gesucht und diese gesendet werden sollen."];
 
+$lang['hideInstallPrompt'][0] = "Installationsmeldung unterdrücken";
+$lang['hideInstallPrompt'][1] = "Browsermeldung über die Installationsmöglichkeit der Anwendlung unterdrücken. Notwendig, um das Inhaltselement \"Zum Startbildschirm hinzufügen\" zu nutzen.";
+
 $lang['serviceWorkerTemplate'] = ["Service Worker Template","Wählen Sie ein Service Worker Template aus. Nicht alle Templates unterstützen alle Funktionen."];
 $lang['offlinePage'] = ["Offline Seite","Wählen Sie eine Seite aus, welche angezeigt werden soll, wenn der Nutzer offline ist und eine nicht-gecachte Seite aufruft. Nicht alle Service Worker Templates unterstützen diese Funktion."];
 
-$lang['pwaName'] = ["Name der Webanwendung","Wählen Sie hier aus, wie der Name der Webanwendung erzeugt werden soll. "];
-$lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_PAGETITLE] = "Seitenname";
-$lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_META_PAGETITLE] = "Seitentitel (Metadaten)";
-$lang['pwaName'][\HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel::PWA_NAME_CUSTOM] = "Individuell";
-$lang['pwaCustomName'] = ["Individueller Name","Geben Sie hier einen individuellen Namen für Ihre Webanwendung an."];
+$lang['pwaName']                                                  = ["Name der Webanwendung","Wählen Sie hier aus, wie der Name der Webanwendung erzeugt werden soll. "];
+$lang['pwaName'][PwaConfigurationsModel::PWA_NAME_PAGETITLE]      = "Seitenname";
+$lang['pwaName'][PwaConfigurationsModel::PWA_NAME_META_PAGETITLE] = "Seitentitel (Metadaten)";
+$lang['pwaName'][PwaConfigurationsModel::PWA_NAME_CUSTOM]         = "Individuell";
+$lang['pwaCustomName']                                            = ["Individueller Name","Geben Sie hier einen individuellen Namen für Ihre Webanwendung an."];
 $lang['pwaShortName'] = ["Kurz-Name","Geben Sie hier einen kurzem Namen für Ihre Webanwendung ein, welcher bspw. unter dem Icon auf dem Homescreen eines Smartphones angezeigt wird."];
 $lang['pwaBackgroundColor'] = ["Hintergrundfarbe","Geben Sie hier die Hintergrund-Farbe Ihrer Website an, damit diese bspw. bereits beim Laden angezeigt werden kann."];
 $lang['pwaThemeColor'] = ["Theme-Farbe","Geben Sie hier die Theme-Farbe Ihrer Website an, damit diese bspw. bereits beim Laden angezeigt werden kann."];
@@ -41,6 +46,7 @@ $lang['pwaRelatedApplications_id'] = ["ID","Die ID, die verwendet wird, um die A
  */
 
 $lang['general_legend'] = 'Allgemein';
+$lang['application_legend'] = 'Anwendung';
 $lang['manifest_legend'] = 'Manifest';
 $lang['serviceworker_legend'] = 'Service-Worker';
 

@@ -88,6 +88,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	'palettes' => [
 		'__selector__' => ['pwaName','sendWithCron'],
 		'default' => '{general_legend},title,supportPush,sendWithCron,addDebugLog;'
+                    .'{application_legend},hideInstallPrompt;'
                     .'{serviceworker_legend},serviceWorkerTemplate,offlinePage;'
 			        .'{manifest_legend},pwaName,pwaShortName,pwaDescription,pwaThemeColor,pwaBackgroundColor,pwaIcons,pwaDirection,pwaDisplay,pwaOrientation,pwaStartUrl,pwaScope,pwaRelatedApplications,pwaPreferRelatedApplication',
 	],
@@ -145,6 +146,11 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'sql'       => "varchar(10) NOT NULL default ''",
 		],
+        'hideInstallPrompt'          => [
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class'  => 'w50 clr'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
         'serviceWorkerTemplate' => [
             'label'     => &$GLOBALS['TL_LANG'][$table]['serviceWorkerTemplate'],
             'inputType' => 'select',

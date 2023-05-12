@@ -113,6 +113,7 @@ class ConfigurationFileGenerator
                 'not_supported' => $this->translator->trans('huh.pwa.pushnotifications.not_supported'),
             ]
         ];
+        $configuration['hideInstallPrompt'] = (bool) $config->hideInstallPrompt;
         return $configuration;
     }
 
