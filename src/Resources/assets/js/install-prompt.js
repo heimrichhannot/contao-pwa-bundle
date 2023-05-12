@@ -7,13 +7,21 @@ class InstallPrompt
             e.preventDefault();
             this.deferredPrompt = e;
             if (debug) console.log('[PWA Install] beforeinstallprompt event fired');
+            this.getInstallButtons().forEach((element) => {
+                element.classList.remove('disabled');
+            });
         });
 
-        document.querySelectorAll('.huh-pwa-install-button').forEach((element) => {
+        this.getInstallButtons().forEach((element) => {
             element.addEventListener('click', (e) => {
                 this.fireInstallPrompt();
             });
         });
+    }
+
+    getInstallButtons()
+    {
+        return document.querySelectorAll('.huh-pwa-install-button');
     }
 
     fireInstallPrompt()

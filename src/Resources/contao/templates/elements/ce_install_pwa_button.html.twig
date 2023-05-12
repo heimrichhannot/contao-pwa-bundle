@@ -1,5 +1,5 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    <button class="btn btn-primary huh-pwa-install-button">Install</button>
+    <button class="huh-pwa-install-button disabled{% if buttonClasses|default %} {{ buttonClasses }}{% endif %}"{{ cssID }}>{{ 'huh.pwa.install_button'|trans() }}</button>
 {% endblock %}

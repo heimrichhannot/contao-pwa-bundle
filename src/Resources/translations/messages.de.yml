@@ -1,4 +1,5 @@
 huh.pwa:
+  install_button: "Zum Startbildschirm hinzufügen"
   tl_pwa_pushnotifications:
     label:
       notificationSent: "Gesendet am %date%"
