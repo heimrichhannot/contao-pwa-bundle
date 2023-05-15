@@ -1,9 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-05-15
+## [0.8.13] - 2023-05-15
 - Added: pwa install button element ([#17])
 - Changed: add encore contracts support
+- Changed: make backend pwa control page usable event when push notifications are not enabled
+- Changed: content elements are now location in category "progressive web app (PWA)"
+- Fixed: some minor issues and deprecations
 
 ## [0.8.12] - 2023-03-14
 - Fixed: array index issue
