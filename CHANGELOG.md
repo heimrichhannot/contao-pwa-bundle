@@ -1,7 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-05-11
+## [Unreleased] - 2023-05-15
+- Added: pwa install button element ([#17])
 - Changed: add encore contracts support
 
 ## [0.8.12] - 2023-03-14
@@ -206,5 +207,6 @@ All notable changes to this project will be documented in this file.
 
 Initial release
 
+[#17]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/17
 [#13]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/13
 [#10]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/10
