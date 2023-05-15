@@ -1,5 +1,6 @@
 import PushSubscriptionButtons from './PushSubscriptionButtons';
 import PushNotificationSubscription from './PushNotificationSubscription';
+import InstallPrompt from './install-prompt';
 
 let PwaButtons = new PushSubscriptionButtons();
 let PushSubscription = new PushNotificationSubscription(
@@ -67,4 +68,8 @@ function initializePush()
 document.addEventListener('DOMContentLoaded', function() {
     PushSubscription.onLoaded();
     PwaButtons.onLoaded();
+    if (HuhContaoPwaBundle.hideInstallPrompt) {
+        let installPrompt = new InstallPrompt(debug);
+        installPrompt.registerListener();
+    }
 });

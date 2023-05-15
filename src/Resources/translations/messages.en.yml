@@ -1,4 +1,5 @@
 huh.pwa:
+  install_button: "Add to home screen"
   tl_pwa_pushnotifications:
     label:
       notificationSent: "Sent at %date%"
