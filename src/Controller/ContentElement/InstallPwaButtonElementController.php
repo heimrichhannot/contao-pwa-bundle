@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @ContentElement(InstallPwaButtonElementController::TYPE, category="miscellaneous")
+ * @ContentElement(InstallPwaButtonElementController::TYPE, category="pwa")
  */
 class InstallPwaButtonElementController extends AbstractContentElementController
 {
@@ -18,6 +18,9 @@ class InstallPwaButtonElementController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): ?Response
     {
+        if ($model->pwaButtonCssClasses) {
+            $template->buttonCssClasses = $model->pwaButtonCssClasses;
+        }
         return $template->getResponse();
     }
 }

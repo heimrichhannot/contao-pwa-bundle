@@ -10,6 +10,7 @@ $lang = &$GLOBALS['TL_LANG'];
  */
 $lang['CTE'][InstallPwaButtonElementController::TYPE][0] = 'PWA installieren Button';
 $lang['CTE'][PushSubscriptionElement::TYPE]           = ['Push Notification Abonnieren Button'];
+$lang['CTE']['pwa']           = ['Progressive Web App (PWA)'];
 
 /**
  * Erros

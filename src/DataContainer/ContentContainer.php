@@ -12,6 +12,11 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\ContentModel;
+use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\DataContainer;
+use HeimrichHannot\Blocks\Backend\Content;
+use HeimrichHannot\ContaoPwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ContentContainer
@@ -27,6 +32,25 @@ class ContentContainer
 	public function __construct(TwigTemplateLocator $templateLocator)
 	{
         $this->templateLocator = $templateLocator;
+    }
+
+    /**
+     * @Callback(table="tl_content", target="config.onload")
+     */
+    public function onLoadCallback(DataContainer $dc = null): void
+    {
+        if (!$dc || !$dc->id) {
+            return;
+        }
+
+        $contentModel = ContentModel::findByPk($dc->id);
+        if (!$contentModel) {
+            return;
+        }
+
+        if ($contentModel->type === InstallPwaButtonElementController::TYPE) {
+            $GLOBALS['TL_DCA']['tl_content']['fields']['linkTitle']['label'][1] = $GLOBALS['TL_LANG']['tl_content']['linkTitle']['pwa_install_button'];
+        }
     }
 
 	public function getPwaSubscriptionButtonTemplate()
