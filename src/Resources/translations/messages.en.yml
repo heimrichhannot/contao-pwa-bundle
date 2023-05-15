@@ -17,3 +17,6 @@ huh.pwa:
   backend:
     control:
       headline: "PWA control"
+      files: "Files"
+      notifications: "Notifications"
+      authentication: "Authentication (VAPID keys)"

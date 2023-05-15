@@ -17,3 +17,6 @@ huh.pwa:
   backend:
     control:
       headline: "PWA Verwaltung"
+      files: "Dateien"
+      notifications: "Benachrichtigungen"
+      authentication: "Authentifizierung (VAPID-Schlüssel)"

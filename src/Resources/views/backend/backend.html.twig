@@ -4,38 +4,54 @@
     {% trans %}huh.pwa.backend.control.headline{% endtrans %}
 {% endblock %}
 
-{% block error %}
-{% endblock %}
+{% block error %}{% endblock %}
 
 {% block main %}
+    {% if messages|default %}
+        {{ messages|raw }}
+    {% endif %}
     <div id="tl_buttons">
         <a href="{{ backendBackRoute }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
     </div>
-    <div class="tl_listing_container">
-        <h2 class="tl_header pwaBackend">Authentifizierung (VAPID-Keys)</h2>
-        <br/>
-        {% if vapidkeys|default %}
 
+    {% if webPush|default %}
+    <div class="maintenance_inactive">
+        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.authentication'|trans }}</h2>
+        <div class="tl_tbox">
+        {% if vapidkeys|default %}
             <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
             <p>
                 Public: {{ vapidkeys.publicKey }}<br>
                 Private: {{ vapidkeys.privateKey }}
             </p>
-        {% else %}
+        {% elseif generatedKeys|default %}
             <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
             <p>
                 Public: {{ generatedKeys.publicKey }}<br>
                 Private: {{ generatedKeys.privateKey }}</p>
         {% endif %}
+        </div>
+    </div>
+    <div class="maintenance_inactive">
+        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
+        <div class="tl_tbox">
+            <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
+            <p id="huhPwaSendPushNotificationStatus"></p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="maintenance_inactive">
+        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.files'|trans }}</h2>
+        <div class="tl_tbox">
+            <p>Rebuild manifest and serviceworker files</p>
+            <p><button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button></p>
+            <p id="huhPwaRebuildFilesStatus"></p>
+        </div>
+    </div>
 
-        <h2 class="tl_header pwaBackend">Notifications</h2>
-        <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
-        <p id="huhPwaSendPushNotificationStatus"></p>
+    <div class="tl_listing_container">
 
-        <h2 class="tl_header pwaBackend">Files</h2>
-        <p>Rebuild manifest and serviceworker files</p>
-        <p><button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button></p>
-        <p id="huhPwaRebuildFilesStatus"></p>
+
 
     </div>
 
