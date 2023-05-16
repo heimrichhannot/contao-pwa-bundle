@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.14] - 2023-05-16
+- Added: option to show a "no install possible" message on pwa install button element ([#18])
+- Changed: upgrade to encore v4
+- Fixed: hide class was not added to install button after install ([#18])
+
 ## [0.8.13] - 2023-05-15
 - Added: pwa install button element ([#17])
 - Changed: add encore contracts support
@@ -210,6 +215,7 @@ All notable changes to this project will be documented in this file.
 
 Initial release
 
+[#18]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/18
 [#17]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/17
 [#13]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/13
 [#10]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/10

@@ -13,6 +13,7 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 * send custom push notifications from backend
 * set an offline fallback page
 * Frontend module and content element to subscribe to push notifications
+* Install PWA button content element
 * [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support, including asset precaching
 * expandable architecture
 

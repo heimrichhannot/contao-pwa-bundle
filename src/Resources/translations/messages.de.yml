@@ -15,6 +15,9 @@ huh.pwa:
     blocked: "Benachrichtigungen wurden von Ihrem Browser blockiert"
     not_supported: "Benachrichtigungen werden von Ihrem Browser nicht unterstützt"
   backend:
+    message:
+      disabled: "PWA ist für den aktuellen Seitenbaum nicht aktiviert!"
+      hideInstallNotEnabled: "Für dieses Element muss in der PWA Konfiguration 'Installationsmeldung unterdrücken' aktiviert sein!"
     control:
       headline: "PWA Verwaltung"
       files: "Dateien"

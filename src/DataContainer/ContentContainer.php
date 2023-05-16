@@ -12,12 +12,17 @@
 namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
 
 
+use Contao\ArticleModel;
 use Contao\ContentModel;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
+use Contao\Message;
 use HeimrichHannot\Blocks\Backend\Content;
 use HeimrichHannot\ContaoPwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
+use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContentContainer
 {
@@ -25,13 +30,17 @@ class ContentContainer
      * @var TwigTemplateLocator
      */
     protected $templateLocator;
+    private Utils $utils;
+    private TranslatorInterface $translator;
 
     /**
 	 * ContentContainer constructor.
 	 */
-	public function __construct(TwigTemplateLocator $templateLocator)
+	public function __construct(TwigTemplateLocator $templateLocator, Utils $utils, TranslatorInterface $translator)
 	{
         $this->templateLocator = $templateLocator;
+        $this->utils = $utils;
+        $this->translator = $translator;
     }
 
     /**
@@ -53,6 +62,24 @@ class ContentContainer
             $GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['mandatory'] = false;
             $GLOBALS['TL_DCA']['tl_content']['fields']['text']['label'][0] = $GLOBALS['TL_LANG']['tl_content']['text']['pwa_0'];
             $GLOBALS['TL_DCA']['tl_content']['fields']['text']['label'][1] = $GLOBALS['TL_LANG']['tl_content']['text']['pwa_1'];
+
+            if ((ArticleModel::getTable() !== $contentModel->ptable) || !($articleModel = ArticleModel::findByPk($contentModel->pid))) {
+                return;
+            }
+            if (!($pageModel = $articleModel->getRelated('pid'))) {
+                return;
+            }
+            if (!($rootPageModel = $this->utils->request()->getCurrentRootPageModel($pageModel))) {
+                return;
+            }
+
+            if (PageContainer::ADD_PWA_YES !== $rootPageModel->addPwa) {
+                Message::addInfo($this->translator->trans('huh.pwa.backend.message.disabled'));
+            }
+            $configuationModel = PwaConfigurationsModel::findByPk($rootPageModel->pwaConfiguration);
+            if ($configuationModel && !$configuationModel->hideInstallPrompt) {
+                Message::addInfo($this->translator->trans('huh.pwa.backend.message.hideInstallNotEnabled'));
+            }
         }
     }
 

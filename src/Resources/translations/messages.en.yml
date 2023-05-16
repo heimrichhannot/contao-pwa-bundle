@@ -15,6 +15,9 @@ huh.pwa:
     blocked: "Push notifications were blocked by your browser"
     not_supported: "Push notifications not supported by your browser"
   backend:
+    message:
+      disabled: "PWA is not enabled for the current page tree!"
+      hideInstallNotEnabled: "'Suppress install prompt' must be activated in pwa configuration for this element to work!"
     control:
       headline: "PWA control"
       files: "Files"
