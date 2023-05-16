@@ -7,7 +7,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_content'];
 
 $dca['palettes'][PushSubscriptionElement::TYPE] =
 	'{type_legend},type,headline;{template_legend:hide},pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
-$dca['palettes'][InstallPwaButtonElementController::TYPE] = '{type_legend},type;{link_legend},linkTitle,pwaButtonCssClasses;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible;';
+$dca['palettes'][InstallPwaButtonElementController::TYPE] = '{type_legend},type;{link_legend},linkTitle,pwaButtonCssClasses;{text_legend},text;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible;';
 
 $dca['fields']['pwaSubscribeButtonTemplate'] = [
 	'exclude'          => true,
