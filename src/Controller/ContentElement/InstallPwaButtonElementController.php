@@ -21,6 +21,9 @@ class InstallPwaButtonElementController extends AbstractContentElementController
         if ($model->pwaButtonCssClasses) {
             $template->buttonCssClasses = $model->pwaButtonCssClasses;
         }
+        if ($model->text) {
+            $template->installNotSupportedMessage = $model->text;
+        }
         return $template->getResponse();
     }
 }

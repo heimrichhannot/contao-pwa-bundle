@@ -50,6 +50,9 @@ class ContentContainer
 
         if ($contentModel->type === InstallPwaButtonElementController::TYPE) {
             $GLOBALS['TL_DCA']['tl_content']['fields']['linkTitle']['label'][1] = $GLOBALS['TL_LANG']['tl_content']['linkTitle']['pwa_install_button'];
+            $GLOBALS['TL_DCA']['tl_content']['fields']['text']['eval']['mandatory'] = false;
+            $GLOBALS['TL_DCA']['tl_content']['fields']['text']['label'][0] = $GLOBALS['TL_LANG']['tl_content']['text']['pwa_0'];
+            $GLOBALS['TL_DCA']['tl_content']['fields']['text']['label'][1] = $GLOBALS['TL_LANG']['tl_content']['text']['pwa_1'];
         }
     }
 

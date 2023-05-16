@@ -8,4 +8,7 @@
             {{ 'huh.pwa.install_button'|trans() }}
         {% endif %}
     </button>
+    <div class="huh-pwa-install-message hidden">
+        {{ installNotSupportedMessage|default|raw }}
+    </div>
 {% endblock %}
