@@ -1,6 +1,6 @@
 {% extends '@Contao/block_unsearchable' %}
 
-{% block button %}
+{% block content %}
     <button class="huh-pwa-install-button disabled{% if buttonCssClasses|default %} {{ buttonCssClasses }}{% endif %}">
         {% if linkTitle is defined and linkTitle is not empty %}
             {{ linkTitle }}
@@ -8,16 +8,7 @@
             {{ 'huh.pwa.install_button'|trans() }}
         {% endif %}
     </button>
-{% endblock %}
-
-
-{% block message %}
     <div class="huh-pwa-install-message hidden">
         {{ installNotSupportedMessage|default|raw }}
     </div>
-{% endblock %}
-
-{% block content %}
-    {{ block('button') }}
-    {{ block('message') }}
 {% endblock %}
