@@ -19,6 +19,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Minishlink\WebPush\WebPush;
 
 class PushNotificationSender
 {
@@ -87,7 +88,7 @@ class PushNotificationSender
         ];
 
         try {
-            $webPush = new \Minishlink\WebPush\WebPush($auth);
+            $webPush = new WebPush($auth);
         } catch (\ErrorException $e) {
             throw new \Exception("Web push config: Could not construct WebPush object. Error message: " . $e->getMessage());
         }
@@ -128,12 +129,21 @@ class PushNotificationSender
                 return ["success" => false, "message" => "Only subscribers of typ PushSubscriberModel are allowed."];
             }
             try {
-                $webPush->sendNotification(
-                    new \Minishlink\WebPush\Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
-                    json_encode($payload)
-                );
+                if (method_exists($webPush, 'queueNotification')) {
+                    $webPush->queueNotification(
+                        new \Minishlink\WebPush\Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
+                        json_encode($payload)
+                    );
+                } else {
+                    $webPush->sendNotification(
+                        new \Minishlink\WebPush\Subscription($subscriber->endpoint, $subscriber->publicKey, $subscriber->authToken),
+                        json_encode($payload)
+                    );
+                }
+
+
                 $validSubscribers++;
-            } catch (\ErrorException $e) {
+            } catch (\Error $e) {
                 throw new \Exception("Error while sending push notification (Subscriber Id: {$subscriber->id}): " . $e->getMessage());
             }
         }

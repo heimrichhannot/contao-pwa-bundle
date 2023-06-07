@@ -22,6 +22,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Minishlink\WebPush\VAPID;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,6 +55,7 @@ class BackendController extends AbstractController
     private ManifestGenerator         $manifestGenerator;
     private ServiceWorkerGenerator    $serviceWorkerGenerator;
     private CsrfTokenManagerInterface $csrfTokenManager;
+    private PushNotificationSender $pushNotificationSender;
 
     public function __construct(
         ContaoFramework $contaoFramework,
@@ -61,7 +63,8 @@ class BackendController extends AbstractController
         Environment $twig,
         ManifestGenerator $manifestGenerator,
         ServiceWorkerGenerator $serviceWorkerGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        PushNotificationSender $pushNotificationSender
     )
     {
         $this->contaoFramework = $contaoFramework;
@@ -70,6 +73,7 @@ class BackendController extends AbstractController
         $this->manifestGenerator = $manifestGenerator;
         $this->serviceWorkerGenerator = $serviceWorkerGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
+        $this->pushNotificationSender = $pushNotificationSender;
     }
 
     /**
@@ -166,7 +170,7 @@ class BackendController extends AbstractController
         $pushNotification = new DefaultNotification($notification);
 
         try {
-            $result = $this->container->get('huh.pwa.sender.pushnotification')->send($pushNotification, $config);
+            $result = $this->pushNotificationSender->send($pushNotification, $config);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'success' => false,

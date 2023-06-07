@@ -50,20 +50,27 @@ let HuhPwaBackend = {
 
         let request = this.unsentNotificationRequest(this.unsentCountRoute);
         request.send(this.unsentCountRoute).then((response) => {
-            console.log(response);
-            console.log('Response succeeded');
             if (response.json.count > 0) {
                 let promises = [];
                 response.json.notifications.forEach((notification) => {
                     let sendRequest = this.sendNotificationRequest(this.sendNotificationRoute);
                     promises.push(sendRequest.post('notificationId=' + notification).then((sendResponse) => {
-                        let failCount = 0;
-                        sendResponse.json.result.forEach((element) => {
-                            if (element.success === false) {
-                                failCount++;
+                        if (sendResponse.json.success === false) {
+                            return this.addLogEntry('Error sending notification with id ' + notification + ': ' + sendResponse.json.message);
+                        } else {
+                            let failCount = 0;
+                            if (Array.isArray(sendResponse.json.result) === true) {
+                                sendResponse.json.result.forEach((element) => {
+                                    if (element.success === false) {
+                                        failCount++;
+                                    }
+                                });
+                            } else {
+                                failCount = (sendResponse.json.sentCount - sendResponse.json.successCount);
                             }
-                        });
-                        return this.addLogEntry('Sent notification with id ' + notification + ': Sent ' + sendResponse.json.sentCount + ' messages, got ' + failCount + ' errors.');
+
+                            return this.addLogEntry('Sent notification with id ' + notification + ': Sent ' + sendResponse.json.sentCount + ' messages, got ' + failCount + ' errors.');
+                        }
                     }));
                 });
                 Promise.all(promises).then(() => {

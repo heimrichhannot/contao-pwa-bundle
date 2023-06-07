@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.15] - 2023-06-07
+- Added: support for minishlink/web-push version 6 to 8
+- Fixed: push notification not send with newer symfony versions
+
 ## [0.8.14] - 2023-05-16
 - Added: option to show a "no install possible" message on pwa install button element ([#18])
 - Changed: upgrade to encore v4

@@ -26,7 +26,7 @@ This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-pus
 * [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
 For web push notifications:
-- Composer package [`"minishlink/web-push": "^5.0"`](https://github.com/web-push-libs/web-push-php)
+- Composer package [`"minishlink/web-push": "^8.0"`](https://github.com/web-push-libs/web-push-php) (version 5 to 8 are supported)
 - PHP extensions:
     * gmp
     * mbstring

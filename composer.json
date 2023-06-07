@@ -19,7 +19,7 @@
     "twig/twig": "^1.44 || ^2.14 || ^3.0"
   },
   "conflict": {
-    "heimrichhannot/contao-encore-bundle": "<1.5"
+    "minishlink/web-push": "<5.0 || >=9.0"
   },
   "suggest": {
     "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\"."
