@@ -16,7 +16,6 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 		'label'             => [
 			'fields' => ['endpoint'],
 			'format' => '%s',
-            'label_callback' => ['huh.pwa.datacontainer.pwasubscribers','onLabelCallback'],
 		],
 		'sorting'           => [
 			'mode'         => 2,

@@ -14,7 +14,7 @@ $GLOBALS['TL_DCA'][$table] = [
 	'config'   => [
 		'dataContainer'     => 'Table',
 		'enableVersioning'  => true,
-		'ctable'            => 'tl_pwa_pushsubscriber',
+		'ctable'            => ['tl_pwa_pushsubscriber'],
 		'onsubmit_callback' => [
 			['huh.utils.dca', 'setDateAdded'],
 		],
