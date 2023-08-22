@@ -17,6 +17,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
+use Minishlink\WebPush\WebPush;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,7 +50,6 @@ class PushNotificationSendCommand extends Command
 		;
 
 	}
-
 
 	/**
 	 * Executes the command.
@@ -106,6 +106,12 @@ class PushNotificationSendCommand extends Command
 				try
 				{
 					$result = $this->notificationSender->send($pushNotification, $configuration);
+
+                    if (false === $result) {
+                        $io->error("Error sending notification ".$notification->title." (".$notification->id.")");
+                        $io->progressAdvance();
+                        continue;
+                    }
 					$tableResult = ["notification" => $notification->title.' (ID: '.$notification->id.')'];
 					$tableResult = array_merge($tableResult, $result);
 					unset($tableResult['success']);

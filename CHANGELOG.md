@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.16] - 2023-08-22
+- Fixed: issues when deleting a subscriber ([#19])
+- 
+
 ## [0.8.15] - 2023-06-07
 - Added: support for minishlink/web-push version 6 to 8
 - Fixed: push notification not send with newer symfony versions
@@ -219,7 +223,8 @@ All notable changes to this project will be documented in this file.
 
 Initial release
 
-[#18]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/18
-[#17]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/17
-[#13]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/13
 [#10]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/10
+[#13]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/13
+[#17]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/17
+[#18]: https://github.com/heimrichhannot/contao-pwa-bundle/pull/18
+[#19]: https://github.com/heimrichhannot/contao-pwa-bundle/issues/19

@@ -58,7 +58,7 @@ class PushNotificationSender
      */
     public function send(AbstractNotification $notification, PwaConfigurationsModel $config, ?array $subscribers = null)
     {
-        if (!class_exists('Minishlink\WebPush\WebPush')) {
+        if (!class_exists(WebPush::class)) {
             $this->containerUtil->log(
                 'Please install webpush using "composer require minishlink/web-push ^5.0".',
                 'HeimrichHannot\ContaoPwaBundle\Controller\BackendController::huhBackendControlAction',
@@ -128,6 +128,7 @@ class PushNotificationSender
             if (!$subscriber instanceof PwaPushSubscriberModel) {
                 return ["success" => false, "message" => "Only subscribers of typ PushSubscriberModel are allowed."];
             }
+
             try {
                 if (method_exists($webPush, 'queueNotification')) {
                     $webPush->queueNotification(
@@ -176,7 +177,6 @@ class PushNotificationSender
         } catch (\Exception $e) {
             throw new \Exception("Error while sending push notification: " . $e->getMessage());
         }
-
 
         if ($notification->getModel()) {
             $notification->getModel()->sent          = true;
