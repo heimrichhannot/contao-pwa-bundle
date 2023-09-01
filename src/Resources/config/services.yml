@@ -13,13 +13,6 @@ services:
     autowire: true
     autoconfigure: true
 
-  huh.pwa.listener.commandscheduler:
-    class: HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener
-    public: true
-    arguments:
-      ['@huh.pwa.sender.pushnotification', '@logger']
-  HeimrichHannot\ContaoPwaBundle\EventListener\CronjobListener: '@huh.pwa.listener.commandscheduler'
-
   huh.pwalist.choice.template.item:
     class: HeimrichHannot\ContaoPwaBundle\DataContainer\ContentContainer
     public: true

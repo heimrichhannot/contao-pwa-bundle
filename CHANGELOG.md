@@ -1,9 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.17] - 2023-09-01
+- Fixed: cronjob not working
+
 ## [0.8.16] - 2023-08-22
 - Fixed: issues when deleting a subscriber ([#19])
-- 
 
 ## [0.8.15] - 2023-06-07
 - Added: support for minishlink/web-push version 6 to 8

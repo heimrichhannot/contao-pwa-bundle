@@ -42,14 +42,3 @@ if (TL_MODE == 'BE') {
 else {
     $GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotcontaopwa/js/contao-pwa-bundle.js';
 }
-
-
-/**
- * Cronjobs
- */
-
-$GLOBALS['TL_CRON']['monthly'][]    = ['huh.pwa.listener.commandscheduler', 'monthly'];
-$GLOBALS['TL_CRON']['weekly'][]    = ['huh.pwa.listener.commandscheduler', 'weekly'];
-$GLOBALS['TL_CRON']['daily'][]    = ['huh.pwa.listener.commandscheduler', 'daily'];
-$GLOBALS['TL_CRON']['hourly'][]    = ['huh.pwa.listener.commandscheduler', 'hourly'];
-$GLOBALS['TL_CRON']['minutely'][]    = ['huh.pwa.listener.commandscheduler', 'minutely'];

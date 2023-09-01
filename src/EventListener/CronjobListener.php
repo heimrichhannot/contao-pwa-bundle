@@ -12,13 +12,14 @@
 namespace HeimrichHannot\ContaoPwaBundle\EventListener;
 
 
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\CronJob;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
 use Model\Collection;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;
 
 class CronjobListener
@@ -31,34 +32,51 @@ class CronjobListener
 	 * @var Logger
 	 */
 	private $logger;
+    private ContaoFramework $framework;
 
 
-	/**
+    /**
 	 * CommandSchedulerListener constructor.
 	 * @param PushNotificationSender $notificationSender
 	 */
-	public function __construct(PushNotificationSender $notificationSender, Logger $logger)
+	public function __construct(PushNotificationSender $notificationSender, LoggerInterface $logger, ContaoFramework $framework)
 	{
 		$this->notificationSender = $notificationSender;
 		$this->logger = $logger;
-	}
+        $this->framework = $framework;
+    }
 
+    /**
+     * @CronJob("minutely")
+     */
 	public function minutely()
 	{
 		$this->sendPushNotifications('minutely');
 	}
+    /**
+     * @CronJob("hourly")
+     */
 	public function hourly()
 	{
 		$this->sendPushNotifications('hourly');
 	}
+    /**
+     * @CronJob("daily")
+     */
 	public function daily()
 	{
 		$this->sendPushNotifications('daily');
 	}
+    /**
+     * @CronJob("weekly")
+     */
 	public function weekly()
 	{
 		$this->sendPushNotifications('weekly');
 	}
+    /**
+     * @CronJob("monthly")
+     */
 	public function monthly()
 	{
 		$this->sendPushNotifications('monthly');
@@ -66,6 +84,8 @@ class CronjobListener
 
 	private function sendPushNotifications(string $interval)
 	{
+        $this->framework->initialize();
+
 		/** @var PwaConfigurationsModel[]|Collection|null $configurations */
 		$configurations = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'],["1",$interval]);
 		if (!$configurations)
