@@ -19,6 +19,7 @@ use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
 class PushNotificationSender
@@ -122,6 +123,69 @@ class PushNotificationSender
 
         $validSubscribers = 0;
         $sendDate         = time(); //same sendtime for all subscribers and the notification
+
+
+
+
+
+        $errors       = [];
+
+        foreach ($subscribers as $subscriber) {
+            if (!$subscriber instanceof PwaPushSubscriberModel) {
+                return ["success" => false, "message" => "Only subscribers of typ PushSubscriberModel are allowed."];
+            }
+
+            try {
+                $report = $webPush->sendOneNotification(
+                    new Subscription(
+                        $subscriber->endpoint,
+                        $subscriber->publicKey,
+                        $subscriber->authToken
+                    ), json_encode($payload));
+            } catch (\ErrorException $e) {
+                throw new \Exception("Error while sending push notification (Subscriber Id: {$subscriber->id}): " . $e->getMessage());
+            }
+
+            if ($report->isSuccess()) {
+                $subscriber->lastSuccessfulSend = $sendDate;
+                $subscriber->save();
+                $successCount++;
+            } else {
+                $error = [
+                    'endpoint' => $report->getEndpoint(),
+                    'response' => json_encode($report->getResponse()->getBody()),
+                ];
+                if ($report->isSubscriptionExpired()) {
+                    // TODO
+                    $error['reason'] = 'Subscription expired';
+                } else {
+                    $error['reason'] = $report->getReason();
+                }
+                $errors[] = $error;
+            }
+        }
+
+        if ($notification->getModel()) {
+            $notification->getModel()->sent          = true;
+            $notification->getModel()->dateSent      = $sendDate;
+            $notification->getModel()->receiverCount = $validSubscribers;
+            $notification->getModel()->save();
+        }
+
+        return [
+            'success'      => true,
+            'sentCount'    => $validSubscribers,
+            'successCount' => $successCount,
+            'errors'       => $errors,
+        ];
+
+
+
+
+
+
+
+
 
         /** @var PwaPushSubscriberModel $subscriber */
         foreach ($subscribers as $subscriber) {

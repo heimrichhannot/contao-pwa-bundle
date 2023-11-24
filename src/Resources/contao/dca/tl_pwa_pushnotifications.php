@@ -8,6 +8,8 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
+use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
+
 $table = 'tl_pwa_pushnotifications';
 
 $GLOBALS['TL_DCA'][$table] = [
@@ -75,8 +77,8 @@ $GLOBALS['TL_DCA'][$table] = [
 		'default'      => '{message_legend},title,body,icon,iconSize;{behavior_legend},clickEvent;{publish_legend},published,start;',
 	],
 	'subpalettes' => [
-		'clickEvent_' . \HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
-		'clickEvent_' . \HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_URL => 'clickUrl',
+		'clickEvent_' . PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE => 'clickJumpTo',
+		'clickEvent_' . PwaPushNotificationContainer::CLICKEVENT_OPEN_URL => 'clickUrl',
 	],
 	'fields'      => [
 		'id'            => [
@@ -143,8 +145,8 @@ $GLOBALS['TL_DCA'][$table] = [
 			'label'     => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickEvent'],
 			'inputType' => 'select',
 			'options'   => [
-				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE,
-				\HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_URL,
+				PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE,
+				PwaPushNotificationContainer::CLICKEVENT_OPEN_URL,
 			],
 			'reference' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['clickEvent'],
 			'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],

@@ -30,8 +30,8 @@ abstract class AbstractNotification implements \JsonSerializable
 	 * @return array
 	 * @throws \ReflectionException
 	 */
-	public function toArray()
-	{
+	public function toArray(): array
+    {
 		$reflectionClass = new \ReflectionClass($this);
 
 		$classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -66,8 +66,8 @@ abstract class AbstractNotification implements \JsonSerializable
 	 * @since 5.4.0
 	 * @throws \ReflectionException
 	 */
-	public function jsonSerialize()
-	{
+	public function jsonSerialize(): mixed
+    {
 		return json_encode($this->toArray());
 	}
 }
