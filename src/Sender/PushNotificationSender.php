@@ -174,8 +174,6 @@ class PushNotificationSender
      * @param array|PwaPushSubscriberModel[]|Collection|null $subscribers
      * @return array|bool
      * @throws \Exception
-     *
-     * @deprecated Use sendWithLog() instead
      */
     public function send(AbstractNotification $notification, PwaConfigurationsModel $config, ?array $subscribers = null)
     {

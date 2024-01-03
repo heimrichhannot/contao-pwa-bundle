@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This class is a copy of symfony ConsoleLogger with a small change since Symfony ConsoleLogger has only private properties and methods.
+ *
+ * @internal
  */
 class ConsoleLogger extends AbstractLogger
 {
