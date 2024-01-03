@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.18] - 2024-01-03
+- Added: PushNotificationSender::sendWithLog as more flexible alternative to PushNotificationSender::send
+- Changed: refactored sending mechanism to be more robust to different hosting environments
+
 ## [0.8.17] - 2023-09-01
 - Fixed: cronjob not working
 
