@@ -96,7 +96,8 @@ services:
 
   huh.pwa.sender.pushnotification:
     class: HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender
+    autowire: true
     public: true
-    arguments:
-      ['%huh_pwa%', '@huh.pwa.datacontainer.pwapushnotification', '@huh.utils.container']
+    bind:
+      $bundleConfig: '%huh_pwa%'
   HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender: '@huh.pwa.sender.pushnotification'

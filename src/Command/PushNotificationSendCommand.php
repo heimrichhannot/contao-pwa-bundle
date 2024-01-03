@@ -16,10 +16,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\ContaoPwaBundle\Sender\ConsoleLogger;
 use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
-use Minishlink\WebPush\WebPush;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +47,6 @@ class PushNotificationSendCommand extends Command
 			->setDescription(static::$defaultDescription)
 			->addOption('dry-run', null, InputOption::VALUE_NONE, "Performs a run without actually send notifications and making changes to the database.")
 		;
-
 	}
 
 	/**
@@ -85,60 +83,43 @@ class PushNotificationSendCommand extends Command
 		$io->text("Found ".$unsent->count().' messages.');
 		$io->newLine();
 
-		$io->progressStart($unsent->count());
-
-        $table = new Table($output);
-        $table->setHeaders(["Notification", "Messages sent","Messages sent successfull","Errors"]);
-
 		foreach ($unsent as $notification)
 		{
+            $io->section("Sending notification ".$notification->title." (".$notification->id.")");
 			$configuration = PwaConfigurationsModel::findByPk($notification->pid);
 			if (!$configuration)
 			{
 				$io->error("No configuration found for id ".$notification->pid." for notification ".$notification->title." (".$notification->id.")");
-				$io->progressAdvance();
 				continue;
 			}
 			$pushNotification = new DefaultNotification($notification);
 
-			if (!$this->dryRun)
-			{
-				try
-				{
-					$result = $this->notificationSender->send($pushNotification, $configuration);
+            try
+            {
+                $logger = new ConsoleLogger($output);
+                if (!$this->dryRun) {
+                    $result = $this->notificationSender->sendWithLog($pushNotification, $configuration, $logger);
+                } else {
+                    $result = true;
 
-                    if (false === $result) {
-                        $io->error("Error sending notification ".$notification->title." (".$notification->id.")");
-                        $io->progressAdvance();
-                        continue;
-                    }
-					$tableResult = ["notification" => $notification->title.' (ID: '.$notification->id.')'];
-					$tableResult = array_merge($tableResult, $result);
-					unset($tableResult['success']);
-					if (!empty($tableResult['errors']))
-                    {
-                        $errors = count($tableResult['errors']);
-                        $tableResult['errors'] = $errors;
-                    }
-					else {
-					    $tableResult['errors'] = '-';
-                    }
-					$table->addRow($tableResult);
-				} catch (\ErrorException $e)
-				{
-					$io->error($e->getMessage());
-				}
-			}
-			$io->progressAdvance();
+                    $logger->info("Simulated sending push notification to 0 subscribers. 0 subscribers skipped. 0 errors.", [
+                        'verbosity' => OutputInterface::VERBOSITY_NORMAL,
+                    ]);
+                }
+
+                if (false === $result) {
+                    $io->error("Error sending notification ".$notification->title." (".$notification->id.")");
+                    $io->newLine();
+                    continue;
+                }
+
+            } catch (\ErrorException $e)
+            {
+                $io->error($e->getMessage());
+                $io->newLine();
+            }
+            $io->newLine();
 		}
-		$io->progressFinish();
-
-        $io->newLine();
-		$io->section("Results:");
-
-		$table->render();
-        $io->newLine();
-
 
 		$io->success("Finished send command");
 		return 0;
