@@ -181,7 +181,7 @@ class PushNotificationSender
 
         $result = $this->sendWithLog($notification, $config , $log, $subscribers);
         if (false === $result) {
-            return throw new \Exception($log->getLastError());
+            throw new \Exception($log->getLastError());
         }
 
         $endLog = $log->getLastInfo();
