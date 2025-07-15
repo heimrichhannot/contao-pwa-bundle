@@ -19,7 +19,6 @@ use Contao\DataContainer;
 use Contao\Message;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -35,9 +34,9 @@ class ContentContainer
     /**
 	 * ContentContainer constructor.
 	 */
-	public function __construct(TwigTemplateLocator $templateLocator, Utils $utils, TranslatorInterface $translator)
+	public function __construct(Utils $utils, TranslatorInterface $translator)
 	{
-        $this->templateLocator = $templateLocator;
+        $this->templateLocator = null;
         $this->utils = $utils;
         $this->translator = $translator;
     }

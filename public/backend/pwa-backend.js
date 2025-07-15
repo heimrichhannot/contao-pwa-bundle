@@ -8,7 +8,7 @@ let HuhPwaBackend = {
             url: url,
             method: 'get',
             onSuccess: (response) => {
-                HuhPwaBackend.addLogEntry('Found ' + response.count + ' unsent notification');
+                HuhPwaBackend.addLogEntry('Found ' + response.count + ' unsent notifications');
                 // return response;
             },
             onFailure: () => {
@@ -74,14 +74,14 @@ let HuhPwaBackend = {
                     }));
                 });
                 Promise.all(promises).then(() => {
-                    this.addLogEntry('Finished').then(() => {
+                    this.addLogEntry('Done').then(() => {
                         this.button.disabled = false;
                     });
                 });
 
             }
             else {
-                this.addLogEntry('Finished').then(() => {
+                this.addLogEntry('Done').then(() => {
                     this.button.disabled = false;
                 });
             }

@@ -13,7 +13,7 @@ namespace HeimrichHannot\PwaBundle\Generator;
 use Contao\PageModel;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use Symfony\Bridge\Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError as TwigLoaderError;
@@ -26,7 +26,7 @@ class ServiceWorkerGenerator
 
     public function __construct(
         private readonly string                $webDir,
-        private readonly Logger                $logger,
+        private readonly LoggerInterface       $logger,
         private readonly TwigEnvironment       $twig,
         private readonly UrlGeneratorInterface $router,
     ) {}

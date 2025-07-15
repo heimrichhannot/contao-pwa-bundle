@@ -22,37 +22,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ConfigurationFileGenerator
 {
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-    /**
-     * @var array
-     */
-    private $bundleConfiguration;
-    /**
-     * @var string
-     */
-    private $webDir;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-
-    /**
-     * ConfigurationFileGenerator constructor.
-     * @param RouterInterface $router
-     * @param string $webDir
-     * @param array $bundleConfiguration
-     */
-    public function __construct(RouterInterface $router, string $webDir, array $bundleConfiguration, TranslatorInterface $translator)
-    {
-        $this->router              = $router;
-        $this->bundleConfiguration = $bundleConfiguration;
-        $this->webDir = $webDir;
-        $this->translator = $translator;
-    }
+    public function __construct(
+        private readonly array               $bundleConfig,
+        private readonly string              $webDir,
+        private readonly RouterInterface     $router,
+        private readonly TranslatorInterface $translator
+    ) {}
 
     /**
      * Generate a json file containing config parameters for js part of the web app into the config folder.
@@ -72,12 +47,14 @@ class ConfigurationFileGenerator
         }
 
         $configurationJson = json_encode($this->generateConfiguration($page, $config));
-        $relativePath = $this->bundleConfiguration['configfile_path'];
-        if (substr($relativePath, 0,1) != '/')
-        {
-            $relativePath = '/'.$relativePath;
+
+        $relativePath = $this->bundleConfig['configfile_path'];
+
+        if (!\str_starts_with($relativePath, '/')) {
+            $relativePath = '/' . $relativePath;
         }
-        $path = $this->webDir.$relativePath;
+
+        $path = $this->webDir . $relativePath;
         $filename = $this->generateFileName($page);
 
         $filesystem = new Filesystem();

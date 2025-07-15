@@ -11,26 +11,18 @@ services:
       calls:
         - ["setFramework", ["@contao.framework"]]
 
+  Contao\CoreBundle\Twig\Finder\FinderFactory:
+    alias: contao.twig.finder_factory
+
+  Psr\Log\LoggerInterface:
+    alias: monolog.logger.contao
+
   HeimrichHannot\PwaBundle\:
     resource: ../src
     exclude:
       - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model}
 
   # Generators
-
-  huh.pwa.generator.serviceworker:
-    class: HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator
-    public: true
-    arguments:
-      ['%contao.web_dir%', '@twig', '@logger']
-  HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
-
-  huh.pwa.generator.configurationfile:
-    class: HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator
-    public: true
-    arguments:
-      ['@router.default', '%contao.web_dir%', '%huh_pwa%', '@translator']
-  HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
 
   # Header Tags
 

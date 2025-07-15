@@ -79,7 +79,7 @@ class BackendController extends AbstractController
         $findPagesRoute          = $this->generateUrl('huh_pwa.backend.pages', $params);
         $updatePageRoute         = $this->generateUrl('huh_pwa.backend.pages.update', $params);
 
-        $content = $this->twig->render("@HeimrichHannotPwa/backend/backend.html.twig", [
+        $content = $this->twig->render('@Contao_HeimrichHannotPwaBundle/backend/backend.html.twig', [
             'messages'              => Message::generate(),
             "vapidkeys"               => $keys,
             "generatedKeys"           => $generatedKeys,

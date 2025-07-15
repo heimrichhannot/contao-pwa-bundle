@@ -82,7 +82,7 @@ class PushNotificationSendCommand extends Command
             if (!$configuration = PwaConfigurationsModel::findByPk($notification->pid))
             {
                 $io->error(\sprintf(
-                    'No configuration found for id %d for notification %s (%d)',
+                    'No configuration found with id %d for notification %s (%d)',
                     $notification->pid,
                     $notification->title,
                     $notification->id

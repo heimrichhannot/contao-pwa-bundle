@@ -24,7 +24,15 @@ class PubkeyController extends AbstractController
 
         if (\is_array($config) && $key = $config['vapid']['publicKey'] ?? null)
         {
-            return new Response($key);
+            return new Response($key, Response::HTTP_OK, [
+                'Content-Type' => 'application/x-x509-cert',
+                'Content-Disposition' => 'attachment; filename="public-key.der"',
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Length' => \strlen($key),
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
         }
 
         return new Response('', Response::HTTP_NO_CONTENT);
