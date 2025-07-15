@@ -15,7 +15,7 @@ namespace HeimrichHannot\PwaBundle\DataContainer;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\ModuleModel;
-use HeimrichHannot\PwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
+use HeimrichHannot\PwaBundle\Contao\FrontendModule\PushSubscriptionPopupModule;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ModuleContainer
@@ -42,7 +42,7 @@ class ModuleContainer
             return;
         }
         $module = ModuleModel::findByPk($dc->id);
-        if (!$module || PushSubscriptionPopupFrontendModule::TYPE !== $module->type) {
+        if (!$module || PushSubscriptionPopupModule::TYPE !== $module->type) {
             return;
         }
         $GLOBALS['TL_DCA']['tl_module']['subpalettes']['addImage'] = 'singleSRC,imgSize';

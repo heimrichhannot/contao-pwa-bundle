@@ -8,328 +8,301 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-
 namespace HeimrichHannot\PwaBundle\Manifest;
 
-
-class ManifestIcon
+final class ManifestIcon
 {
+    const SIZES_DEFAULT = [
+        '192x192',
+        '512x512',
+    ];
 
-	const SIZES_DEFAULT = [
-		'192x192',
-		'512x512'
-	];
+    /** @var array The configured sizes */
+    private array $sizes = [];
+    private string $sourceIconPath;
+    /** @var string Icon name without file extension */
+    private string $iconBaseName;
+    /** @var string Icon file extension */
+    private string $iconExtension;
+    /** @var string Relative path from web root to the folder where icons should be stored */
+    private string $iconBasePath = 'assets/images/heimrichhannotpwa';
+    /** @var string path from the manifest file to the web root. Leave empty if manifest is in web root. */
+    private string $manifestPath = '';
+    /** @var string Absolute path to the web root */
+    private string $webRootPath = __DIR__ . '/../../../../..';
+    private string $applicationAlias;
+    private bool $iconFilesMissing = false;
 
-	protected $sizes = [];
-	/**
-	 * @var string
-	 */
-	protected $sourceIconPath;
+    public function __construct(string $sourceIconPath, string $applicationAlias, bool $addDefaultSizes = false)
+    {
+        $this->applicationAlias = $applicationAlias;
+        $this->setSourceIconPath($sourceIconPath);
 
-	/**
-	 * @var string Icon name without file extension
-	 */
-	protected $iconBaseName;
+        if ($addDefaultSizes)
+        {
+            $this->sizes = ManifestIcon::SIZES_DEFAULT;
+        }
+    }
 
-	/**
-	 * @var string Icon file extension
-	 */
-	protected $iconExtension;
+    public function getSourceIconPath(bool $absolutePath = false): string
+    {
+        if ($absolutePath)
+        {
+            return $this->webRootPath . '/' . $this->sourceIconPath;
+        }
 
-	/**
-	 * @var string Relative path from web root to the folder where icons should be stored
-	 */
-	protected $iconBasePath = 'assets/images/heimrichhannotpwa';
+        return $this->sourceIconPath;
+    }
 
-	/**
-	 * @var string path from the manifest file to the web root. Leave empty if manifest is in web root.
-	 */
-	protected $manifestPath = '';
+    /**
+     * @param string $sourceIconPath
+     */
+    public function setSourceIconPath(string $sourceIconPath): static
+    {
+        $this->sourceIconPath = $sourceIconPath;
+        $extension = \pathinfo($sourceIconPath, \PATHINFO_EXTENSION);
+        $this->iconBaseName = \basename($sourceIconPath, '.' . $extension);
+        $this->iconExtension = $extension;
 
-	/**
-	 * @var string Absolute path to the web root
-	 */
-	protected $webRootPath = __DIR__.'/../../../../..';
+        return $this;
+    }
 
-	/**
-	 * @var string
-	 */
-	private $applicationAlias;
+    /**
+     * @return array
+     */
+    public function getSizes(): array
+    {
+        return $this->sizes;
+    }
 
-	protected $iconFilesMissing = false;
+    /**
+     * @param array $sizes
+     * @return bool True if all sizes were valid and added. False, if at least on size was invalid.
+     */
+    public function setSizes(array $sizes): bool
+    {
+        $success = true;
 
-	/**
-	 * ManifestIcon constructor.
-	 */
-	public function __construct(string $sourceIconPath, string $applicationAlias, bool $addDefaultSizes = false)
-	{
-		$this->setSourceIconPath($sourceIconPath);
-		if ($addDefaultSizes)
-		{
-			$this->sizes = static::SIZES_DEFAULT;
-		}
-		$this->applicationAlias = $applicationAlias;
-	}
+        foreach ($sizes as $size)
+        {
+            if (!$this->addSize($size))
+            {
+                $success = false;
+            }
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getSourceIconPath(bool $absolutePath = false): string
-	{
-		if ($absolutePath)
-		{
-			return $this->webRootPath.'/'.$this->sourceIconPath;
-		}
-		return $this->sourceIconPath;
-	}
+        return $success;
+    }
 
-	/**
-	 * @param string $sourceIconPath
-	 */
-	public function setSourceIconPath(string $sourceIconPath): void
-	{
-		$this->sourceIconPath = $sourceIconPath;
-		$extension            = pathinfo($sourceIconPath, PATHINFO_EXTENSION);
-		$this->iconBaseName   = basename($sourceIconPath, '.' . $extension);
-		$this->iconExtension  = $extension;
-	}
+    /**
+     * @param string $size Must be "any" or "[Width]x[Height]
+     * @return bool True if size was valid and added, false if size was not valid and not added.
+     */
+    public function addSize(string $size): bool
+    {
+        if ($valid = $this->validateSize($size)) {
+            $this->sizes[] = $size;
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getSizes(): array
-	{
-		return $this->sizes;
-	}
+        return $valid;
+    }
 
-	/**
-	 * @param array $sizes
-	 * @return bool True if all sizes were valid and added. False, if at least on size was invalid.
-	 */
-	public function setSizes(array $sizes): bool
-	{
-		$success = true;
-		foreach ($sizes as $size)
-		{
-			if (!$this->addSize($size))
-			{
-				$success = false;
-			}
-		}
-		return $success;
-	}
+    /**
+     * Validate if a given string is a valid icon sizes
+     */
+    public function validateSize(string $size): bool
+    {
+        if ('any' === $size) {
+            return true;
+        }
 
-	/**
-	 * @param string $size Must be "any" or "[Width]x[Height]
-	 * @return bool True if size was valid and added, false if size was not valid and not added.
-	 */
-	public function addSize(string $size): bool
-	{
-		if (true === $this->validateSize($size))
-		{
-			$this->sizes[] = $size;
-			return true;
-		}
-		return false;
-	}
+        if (1 === \preg_match('/(\d+)x(\d+)/', $size, $matches))
+        {
+            if ($matches[0] === $size) {
+                return true;
+            }
+        }
 
-	/**
-	 * Validate if an given string is an valid icon size
-	 *
-	 * @param string $size
-	 * @return bool
-	 */
-	public function validateSize(string $size)
-	{
-		if ('any' === $size)
-		{
-			return true;
-		}
-		$matches = [];
-		if (1 === preg_match('/(\d+)x(\d+)/', $size, $matches))
-		{
-			if ($matches[0] === $size)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @param int $width Icon width in pixel
-	 * @param int $height Icon height in pixel
-	 */
-	public function addSizePixel(int $width, int $height)
-	{
-		$this->addSize($width . 'x' . $height);
-	}
+    /**
+     * @param int $width  Icon width in pixel
+     * @param int $height Icon height in pixel
+     */
+    public function addSizePixel(int $width, int $height): static
+    {
+        $this->addSize($width . 'x' . $height);
 
-	/**
-	 * @return string
-	 */
-	public function getIconBaseName(): string
-	{
-		return $this->iconBaseName;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getIconExtension(): string
-	{
-		return $this->iconExtension;
-	}
+    /**
+     * @return string
+     */
+    public function getIconBaseName(): string
+    {
+        return $this->iconBaseName;
+    }
 
-	/**
-	 * Relative path to the folder where current icons are stored.
-	 *
-	 * @return string
-	 */
-	public function getIconsPath(string $manifestPath = '') : string
-	{
-		$basePath = $this->iconBasePath;
-		if (!empty($manifestPath))
-		{
-			$basePath = $manifestPath.'/'.$basePath;
-		}
-		return $basePath . '/' . $this->applicationAlias . '/icons';
-	}
+    /**
+     * @return string
+     */
+    public function getIconExtension(): string
+    {
+        return $this->iconExtension;
+    }
 
-	/**
-	 * Absolute path to the folder where current icons are stored.
-	 *
-	 * @return string
-	 */
-	public function getIconAbsolutePath(): string
-	{
-		return $this->webRootPath . '/' . $this->getIconsPath();
-	}
+    /**
+     * Relative path to the folder where current icons are stored.
+     */
+    public function getIconsPath(string $manifestPath = ''): string
+    {
+        $basePath = $this->iconBasePath;
 
-	/**
-	 * @param string $size
-	 * @param bool $withAbsolutePath
-	 * @return string
-	 */
-	public function generateIconName(string $size, bool $withAbsolutePath = false)
-	{
-		if (!$this->validateSize($size))
-		{
-			throw new \InvalidArgumentException("Attribute size must be an valid icon size string!");
-		}
-		if ($size != 'any')
-		{
-			$size = (explode('x', $size))[0];
-		}
-		$iconName = $this->iconBaseName . '-' . $size . '.' . $this->iconExtension;
+        if (!empty($manifestPath)) {
+            $basePath = $manifestPath . '/' . $basePath;
+        }
 
-		if ($withAbsolutePath)
-		{
-			$iconName = $this->getIconAbsolutePath() . '/' . $iconName;
-		}
+        return $basePath . '/' . $this->applicationAlias . '/icons';
+    }
 
-		return $iconName;
-	}
+    /**
+     * Absolute path to the folder where current icons are stored.
+     *
+     * @return string
+     */
+    public function getIconAbsolutePath(): string
+    {
+        return $this->webRootPath . '/' . $this->getIconsPath();
+    }
 
-	public function toArray()
-	{
-		$manifestIcons = [];
+    public function generateIconName(string $size, bool $withAbsolutePath = false): string
+    {
+        if (!$this->validateSize($size))
+        {
+            throw new \InvalidArgumentException("Attribute size must be an valid icon size string!");
+        }
+        if ($size != 'any')
+        {
+            $size = (explode('x', $size))[0];
+        }
+        $iconName = $this->iconBaseName . '-' . $size . '.' . $this->iconExtension;
 
-		foreach ($this->sizes as $size)
-		{
-			$iconName         = $this->generateIconName($size);
-			$absoluteIconPath = $this->getIconAbsolutePath() . '/' . $iconName;
-			$relativeIconPath = $this->getIconsPath($this->manifestPath) . '/' . $iconName;
+        if ($withAbsolutePath)
+        {
+            $iconName = $this->getIconAbsolutePath() . '/' . $iconName;
+        }
 
-			if (!file_exists($absoluteIconPath))
-			{
-				$this->iconFilesMissing = true;
-				continue;
-			}
+        return $iconName;
+    }
 
-			$manifestIcons[] = [
-				"src"   => $relativeIconPath,
-				"type"  => mime_content_type($absoluteIconPath),
-				"sizes" => $size
-			];
-		}
+    public function toArray(): array
+    {
+        $manifestIcons = [];
 
-		return $manifestIcons;
-	}
+        foreach ($this->sizes as $size)
+        {
+            $iconName = $this->generateIconName($size);
+            $absoluteIconPath = $this->getIconAbsolutePath() . '/' . $iconName;
+            $relativeIconPath = $this->getIconsPath($this->manifestPath) . '/' . $iconName;
 
-	/**
-	 * @return string
-	 */
-	public function getIconBasePath(): string
-	{
-		return $this->iconBasePath;
-	}
+            if (!file_exists($absoluteIconPath))
+            {
+                $this->iconFilesMissing = true;
+                continue;
+            }
 
-	/**
-	 * @param string $iconBasePath
-	 */
-	public function setIconBasePath(string $iconBasePath): void
-	{
-		$this->iconBasePath = $iconBasePath;
-	}
+            $manifestIcons[] = [
+                "src" => $relativeIconPath,
+                "type" => \mime_content_type($absoluteIconPath),
+                "sizes" => $size,
+            ];
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getApplicationAlias(): string
-	{
-		return $this->applicationAlias;
-	}
+        return $manifestIcons;
+    }
 
-	/**
-	 * @param string $applicationAlias
-	 */
-	public function setApplicationAlias(string $applicationAlias): void
-	{
-		$this->applicationAlias = $applicationAlias;
-	}
+    /**
+     * @return string
+     */
+    public function getIconBasePath(): string
+    {
+        return $this->iconBasePath;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isIconFilesMissing(): bool
-	{
-		return $this->iconFilesMissing;
-	}
+    /**
+     * @param string $iconBasePath
+     */
+    public function setIconBasePath(string $iconBasePath): static
+    {
+        $this->iconBasePath = $iconBasePath;
 
-	/**
-	 * @return string
-	 */
-	public function getWebRootPath(): string
-	{
-		return $this->webRootPath;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $webRootPath
-	 */
-	public function setWebRootPath(string $webRootPath): void
-	{
-		$this->webRootPath = $webRootPath;
-	}
+    /**
+     * @return string
+     */
+    public function getApplicationAlias(): string
+    {
+        return $this->applicationAlias;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getManifestPath(): string
-	{
-		return $this->manifestPath;
-	}
+    /**
+     * @param string $applicationAlias
+     */
+    public function setApplicationAlias(string $applicationAlias): static
+    {
+        $this->applicationAlias = $applicationAlias;
 
-	/**
-	 * Set the path from manifest to the web root (Example: '..'). Leave empty if manifest is placed in web root.
-	 *
-	 * @param string $manifestPath
-	 */
-	public function setManifestPath(string $manifestPath): void
-	{
-		$this->manifestPath = $manifestPath;
-	}
+        return $this;
+    }
 
+    /**
+     * @return bool
+     */
+    public function isIconFilesMissing(): bool
+    {
+        return $this->iconFilesMissing;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebRootPath(): string
+    {
+        return $this->webRootPath;
+    }
+
+    /**
+     * @param string $webRootPath
+     */
+    public function setWebRootPath(string $webRootPath): static
+    {
+        $this->webRootPath = $webRootPath;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getManifestPath(): string
+    {
+        return $this->manifestPath;
+    }
+
+    /**
+     * Set the path from manifest to the web root (Example: '..'). Leave empty if manifest is placed in web root.
+     *
+     * @param string $manifestPath
+     */
+    public function setManifestPath(string $manifestPath): static
+    {
+        $this->manifestPath = $manifestPath;
+
+        return $this;
+    }
 
 }

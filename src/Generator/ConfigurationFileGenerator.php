@@ -102,8 +102,8 @@ class ConfigurationFileGenerator
         ];
         $configuration['pushNotifications'] = [
             'support' => (bool) $config->supportPush,
-            'subscribePath' => $this->router->generate('push_notification_subscription', ['config' => $config->id]),
-            'unsubscribePath' => $this->router->generate('push_notification_unsubscription', ['config' => $config->id]),
+            'subscribePath' => $this->router->generate('huh_pwa.notification.subscribe', ['config' => $config->id]),
+            'unsubscribePath' => $this->router->generate('huh_pwa.notification.unsubscribe', ['config' => $config->id]),
         ];
         $configuration['translations'] = [
             'pushnotifications' => [

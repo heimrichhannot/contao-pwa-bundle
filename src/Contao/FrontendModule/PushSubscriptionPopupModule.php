@@ -1,16 +1,14 @@
 <?php
+
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2021 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-
-namespace HeimrichHannot\PwaBundle\FrontendModule;
-
+namespace HeimrichHannot\PwaBundle\Contao\FrontendModule;
 
 use Contao\Controller;
 use Contao\FilesModel;
@@ -20,16 +18,15 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
-class PushSubscriptionPopupFrontendModule extends Module
+class PushSubscriptionPopupModule extends Module
 {
-    const TYPE = 'huh_pwa_push_popup';
-
-    const TOGGLE_EVENT = 'event';
-    const TOGGLE_CUSTOM = 'custom';
+    public const TYPE = 'huh_pwa_push_popup';
+    public const TOGGLE_EVENT = 'event';
+    public const TOGGLE_CUSTOM = 'custom';
 
     protected $strTemplate = 'mod_push_subscription_popup';
 
-    protected function compile()
+    protected function compile(): void
     {
         $container = System::getContainer();
         $templateData = [
@@ -41,7 +38,7 @@ class PushSubscriptionPopupFrontendModule extends Module
         ];
 
         $buttonTemplate = $this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default';
-        $templateData['button'] = $container->get(TwigTemplateRenderer::class)->render($buttonTemplate);
+        $templateData['button'] = $container->get(TwigTemplateRenderer::class)?->render($buttonTemplate) ?: '';
 
         $cssId = $this->cssID[0];
         if (empty($cssId)) {
@@ -50,9 +47,8 @@ class PushSubscriptionPopupFrontendModule extends Module
         $templateData['cssId'] = $cssId;
 
         // Add an image
-        if ($this->addImage && $this->singleSRC != '')
+        if ($this->addImage && $this->singleSRC && ($filesModel = FilesModel::findByUuid($this->singleSRC)))
         {
-            $filesModel = FilesModel::findByUuid($this->singleSRC);
             $template = new FrontendTemplate('image');
             Controller::addImageToTemplate($template, [
                 'singleSRC' => $filesModel->path,
@@ -66,7 +62,9 @@ class PushSubscriptionPopupFrontendModule extends Module
 
         $modalTemplate = $this->pwaPopupTemplate ?: 'push_subscription_popup_default';
 
-        $this->Template->popup = $container->get(TwigTemplateRenderer::class)->render($modalTemplate, $templateData);
+        $this->Template->popup = $container->get(TwigTemplateRenderer::class)
+            ?->render($modalTemplate, $templateData)
+            ?: '';
 
         $this->cssID[0] = $cssId.'_wrapper';
     }

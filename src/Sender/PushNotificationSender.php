@@ -40,27 +40,30 @@ class PushNotificationSender
         $this->utils = $utils;
     }
 
-    public function sendWithLog(AbstractNotification $notification, PwaConfigurationsModel $config, LoggerInterface $log, ?array $subscribers = null): bool
-    {
+    public function sendWithLog(
+        AbstractNotification   $notification,
+        PwaConfigurationsModel $config,
+        LoggerInterface        $log,
+        ?array                 $subscribers = null,
+    ): bool {
         if (!$this->checkRequirements($log)) {
             return false;
         }
 
         $log->info("Requirements checked.");
 
-        if (!$subscribers) {
-            /** @var PwaPushSubscriberModel[]|PwaPushSubscriberModel|Collection|null $subscribers */
-            if (!$subscribers = PwaPushSubscriberModel::findByPid($config->id)) {
-                $log->error("No subscribers found.");
-                return false;
-            }
+        /** @var PwaPushSubscriberModel[]|Collection<PwaPushSubscriberModel>|null $subscribers */
+        if (!$subscribers && !($subscribers = PwaPushSubscriberModel::findByPid($config->id)))
+        {
+            $log->error("No subscribers found.");
+            return false;
         }
 
         $log->info("Found " . count($subscribers) . " subscribers.");
 
-        $webPush = $this->createPushInstance($log);
-        if (!$webPush)
+        if (!$webPush = $this->createPushInstance($log)) {
             return false;
+        }
 
         try {
             $payload = $notification->toArray();

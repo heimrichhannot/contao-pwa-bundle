@@ -1,16 +1,15 @@
-<?php
+<?php /** @noinspection JsonEncodingApiUsageInspection */
+
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-
 namespace HeimrichHannot\PwaBundle\Controller;
-
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
@@ -21,183 +20,147 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class NotificationController
- * @package HeimrichHannot\PwaBundle\Controller
- *
- * @Route("/api/notifications")
- */
+#[Route('/_huh_pwa/notification/{config}', name: 'huh_pwa.notification.', defaults: ['_scope' => 'frontend', '_token_check' => false])]
 class NotificationController extends AbstractController
 {
-    private ContaoFramework $contaoFramework;
+    public function __construct(
+        private readonly ContaoFramework $contaoFramework,
+    ) {}
 
-    public function __construct(ContaoFramework $contaoFramework)
-    {
-        $this->contaoFramework = $contaoFramework;
-    }
-
-
-    /**
-	 * @Route("/subscribe/{config}", name="push_notification_subscription", methods={"POST"})
-	 *
-	 * @param Request $request
-	 * @param int $config
-	 * @return Response
-	 */
-	public function subscribeAction(Request $request, $config)
-	{
-		$this->contaoFramework->initialize();
-
-		/** @var PwaConfigurationsModel $pwaConfig */
-		$pwaConfig = PwaConfigurationsModel::findByPk($config);
-		if (!$pwaConfig)
-		{
-			return new Response("No valid subscription id!", 400);
-		}
-
-		$data = json_decode($request->getContent(), true);
-		if (!isset($data['subscription']) || !isset($data['subscription']['endpoint']))
-		{
-			return new Response("Missing endpoint key.", 404);
-		}
-		$endpoint = $data['subscription']['endpoint'];
-
-		/** @var PwaPushSubscriberModel $user */
-		if (!$user = PwaPushSubscriberModel::findByEndpoint($endpoint))
-		{
-			$user = new PwaPushSubscriberModel();
-			$user->dateAdded = $user->tstamp = time();
-			$user->endpoint = $data['subscription']['endpoint'];
-			$user->publicKey = $data['subscription']['keys']['p256dh'];
-			$user->authToken = $data['subscription']['keys']['auth'];
-			$user->pid = $pwaConfig->id;
-			$user->save();
-			return new Response("Subscription successful!", 200);
-		}
-		else {
-		    $user->tstamp = time();
-            $user->publicKey = $data['subscription']['keys']['p256dh'];
-            $user->authToken = $data['subscription']['keys']['auth'];
-            $user->save();
-            return new Response("Subscription updated", 200);
-        }
-
-	}
-
-    /**
-     * @Route("/update/{config}", name="push_notification_update_subscription", methods={"POST"})
-     *
-     * @param Request $request
-     * @param int $config
-     * @return Response
-     */
-    public function updateSubscriptionAction(Request $request, $config)
+    #[Route('/subscribe', name: 'subscribe', methods: ['POST'])]
+    public function subscribeAction(Request $request, int $config): Response
     {
         $this->contaoFramework->initialize();
 
         /** @var PwaConfigurationsModel $pwaConfig */
-        $pwaConfig = PwaConfigurationsModel::findByPk($config);
-        if (!$pwaConfig)
+        if (!$pwaConfig = PwaConfigurationsModel::findByPk($config))
         {
-            return new Response("No valid subscription id!", 400);
+            return new Response('Subscription not found', Response::HTTP_NOT_FOUND);
         }
 
-        $data = json_decode($request->getContent(), true);
-
-        if (!isset($data['oldSubscription']['endpoint']))
+        if (!($data = \json_decode($request->getContent(), true)) || !\is_array($data))
         {
-            return new Response("No valid old subscription, could not renew subscription.", 400);
-        }
-        $oldSubscription = $data['oldSubscription'];
-
-        if (!isset($data['newSubscription']['endpoint']))
-        {
-            return new Response("No valid new subscription, could not renew subscription.", 400);
-        }
-        $newSubscription = $data['newSubscription'];
-
-        /** @var PwaPushSubscriberModel $user */
-        $user = PwaPushSubscriberModel::findByEndpoint($oldSubscription['endpoint']);
-        if (!$user)
-        {
-            return new Response("Could not find an existing subscription");
+            return new Response('Invalid request data', Response::HTTP_BAD_REQUEST);
         }
 
-        $user->tstamp = time();
-        $user->endpoint = $newSubscription['endpoint'];
-        $user->publicKey = $newSubscription['keys']['p256dh'];
-        $user->authToken = $newSubscription['keys']['auth'];
-        $user->save();
+        $endpoint = $data['subscription']['endpoint'] ?? null;
+        $p256dh = $data['subscription']['keys']['p256dh'] ?? null;
+        $auth = $data['subscription']['keys']['auth'] ?? null;
 
-        return new Response("Subscription updated", 200);
-	}
+        if (!$endpoint || !$p256dh || !$auth)
+        {
+            return new Response('Missing parameters in request data', Response::HTTP_BAD_REQUEST);
+        }
 
-	/**
-	 * @Route("/unsubscribe/{config}", name="push_notification_unsubscription", methods={"POST"})
-	 *
-	 * @param Request $request
-	 * @param int $config
-	 * @return Response
-	 */
-	public function unsubscribeAction(Request $request, $config)
-	{
-		$this->contaoFramework->initialize();
+        /** @var PwaPushSubscriberModel $subscriber */
+        if (!$subscriber = PwaPushSubscriberModel::findByEndpoint($endpoint))
+        {
+            $subscriber = new PwaPushSubscriberModel();
+            $subscriber->dateAdded = $subscriber->tstamp = time();
+            $subscriber->endpoint = $endpoint;
+            $subscriber->publicKey = $p256dh;
+            $subscriber->authToken = $auth;
+            $subscriber->pid = $pwaConfig->id;
+            $subscriber->save();
 
-		/** @var PwaConfigurationsModel $pwaConfig */
-		$pwaConfig = PwaConfigurationsModel::findByPk($config);
-		if (!$pwaConfig)
-		{
-			return new Response("No valid subscription id!", 400);
-		}
+            return new Response('Subscription successfully created', Response::HTTP_OK);
+        }
 
-		$data = json_decode($request->getContent(), true);
-		if (!isset($data['subscription']) || !isset($data['subscription']['endpoint']))
-		{
-			return new Response("Missing endpoint key.", 404);
-		}
-		$endpoint = $data['subscription']['endpoint'];
+        $subscriber->tstamp = time();
+        $subscriber->publicKey = $p256dh;
+        $subscriber->authToken = $auth;
+        $subscriber->save();
 
-		/** @var PwaPushSubscriberModel|Collection|null $user */
-		if ($user = PwaPushSubscriberModel::findBy(['endpoint=?','pid=?'],[$endpoint, $pwaConfig->id]))
-		{
-		    // Just in case an error lead to multiple registrations -> clean db
-			if ($user instanceof Collection && $user->count() > 1)
-			{
-				foreach ($user as $entry)
-				{
-					$entry->delete();
-				}
-			}
-			else {
-				$user->delete();
-			}
-			return new Response("User successful unsubscribed!", 200);
-		}
-		return new Response("User not found!", 404);
-	}
+        return new Response('Subscription successfully updated', Response::HTTP_OK);
+    }
 
-	/**
-	 * @Route("/publickey", name="huh.pwa.notification.publickey", methods={"GET"})
-	 *
-	 * @param Request $request
-	 * @return Response
-	 */
-	public function returnPublicKeyAction(Request $request)
-	{
-		if ($key = $this->getPublicKey())
-		{
-			return new Response($key);
-		}
-		return new Response("No public key available.", 400);
-	}
+    #[Route('/update', name: 'update', methods: ['POST'])]
+    public function updateSubscriptionAction(Request $request, $config): Response
+    {
+        $this->contaoFramework->initialize();
 
-	protected function getPublicKey()
-	{
-		$config = $this->getParameter("huh_pwa");
-		if (!isset($config['vapid']) || !isset($config['vapid']['publicKey']))
-		{
-			return false;
-		}
-		return $config['vapid']['publicKey'];
-	}
+        if (!$pwaConfig = PwaConfigurationsModel::findByPk($config))
+        {
+            return new Response('Subscription not found', Response::HTTP_NOT_FOUND);
+        }
+
+        if (!($data = json_decode($request->getContent(), true)) || !\is_array($data)) {
+            return new Response('Invalid request data', Response::HTTP_BAD_REQUEST);
+        }
+
+        $oldEndpoint = $data['oldSubscription']['endpoint'] ?? null;
+
+        $new = $data['newSubscription'] ?? null;
+        $newEndpoint = $new['endpoint'] ?? null;
+        $newP256dh = $new['keys']['p256dh'] ?? null;
+        $newAuth = $new['keys']['auth'] ?? null;
+
+        if (!$oldEndpoint || !$newEndpoint || !$newP256dh || !$newAuth)
+        {
+            return new Response('Missing parameters in request data', Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var PwaPushSubscriberModel $subscriber */
+        if (!$subscriber = PwaPushSubscriberModel::findByEndpoint($oldEndpoint))
+        {
+            return new Response('Could not find an existing subscription', Response::HTTP_NOT_FOUND);
+        }
+
+        if ($subscriber->pid !== $pwaConfig->id)
+        {
+            return new Response('Subscription does not belong to the specified notification', Response::HTTP_FORBIDDEN);
+        }
+
+        $subscriber->tstamp = time();
+        $subscriber->endpoint = $newEndpoint;
+        $subscriber->publicKey = $newP256dh;
+        $subscriber->authToken = $newAuth;
+        $subscriber->save();
+
+        return new Response('Subscription successfully updated', Response::HTTP_OK);
+    }
+
+    #[Route('/unsubscribe', name: 'unsubscribe', methods: ['POST'])]
+    public function unsubscribeAction(Request $request, int $config): Response
+    {
+        $this->contaoFramework->initialize();
+
+        /** @var PwaConfigurationsModel $pwaConfig */
+        if (!$pwaConfig = PwaConfigurationsModel::findByPk($config))
+        {
+            return new Response('Subscription not found', Response::HTTP_NOT_FOUND);
+        }
+
+        if (!($data = \json_decode($request->getContent(), true)) || !\is_array($data))
+        {
+            return new Response('Invalid request data', Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$endpoint = $data['subscription']['endpoint'] ?? null)
+        {
+            return new Response('Missing endpoint', Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$subscriber = PwaPushSubscriberModel::findBy(['endpoint=?', 'pid=?'], [$endpoint, $pwaConfig->id]))
+        {
+            return new Response('Subscriber not found', Response::HTTP_NOT_FOUND);
+        }
+
+        if ($subscriber instanceof Collection)
+        {
+            foreach ($subscriber as $entry)
+            {
+                if ($entry instanceof PwaPushSubscriberModel)
+                {
+                    $entry->delete();
+                }
+            }
+        }
+        elseif ($subscriber instanceof PwaPushSubscriberModel)
+        {
+            $subscriber->delete();
+        }
+
+        return new Response('Subscription successfully terminated', Response::HTTP_OK);
+    }
 }

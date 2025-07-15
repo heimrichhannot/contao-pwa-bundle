@@ -1,61 +1,55 @@
 <?php
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
- */
 
+/**
+ * Heimrich & Hannot PWA Bundle
+ *
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ */
 
 namespace HeimrichHannot\PwaBundle\ContentElement;
 
-
 use Contao\BackendTemplate;
 use Contao\ContentElement;
-use Contao\ContentModel;
 use Contao\System;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
 class PushSubscriptionElement extends ContentElement
 {
-	const TYPE = 'pushsubscription';
+    public const TYPE = 'pushsubscription';
 
-	protected $strTemplate = 'ce_pushsubscription_default';
-	protected $scopeMatcher;
-	protected $request;
-	protected $twig;
-	protected $templateUtil;
+    protected $strTemplate = 'ce_pushsubscription_default';
 
-	public function __construct(ContentModel $objElement, string $strColumn = 'main')
-	{
-		parent::__construct($objElement, $strColumn);
-		$this->scopeMatcher = System::getContainer()->get('contao.routing.scope_matcher');
-		$this->request = System::getContainer()->get('request_stack')->getCurrentRequest();
-		$this->twig = System::getContainer()->get('twig');
-		$this->templateUtil = System::getContainer()->get('huh.utils.template');
-	}
+    protected function compile(): string
+    {
+        if (!$request = System::getContainer()->get('request_stack')?->getCurrentRequest()) {
+            throw new \RuntimeException('Request stack not set');
+        }
 
+        if (!$scopeMatcher = System::getContainer()->get('contao.routing.scope_matcher')) {
+            throw new \RuntimeException('Scope matcher not set');
+        }
 
-	/**
-	 * Compile the content element
-	 */
-	protected function compile()
-	{
-		if ($this->scopeMatcher->isBackendRequest($this->request))
-		{
-			$this->strTemplate = 'be_wildcard';
-			$this->Template = new BackendTemplate($this->strTemplate);
-			$this->Template->title = "Web Push Notification Subscribe Button";
-			return $this->Template->parse();
-		}
+        return $scopeMatcher->isBackendRequest($request)
+            ? $this->compileForBackend()
+            : $this->compileForFrontend();
+    }
 
-		$container = System::getContainer();
-		$buttonTemplate = $this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default';
+    public function compileForBackend(): string
+    {
+        $this->strTemplate = 'be_wildcard';
+        $this->Template = new BackendTemplate($this->strTemplate);
+        $this->Template->title = "Web Push Notification Subscribe Button";
 
-		$this->Template->button = $container->get(TwigTemplateRenderer::class)->render($buttonTemplate);
+        return $this->Template->parse();
+    }
 
-		return $this->Template->parse();
-	}
+    public function compileForFrontend(): string
+    {
+        $this->Template->button = System::getContainer()->get(TwigTemplateRenderer::class)
+            ?->render($this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default');
+
+        return $this->Template->parse();
+    }
 }

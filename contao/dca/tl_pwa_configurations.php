@@ -43,7 +43,7 @@ $GLOBALS['TL_DCA'][$table] = [
 			],
 			'control' => [
 				'label'           => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['control'],
-				'href'            => 'huh_pwa_backend_control',
+				'href'            => 'huh_pwa.backend.control',
 				'attributes'      => 'onclick="Backend.getScrollOffset();"',
 				'class'           => 'header_icon',
 				'icon'            => 'wrench.svg',

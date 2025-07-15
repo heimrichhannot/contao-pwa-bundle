@@ -1,73 +1,36 @@
 services:
+  _defaults:
+    autowire:      true
+    autoconfigure: true
+    bind:
+      $bundleConfig: '%huh_pwa%'
+      $webDir: '%contao.web_dir%'
+
   _instanceof:
     Contao\CoreBundle\Framework\FrameworkAwareInterface:
       calls:
         - ["setFramework", ["@contao.framework"]]
-    Symfony\Component\DependencyInjection\ContainerAwareInterface:
-      calls:
-        - ["setContainer", ["@service_container"]]
 
-  HeimrichHannot\ContaoPwaBundle\:
-    resource: '../../{Asset,Command,Controller,DataContainer,EventListener}/*'
-    public: true
-    autowire: true
-    autoconfigure: true
-
-  huh.pwalist.choice.template.item:
-    class: HeimrichHannot\PwaBundle\DataContainer\ContentContainer
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\DataContainer\ContentContainer: '@huh.pwalist.choice.template.item'
-
-# DataContainer
-
-  huh.pwa.datacontainer.pwapushnotification:
-    class: HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer: '@huh.pwa.datacontainer.pwapushnotification'
-
-  huh.pwa.datacontainer.pwaconfigurations:
-    class: HeimrichHannot\PwaBundle\DataContainer\PwaConfigurationContainer
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\DataContainer\PwaConfigurationContainer: '@huh.pwa.datacontainer.pwaconfigurations'
-
-  huh.pwa.datacontainer.pwasubscribers:
-    class: HeimrichHannot\PwaBundle\DataContainer\PwaPushSubscriberContainer
-    public: true
-    autowire: true
-  HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushSubscriberContainer: '@huh.pwa.datacontainer.pwasubscribers'
+  HeimrichHannot\PwaBundle\:
+    resource: ../src
+    exclude:
+      - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model}
 
   # Generators
-
-  huh.pwa.generator.manifest:
-    class: HeimrichHannot\PwaBundle\Generator\ManifestGenerator
-    public: true
-    arguments:
-      ['@service_container', '@huh.pwa.generator.icon']
-  HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator: "@huh.pwa.generator.manifest"
-
-  huh.pwa.generator.icon:
-    class: HeimrichHannot\PwaBundle\Generator\ManifestIconGenerator
-    public: true
-    arguments:
-      ['@contao.image.image_factory', '@contao.image.resizer', '@service_container']
-  HeimrichHannot\ContaoPwaBundle\Generator\ManifestIconGenerator: "@huh.pwa.generator.icon"
 
   huh.pwa.generator.serviceworker:
     class: HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator
     public: true
     arguments:
       ['%contao.web_dir%', '@twig', '@logger']
-  HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
+  HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator: "@huh.pwa.generator.serviceworker"
 
   huh.pwa.generator.configurationfile:
     class: HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator
     public: true
     arguments:
       ['@router.default', '%contao.web_dir%', '%huh_pwa%', '@translator']
-  HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
+  HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator: "@huh.pwa.generator.configurationfile"
 
   # Header Tags
 
@@ -76,21 +39,21 @@ services:
     public: true
     arguments:
       ['@huh.head.tag_manager']
-  HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
+  HeimrichHannot\PwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
 
   huh.head.tag.pwa.meta_themecolor:
     class: HeimrichHannot\PwaBundle\HeaderTag\ThemeColorMetaTag
     public: true
     arguments:
       ['@huh.head.tag_manager']
-  HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"
+  HeimrichHannot\PwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"
 
   huh.head.tag.pwa.script:
     class: HeimrichHannot\PwaBundle\HeaderTag\PwaHeadScriptTags
     public: true
     arguments:
       ['@huh.head.tag_manager']
-  HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags: "@huh.head.tag.pwa.script"
+  HeimrichHannot\PwaBundle\HeaderTag\PwaHeadScriptTags: "@huh.head.tag.pwa.script"
 
 # Sender
 
@@ -98,6 +61,4 @@ services:
     class: HeimrichHannot\PwaBundle\Sender\PushNotificationSender
     autowire: true
     public: true
-    bind:
-      $bundleConfig: '%huh_pwa%'
-  HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender: '@huh.pwa.sender.pushnotification'
+  HeimrichHannot\PwaBundle\Sender\PushNotificationSender: '@huh.pwa.sender.pushnotification'

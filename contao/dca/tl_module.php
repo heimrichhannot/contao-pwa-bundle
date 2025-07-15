@@ -9,13 +9,13 @@
  */
 
 use HeimrichHannot\PwaBundle\DataContainer\ModuleContainer;
-use HeimrichHannot\PwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
+use HeimrichHannot\PwaBundle\Contao\FrontendModule\PushSubscriptionPopupModule;
 
 $dca = &$GLOBALS['TL_DCA']['tl_module'];
 
 $dca['config']['onload_callback']['huh_pwa'] = [ModuleContainer::class, 'onLoadCallback'];
 
-$dca['palettes'][PushSubscriptionPopupFrontendModule::TYPE] = '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{image_legend},addImage;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$dca['palettes'][PushSubscriptionPopupModule::TYPE] = '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{image_legend},addImage;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $dc['fields']['pwaSubscribeButtonTemplate'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_module']['pwaSubscribeButtonTemplate'],
@@ -38,10 +38,10 @@ $dc['fields']['pwaPopupToggle'] = [
     'exclude'     => true,
     'inputType'   => 'select',
     'options'     => [
-        PushSubscriptionPopupFrontendModule::TOGGLE_EVENT,
-        PushSubscriptionPopupFrontendModule::TOGGLE_CUSTOM,
+        PushSubscriptionPopupModule::TOGGLE_EVENT,
+        PushSubscriptionPopupModule::TOGGLE_CUSTOM,
     ],
-    'default' => PushSubscriptionPopupFrontendModule::TOGGLE_EVENT,
+    'default' => PushSubscriptionPopupModule::TOGGLE_EVENT,
     'eval'        => ['tl_class' => 'w50 clr', 'helpwizard' => true],
     'explanation' => 'pwaPopupToggle',
     'sql'         => "varchar(64) NOT NULL default ''",

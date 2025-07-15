@@ -1,19 +1,16 @@
-<?php
-/** @noinspection PhpUndefinedClassInspection */
-/** @noinspection PhpUndefinedNamespaceInspection */
+<?php /** @noinspection PhpUndefinedClassInspection, PhpUndefinedNamespaceInspection */
 
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
-
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
+use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Message;
 use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
@@ -23,91 +20,64 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
-use HeimrichHannot\UtilsBundle\Util\Utils;
+use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\VAPID;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Twig\Environment;
+use Twig\Environment as TwigEnvironment;
 
-/**
- * Class BackendController
- * @package HeimrichHannot\PwaBundle\Controller
- *
- * @Route("/contao", defaults={
- *     "_scope" = "backend",
- *     "_token_check" = true,
- *     "_custom_backend_view" = true,
- *     "_backend_module" = "huh_pwa"
- * })
- *
- * @property ContainerInterface $container
- */
+#[Route('/%contao.backend.route_prefix%/huh_pwa', name: 'huh_pwa.backend.', defaults: [
+    '_scope' => 'backend',
+    '_token_check' => true,
+    '_custom_backend_view' => true,
+    '_backend_module' => 'huh_pwa'
+])]
 class BackendController extends AbstractController
 {
-    private ContaoFramework           $contaoFramework;
-    private Utils                     $utils;
-    private Environment               $twig;
-    private ManifestGenerator         $manifestGenerator;
-    private ServiceWorkerGenerator    $serviceWorkerGenerator;
-    private CsrfTokenManagerInterface $csrfTokenManager;
-    private PushNotificationSender $pushNotificationSender;
-
     public function __construct(
-        ContaoFramework $contaoFramework,
-        Utils $utils,
-        Environment $twig,
-        ManifestGenerator $manifestGenerator,
-        ServiceWorkerGenerator $serviceWorkerGenerator,
-        CsrfTokenManagerInterface $csrfTokenManager,
-        PushNotificationSender $pushNotificationSender
-    )
-    {
-        $this->contaoFramework = $contaoFramework;
-        $this->utils = $utils;
-        $this->twig = $twig;
-        $this->manifestGenerator = $manifestGenerator;
-        $this->serviceWorkerGenerator = $serviceWorkerGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->pushNotificationSender = $pushNotificationSender;
-    }
+        private readonly ContaoFramework           $contaoFramework,
+        private readonly TwigEnvironment           $twig,
+        private readonly ManifestGenerator         $manifestGenerator,
+        private readonly ServiceWorkerGenerator    $serviceWorkerGenerator,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly PushNotificationSender    $pushNotificationSender
+    ) {}
 
-    /**
-     * @Route("/pwa/control", name="huh_pwa_backend_control")
-     */
+    #[Route('/control', name: 'control')]
     public function huhBackendControlAction(Request $request): Response
     {
-        $webPush = true;
-        if (!class_exists('Minishlink\WebPush\WebPush')) {
-            Message::addInfo("You need to install WebPush library to use web push function! (\"composer require minishlink/web-push ^5.0\")");
-            $webPush = false;
+        if (!$webPush = \class_exists(WebPush::class))
+        {
+            Message::addInfo(
+                'Install WebPush to use web push notifications. See the installation instructions in the
+                <a href="https://github.com/heimrichhannot/contao-pwa-bundle/blob/main/README.md" target="_blank">README</a>.'
+            );
         }
 
         $this->contaoFramework->initialize();
 
-        $config = $this->getParameter('huh_pwa');
+        $config = $this->getParameter('huh_pwa') ?: [];
 
-        $keys          = isset($config["vapid"]) ? $config['vapid'] : null;
+        $keys = $config['vapid'] ?? null;
         $generatedKeys = null;
 
-        if (!$keys && class_exists(VAPID::class)) {
+        if (!$keys && \class_exists(VAPID::class)) {
             $generatedKeys = VAPID::createVapidKeys();
         }
 
-        $params        = [];
-        $params['rt']  = $this->csrfTokenManager->getToken($this->getParameter('contao.csrf_token_name'))->getValue();
-        $params['ref'] = $request->get('_contao_referer_id');
+        $params = [
+            'rt' => $this->csrfTokenManager->getToken($this->getParameter('contao.csrf_token_name'))->getValue(),
+            'ref' => $request->get('_contao_referer_id'),
+        ];
 
-        $backendBackRoute        = $this->utils->routing()->generateBackendRoute(['do' => 'huh_pwa_configurations']);
-        $unsentNotificationRoute = $this->generateUrl('huh_pwa_backend_pushnotification_find_unsent', $params);
-        $sendNotificationRoute   = $this->generateUrl('huh_pwa_backend_pushnotification_send', $params);
-        $findPagesRoute          = $this->generateUrl('huh_pwa_backend_pages', $params);
-        $updatePageRoute         = $this->generateUrl('huh_pwa_backend_page_update', $params);
-
+        $backendBackRoute        = $this->generateUrl('contao_backend', [...$params, 'do' => 'huh_pwa_configurations']);
+        $unsentNotificationRoute = $this->generateUrl('huh_pwa.backend.push_notifications.unsent', $params);
+        $sendNotificationRoute   = $this->generateUrl('huh_pwa.backend.push_notifications.send', $params);
+        $findPagesRoute          = $this->generateUrl('huh_pwa.backend.pages', $params);
+        $updatePageRoute         = $this->generateUrl('huh_pwa.backend.pages.update', $params);
 
         $content = $this->twig->render("@HeimrichHannotPwa/backend/backend.html.twig", [
             'messages'              => Message::generate(),
@@ -125,27 +95,24 @@ class BackendController extends AbstractController
         return new Response($content);
     }
 
-    /**
-     * @Route("/pwa/pushnotification/unsent", name="huh_pwa_backend_pushnotification_find_unsent")
-     */
+    #[Route('/push_notifications/unsent', name: 'push_notifications.unsent', methods: ['GET'])]
     public function findUnsentNotificationAction(): Response
     {
-        $notifications = PwaPushNotificationsModel::findUnsentPublishedNotifications();
-        if (!$notifications) {
+        if (!$notifications = PwaPushNotificationsModel::findUnsentPublishedNotifications()) {
             return new JsonResponse(['count' => 0]);
         }
+
         $response          = [];
         $response['count'] = $notifications->count();
 
         foreach ($notifications as $notification) {
             $response['notifications'][] = $notification->id;
         }
+
         return new JsonResponse($response);
     }
 
-    /**
-     * @Route("/pwa/pushnotification/send", name="huh_pwa_backend_pushnotification_send", methods={"POST"})
-     */
+    #[Route('/push_notifications/send', name: 'push_notifications.send', methods: ['POST'])]
     public function sendNotificationAction(Request $request): Response
     {
         $id           = $request->get('notificationId');
@@ -181,59 +148,57 @@ class BackendController extends AbstractController
         return new JsonResponse($result);
     }
 
-    /**
-     * @Route("/pwa/pages", name="huh_pwa_backend_pages")
-     */
+    #[Route('/pages', name: 'pages', methods: ['GET'])]
     public function findPagesWithPwaAction(): Response
     {
-        $pages = PageModel::findAllWithActivePwaConfiguration();
-        if (!$pages) {
+        if (!$pages = PageModel::findAllWithActivePwaConfiguration()) {
             return new JsonResponse([]);
         }
+
         $result = [];
-        foreach ($pages as $page) {
+
+        foreach ($pages as $page)
+        {
             $result[] = [
                 "name" => $page->title,
                 "id"   => $page->id
             ];
         }
+
         return new JsonResponse($result);
     }
 
-    /**
-     * @Route("/pwa/pages/update", name="huh_pwa_backend_page_update", methods={"POST"})
-     *
-     * @param Request $request
-     * @return Response
-     */
+    #[Route('/pages/update', name: 'pages.update', methods: ['POST'])]
     public function updatePageFilesAction(Request $request)
     {
-        $pageId = $request->get('pageId');
-        $page   = PageModel::findByPk($pageId);
-        if (!$page) {
-            return new Response("Page with given id not exist", 404);
+        if (!$pageId = $request->get('pageId')) {
+            return new Response('Page id is missing', Response::HTTP_BAD_REQUEST);
         }
-        if (!($page->type === 'root')) {
-            return new Response("Page must be a root page", 404);
+
+        if (!$page = PageModel::findByPk($pageId)) {
+            return new Response('Page not found', Response::HTTP_NOT_FOUND);
         }
+
+        if ($page->type !== 'root') {
+            return new Response('Page is not a root page', Response::HTTP_BAD_REQUEST);
+        }
+
         if (!$page->addPwa) {
-            return new Response("Page don't support PWA", 404);
+            return new Response('Page does not have PWA enabled', Response::HTTP_FORBIDDEN);
         }
+
         if (!PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
-            return new Response("Page PWA config could not be found.", 404);
+            return new Response('Page does not have a valid PWA configuration', Response::HTTP_I_AM_A_TEAPOT);
         }
 
         if (!$this->manifestGenerator->generatePageManifest($page)) {
-            return new Response("Error on generating manifest file for page " . $page->title . " (" . $page->id . ")", 404);
+            return new Response(\sprintf('Manifest generate failed for page with ID %s', $page->id), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        if (!$this->serviceWorkerGenerator->generatePageServiceworker($page)) {
-            return new JsonResponse([
-                "message" => "Error on generating service worker file for page " . $page->title . " (" . $page->id . ")"
-            ], 404);
-        }
-        return new JsonResponse([
-            "message" => "Successfully updated manifest and serviceworker for page " . $page->title . " (" . $page->id . ")"
-        ], 200);
-    }
 
+        if (!$this->serviceWorkerGenerator->generatePageServiceworker($page)) {
+            return new JsonResponse(['message' => 'Service worker generation failed for page with ID ' . $page->id], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse(['message' => 'Service worker and manifest successfully generated for page with ID ' . $page->id], Response::HTTP_OK);
+    }
 }

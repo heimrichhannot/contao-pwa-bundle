@@ -118,10 +118,10 @@ huh_pwa:
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| huh:pwa:build | (Re)Build config-specific files like service worker and manifest |
-| huh:pwa:sendpush | Send unsent push notifications |
+| Command           | Description |
+|-------------------|-------------|
+| huh:pwa:build     | (Re)Build config-specific files like service worker and manifest |
+| huh:pwa:send-push | Send unsent push notifications |
 
 ### Adding Additional Head Scripts
 

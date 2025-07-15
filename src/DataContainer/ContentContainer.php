@@ -17,7 +17,6 @@ use Contao\ContentModel;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\Message;
-use HeimrichHannot\Blocks\Backend\Content;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
@@ -83,8 +82,8 @@ class ContentContainer
         }
     }
 
-	public function getPwaSubscriptionButtonTemplate()
-	{
+	public function getPwaSubscriptionButtonTemplate(): array
+    {
 		return $this->templateLocator->getTemplateGroup('subscribe_button_');
 	}
 }
