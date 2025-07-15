@@ -1,26 +1,23 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener\Contao;
+namespace HeimrichHannot\PwaBundle\EventListener\Contao;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
-use HeimrichHannot\AmpBundle\Manager\AmpManager;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
-use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
-use HeimrichHannot\ContaoPwaBundle\HeaderTag\ManifestLinkTag;
-use HeimrichHannot\ContaoPwaBundle\HeaderTag\PwaHeadScriptTags;
-use HeimrichHannot\ContaoPwaBundle\HeaderTag\ThemeColorMetaTag;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
+use HeimrichHannot\PwaBundle\HeaderTag\ManifestLinkTag;
+use HeimrichHannot\PwaBundle\HeaderTag\PwaHeadScriptTags;
+use HeimrichHannot\PwaBundle\HeaderTag\ThemeColorMetaTag;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-/**
- * @Hook("generatePage", priority=5)
- */
+#[AsHook('generatePage', priority: 5)]
 class GeneratePageListener implements ServiceSubscriberInterface
 {
     private ContainerInterface         $container;
@@ -48,11 +45,6 @@ class GeneratePageListener implements ServiceSubscriberInterface
 
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
     {
-        if ($this->utils->container()->isBackend()
-            || ($this->container->has('huh.amp.manager.amp_manager') && true === $this->container->get('huh.amp.manager.amp_manager')->isAmpActive())) {
-            return;
-        }
-
         $rootPage = PageModel::findByPk($pageModel->rootId);
 
         if ($rootPage->addPwa === PageContainer::ADD_PWA_YES && $rootPage->pwaConfiguration) {
@@ -64,7 +56,7 @@ class GeneratePageListener implements ServiceSubscriberInterface
             $this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
             $this->colorMetaTag->setContent('#' . $config->pwaThemeColor);
 
-            $this->pwaHeadScriptTags->addScript("HuhContaoPwaBundle=" . json_encode(
+            $this->pwaHeadScriptTags->addScript("HuhPWA=" . json_encode(
                     $this->configurationGenerator->generateConfiguration($rootPage, $config),
                     JSON_UNESCAPED_UNICODE
                 ));
@@ -74,12 +66,9 @@ class GeneratePageListener implements ServiceSubscriberInterface
         }
     }
 
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         $services = [];
-        if (class_exists(AmpManager::class)) {
-            $services[] = '?'.AmpManager::class;
-        }
         if (class_exists(FrontendAsset::class)) {
             $services[] = '?'.FrontendAsset::class;
         }

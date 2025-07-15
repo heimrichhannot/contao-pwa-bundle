@@ -9,15 +9,15 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Command;
+namespace HeimrichHannot\PwaBundle\Command;
 
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use HeimrichHannot\ContaoPwaBundle\Sender\ConsoleLogger;
-use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\PwaBundle\Sender\ConsoleLogger;
+use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

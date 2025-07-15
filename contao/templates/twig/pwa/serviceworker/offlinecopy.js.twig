@@ -1,0 +1,27 @@
+{% extends "@HeimrichHannotPwa/pwa/serviceworker.js.twig" %}
+
+{% block configuration %}
+    {{ parent() }}
+    SW.supportOfflineCaching = true;
+{% endblock %}
+
+{% block fetch_inner %}
+    event.respondWith(
+        fetch(event.request)
+        .then(function(responce) {
+            let cacheCopy = responce.clone();
+            caches.open(CACHE)
+                .then(function (cache) {
+                    cache.put(event.request, cacheCopy);
+                })
+                .then(function() {
+                    SW.log(event, 'Added request to cache:' + event.request.url);
+                });
+            return responce;
+        })
+        .catch(function(error) {
+            SW.log(event, 'Could not fetch resource, try to return from cache: ' + event.request.url)
+            return SW.returnFromCache(event.request);
+        })
+    );
+{% endblock %}

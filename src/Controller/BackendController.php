@@ -12,17 +12,17 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Controller;
+namespace HeimrichHannot\PwaBundle\Controller;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Message;
-use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
-use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
+use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
+use HeimrichHannot\PwaBundle\Model\PageModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Minishlink\WebPush\VAPID;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +36,7 @@ use Twig\Environment;
 
 /**
  * Class BackendController
- * @package HeimrichHannot\ContaoPwaBundle\Controller
+ * @package HeimrichHannot\PwaBundle\Controller
  *
  * @Route("/contao", defaults={
  *     "_scope" = "backend",
@@ -109,7 +109,7 @@ class BackendController extends AbstractController
         $updatePageRoute         = $this->generateUrl('huh_pwa_backend_page_update', $params);
 
 
-        $content = $this->twig->render("@HeimrichHannotContaoPwa/backend/backend.html.twig", [
+        $content = $this->twig->render("@HeimrichHannotPwa/backend/backend.html.twig", [
             'messages'              => Message::generate(),
             "vapidkeys"               => $keys,
             "generatedKeys"           => $generatedKeys,

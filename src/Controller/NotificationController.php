@@ -9,13 +9,13 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Controller;
+namespace HeimrichHannot\PwaBundle\Controller;
 
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class NotificationController
- * @package HeimrichHannot\ContaoPwaBundle\Controller
+ * @package HeimrichHannot\PwaBundle\Controller
  *
  * @Route("/api/notifications")
  */

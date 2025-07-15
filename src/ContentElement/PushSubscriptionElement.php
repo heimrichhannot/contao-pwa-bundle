@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\ContentElement;
+namespace HeimrichHannot\PwaBundle\ContentElement;
 
 
 use Contao\BackendTemplate;

@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
 
 use Contao\Message;
 use Contao\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Twig\Environment;

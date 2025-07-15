@@ -9,16 +9,16 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Command;
+namespace HeimrichHannot\PwaBundle\Command;
 
 
 use Contao\CoreBundle\Command\AbstractLockedCommand;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
-use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
+use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
+use HeimrichHannot\PwaBundle\Model\PageModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

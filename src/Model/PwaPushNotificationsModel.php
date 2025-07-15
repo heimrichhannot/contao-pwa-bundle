@@ -9,16 +9,16 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Model;
+namespace HeimrichHannot\PwaBundle\Model;
 
 
 use Contao\Model;
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
 
 /**
  * Class PwaPushNotificationsModel
- * @package HeimrichHannot\ContaoPwaBundle\Model
+ * @package HeimrichHannot\PwaBundle\Model
  *
  * @property int $id
  * @property int $pid

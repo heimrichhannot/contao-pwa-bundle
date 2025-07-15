@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Sender;
+namespace HeimrichHannot\PwaBundle\Sender;
 
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
+use HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer;
+use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Notification\AbstractNotification;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Minishlink\WebPush\Encryption;
 use Minishlink\WebPush\Subscription;

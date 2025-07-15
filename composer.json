@@ -1,45 +1,37 @@
 {
-  "name": "heimrichhannot/contao-pwa-bundle",
-  "type": "contao-bundle",
-  "description": "A bundle to provide progressive web app support for contao.",
-  "license": "LGPL-3.0-or-later",
-  "require": {
-    "php": "^7.4 || ^8.0",
-    "ext-json": "*",
-    "ext-fileinfo": "*",
-    "contao/core-bundle": "^4.9",
-    "heimrichhannot/contao-encore-contracts": "^1.0.2",
-    "heimrichhannot/contao-head-bundle": "^1.2",
-    "heimrichhannot/contao-utils-bundle": "^2.215",
-    "heimrichhannot/contao-twig-support-bundle": "^0.2.16|^1.0",
-    "menatwork/contao-multicolumnwizard": "^3.3",
-    "symfony/framework-bundle": "^4.4 || ^5.4",
-    "symfony/string": "^5.4 || ^6.0",
-    "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",
-    "twig/twig": "^1.44 || ^2.14 || ^3.0"
-  },
-  "conflict": {
-    "minishlink/web-push": "<5.0 || >=9.0"
-  },
-  "suggest": {
-    "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\"."
-  },
-  "autoload": {
-    "psr-4": {
-      "HeimrichHannot\\ContaoPwaBundle\\": "src/"
+    "name": "heimrichhannot/contao-pwa-bundle",
+    "type": "contao-bundle",
+    "description": "A bundle to provide progressive web app support for contao.",
+    "license": "LGPL-3.0-or-later",
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ext-fileinfo": "*",
+        "contao/core-bundle": "^4.13",
+        "heimrichhannot/contao-encore-contracts": "^1.0.2",
+        "heimrichhannot/contao-head-bundle": "^1.2",
+        "heimrichhannot/contao-utils-bundle": "^2.215 || ^3.0",
+        "menatwork/contao-multicolumnwizard": "^3.3",
+        "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0 || ^7.0",
+        "symfony/string": "^5.4 || ^6.0 || ^7.0",
+        "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",
+        "twig/twig": "^1.44 || ^2.14 || ^3.0"
     },
-    "classmap": [
-      "src/"
-    ],
-    "exclude-from-classmap": [
-      "src/Resources/contao/config/",
-      "src/Resources/contao/dca/",
-      "src/Resources/contao/languages/",
-      "src/Resources/contao/templates/"
-    ]
-  },
-  "extra": {
-    "contao-manager-plugin": "HeimrichHannot\\ContaoPwaBundle\\ContaoManager\\Plugin",
-    "foxy": true
-  }
+    "conflict": {
+        "minishlink/web-push": "<5.0 || >=9.0"
+    },
+    "suggest": {
+        "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\"."
+    },
+    "autoload": {
+        "psr-4": {
+            "HeimrichHannot\\PwaBundle\\": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
+    "extra": {
+        "contao-manager-plugin": "HeimrichHannot\\PwaBundle\\ContaoManager\\Plugin"
+    }
 }

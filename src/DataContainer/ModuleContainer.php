@@ -9,13 +9,13 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
 
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\ModuleModel;
-use HeimrichHannot\ContaoPwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
+use HeimrichHannot\PwaBundle\FrontendModule\PushSubscriptionPopupFrontendModule;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ModuleContainer

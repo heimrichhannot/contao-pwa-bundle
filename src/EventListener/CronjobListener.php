@@ -9,15 +9,15 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener;
+namespace HeimrichHannot\PwaBundle\EventListener;
 
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\CronJob;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
 use Model\Collection;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Monolog\Logger;

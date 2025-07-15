@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Manifest;
+namespace HeimrichHannot\PwaBundle\Manifest;
 
 
 class ManifestIcon
@@ -39,7 +39,7 @@ class ManifestIcon
 	/**
 	 * @var string Relative path from web root to the folder where icons should be stored
 	 */
-	protected $iconBasePath = 'assets/images/heimrichhannotcontaopwa';
+	protected $iconBasePath = 'assets/images/heimrichhannotpwa';
 
 	/**
 	 * @var string path from the manifest file to the web root. Leave empty if manifest is in web root.

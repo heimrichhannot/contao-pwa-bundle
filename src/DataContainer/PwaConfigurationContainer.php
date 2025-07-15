@@ -1,49 +1,46 @@
 <?php
+
 /**
- * Contao Open Source CMS
+ * PwaConfigurationContainer
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
+ * @copyright 2025 Heimrich & Hannot GmbH
  * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
-
-
-use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
+use Contao\CoreBundle\Twig\Finder\FinderFactory;
+use Contao\StringUtil;
 use Symfony\Component\Routing\RouterInterface;
 
-class PwaConfigurationContainer
+readonly class PwaConfigurationContainer
 {
-	/**
-	 * @var RouterInterface
-	 */
-	private $router;
-    /**
-     * @var TemplateUtil
-     */
-    private $templateUtil;
+    public function __construct(
+        private RouterInterface $router,
+        private FinderFactory   $finderFactory
+    ) {}
 
-
-    /**
-	 * PwaConfigurationContainer constructor.
-	 */
-	public function __construct(RouterInterface $router, TemplateUtil $templateUtil)
-	{
-		$this->router = $router;
-        $this->templateUtil = $templateUtil;
+    public function onControlActionButtonCallback($href, $label, $title, $class, $attributes, $table, $root): string
+    {
+        return \sprintf(
+            '<a href="%s" title="%s" class="%s" %s>%s</a>',
+            $this->router->generate($href),
+            StringUtil::specialchars($title),
+            $class,
+            $attributes,
+            $label
+        );
     }
 
-	public function onControlActionButtonCallback($href, $label, $title, $class, $attributes, $table, $root)
-	{
-		$route = $this->router->generate($href);
-		return '<a href="'.$route.'" title="'.specialchars($title).'" class="'.$class.'" '.$attributes.'>'.$label.'</a>';
-	}
-
-	public function getServiceWorkerTemplates()
+    public function getServiceWorkerTemplates(): array
     {
-        return $this->templateUtil->getTemplateGroup('pwa_serviceworker', 'js.twig');
+        $finder = $this->finderFactory->create()
+            ->identifier('pwa/serviceworker')
+            ->extension('js.twig')
+            ->withVariants()
+        ;
+
+        return $finder->asTemplateOptions();
     }
 }

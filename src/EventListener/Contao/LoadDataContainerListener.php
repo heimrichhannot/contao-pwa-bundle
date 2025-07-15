@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener\Contao;
+namespace HeimrichHannot\PwaBundle\EventListener\Contao;
 
 
 use Contao\Controller;

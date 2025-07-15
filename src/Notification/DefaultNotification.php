@@ -9,13 +9,13 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Notification;
+namespace HeimrichHannot\PwaBundle\Notification;
 
 
 use Contao\FilesModel;
 use Contao\Model;
 use Contao\System;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 
 class DefaultNotification extends AbstractNotification
 {

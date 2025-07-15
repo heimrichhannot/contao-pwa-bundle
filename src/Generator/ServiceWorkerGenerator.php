@@ -9,13 +9,13 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Generator;
+namespace HeimrichHannot\PwaBundle\Generator;
 
 
 use Contao\PageModel;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
-use HeimrichHannot\ContaoPwaBundle\HeimrichHannotContaoPwaBundle;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\HeimrichHannotPwaBundle;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Bridge\Monolog\Logger;
@@ -27,7 +27,7 @@ class ServiceWorkerGenerator implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotContaoPwa/serviceworker/pwa_serviceworker_default.js.twig';
+    const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotPwa/serviceworker/pwa_serviceworker_default.js.twig';
 
 	/**
 	 * @var string
@@ -106,7 +106,7 @@ class ServiceWorkerGenerator implements ContainerAwareInterface
 
 
 
-		$serviceworkerClass = '/bundles/heimrichhannotcontaopwa/js/huh-pwa-serviceworker.js';
+		$serviceworkerClass = '/bundles/heimrichhannotpwa/js/huh-pwa-serviceworker.js';
 
 		try
 		{

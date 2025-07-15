@@ -9,12 +9,12 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Generator;
+namespace HeimrichHannot\PwaBundle\Generator;
 
 
 use Contao\PageModel;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\EventDispatcher\Tests\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;

@@ -1,8 +1,8 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\Asset;
+namespace HeimrichHannot\PwaBundle\Asset;
 
-use HeimrichHannot\ContaoPwaBundle\HeimrichHannotContaoPwaBundle;
+use HeimrichHannot\PwaBundle\HeimrichHannotPwaBundle;
 use HeimrichHannot\EncoreContracts\EncoreEntry;
 use HeimrichHannot\EncoreContracts\EncoreExtensionInterface;
 
@@ -10,13 +10,13 @@ class EncoreExtension implements EncoreExtensionInterface
 {
     public function getBundle(): string
     {
-        return HeimrichHannotContaoPwaBundle::class;
+        return HeimrichHannotPwaBundle::class;
     }
 
     public function getEntries(): array
     {
         return [
-            EncoreEntry::create('contao-pwa-bundle', 'src/Resources/assets/js/contao-pwa-bundle.js')
+            EncoreEntry::create('contao-pwa-bundle', 'src/Resources/assets/js/pwa-bundle.js')
                 ->addJsEntryToRemoveFromGlobals('huh.pwa.bundle')
         ];
     }

@@ -9,13 +9,13 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Model;
+namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model;
 
 /**
  * Class PwaSubscriberModel
- * @package HeimrichHannot\ContaoPwaBundle\Model
+ * @package HeimrichHannot\PwaBundle\Model
  *
  * @property int $id
  * @property int $pid

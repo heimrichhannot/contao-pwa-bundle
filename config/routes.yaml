@@ -1,0 +1,3 @@
+huh_pwa.routes:
+  resource: "@HeimrichHannotPwaBundle/Controller/"
+  type: annotation

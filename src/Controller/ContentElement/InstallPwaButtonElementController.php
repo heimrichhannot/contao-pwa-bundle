@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\Controller\ContentElement;
+namespace HeimrichHannot\PwaBundle\Controller\ContentElement;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;

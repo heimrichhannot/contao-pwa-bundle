@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
 
 use Contao\ArticleModel;
@@ -18,8 +18,8 @@ use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\Message;
 use HeimrichHannot\Blocks\Backend\Content;
-use HeimrichHannot\ContaoPwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Contracts\Translation\TranslatorInterface;

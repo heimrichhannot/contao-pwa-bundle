@@ -9,10 +9,10 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Notification;
+namespace HeimrichHannot\PwaBundle\Notification;
 
 
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 
 abstract class AbstractNotification implements \JsonSerializable
 {

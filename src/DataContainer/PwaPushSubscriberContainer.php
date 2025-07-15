@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use function Symfony\Component\String\u;

@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Model;
+namespace HeimrichHannot\PwaBundle\Model;
 
 
 use Contao\Model;
 
 /**
  * Class PwaConfigurationsModel
- * @package HeimrichHannot\ContaoPwaBundle\Model
+ * @package HeimrichHannot\PwaBundle\Model
  *
  * @property int $id
  * @property int $tstamp

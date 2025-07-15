@@ -1,109 +1,117 @@
 # Contao Progressive Web App Bundle
 
-A bundle to provide progressive web app support for contao.
-
-> This bundle is still in beta. Please provide feedback if you use it!
-
-This bundle is using [PHP Web Push lib](https://github.com/web-push-libs/web-push-php) to provide push notifications. 
+A comprehensive bundle that provides Progressive Web App (PWA) support for Contao CMS, enabling modern web application features for your Contao websites.
 
 ## Features
 
-* Create and register manifest file for each page root
-* Create and register service worker for each page root
-* send custom push notifications from backend
-* set an offline fallback page
-* Frontend module and content element to subscribe to push notifications
-* Install PWA button content element
+* Create and register manifest files for each page root
+* Generate and register service workers for each page root
+* Send custom push notifications from the backend
+* Set an offline fallback page for improved user experience
+* Frontend module and content element to manage push notification subscriptions
+* Includes a content element with an easy to use subscribe button
 * [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support, including asset precaching
-* expandable architecture
+* Expandable architecture for custom implementations
 
-## Setup
+## Installation
+
+### Install with Composer
+
+```bash
+composer require heimrichhannot/contao-pwa-bundle
+```
+
+After installation, update your database.
 
 ### Requirements
 
-* PHP >= 7.4
-* Contao >=4.9 
+* PHP ^8.3
+* Contao ^4.13 || ^5.0 
 * [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
-For web push notifications:
-- Composer package [`"minishlink/web-push": "^8.0"`](https://github.com/web-push-libs/web-push-php) (version 5 to 8 are supported)
+### Additional Dependency for Push-Notifications
+
+To enable web push notifications, you'll need:
+
+- Composer package [`"minishlink/web-push": "^8.0"`](https://github.com/web-push-libs/web-push-php) (versions 5 to 8 are supported)
 - PHP extensions:
-    * gmp
-    * mbstring
-    * curl
-    * openssl
+  * gmp
+  * mbstring
+  * curl
+  * openssl
 
+Install the required package with:
+```
+composer require minishlink/web-push
+```
 
-### Install
+## Setup
 
-1. Install via composer or contao manager 
+1. If you want to use push notifications, add VAPID keys to your configuration (see [VAPID Keys](#vapid-keys) section below).
+2. Create a PWA Configuration in the Contao backend (System → PWA Configuration).
+3. Add the configuration to a page root:
+   * Navigate to page settings
+   * Find the "Progressive Web App" section
+   * Select "Yes" and choose your configuration
+   * Upon saving, the page manifest and service worker will be generated automatically
+4. To provide an option for users to register for push notifications, add either:
+   * The Push Subscription Button content element, or
+   * The push notification popup frontend module to your page
 
-        composer require heimrichhannot/contao-pwa-bundle
+> Legacy (should no longer be required): Ensure your page template (typically `fe_page.html5`) supports [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). It must output at least `$this->meta()` in the head section. See [Head Bundle documentation](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information.
 
-2. Update your database
+### VAPID Keys
 
-
-### First Steps
-1. Your page template (typically `fe_page.html5`) must support [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). This means it must output at least `$this->meta()` in head section. See [Head Bundle readme](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information
-1. If you want to use push notifications, add vapid keys to your config (see [Setup -> Vapidkeys](#push-notifications))
-1. Create an PWA Configuration(Backend -> System -> PWA Configuration)
-1. Add the configuration to a page root (in page settings you find a new section "Progressive Web App", select yes and choose your configuration)
-    * On saving the page the page manifest and the serviceworker will be generated
-1. To provide an option to register to your push notifications, add the Push Subscription Button content element or the push notification popup frontend module to your page.
- 
-### Push Notifications
-
-#### VAPID keys
-
-You need to add your server vapid keys to your config file, typical in your project config.yml. If you haven't already vapid keys, you can generate in the PWA Bundle backend (Contao Backend -> System -> PWA Configuration -> Control -> Authentication)
+For push notifications, you need to add your server VAPID keys to your config file, typically in your project's `config.yml`. If you don't have VAPID keys yet, you can generate them in the PWA Bundle backend (Contao Backend → System → PWA Configuration → Control → Authentication).
 
 ```yaml
 huh_pwa:
   vapid:
-    subject: "mailto:test@example.org"
-    publicKey: "BPZACSEB_Efa3_e2XdVRm4M3Suga2WnhNs9THpVixfScWicSiA3ZYQ3zCG4Uez3EnbL3q-O2RomlZtYejva642M"
-    privateKey: "W0qtmwq0aB47Swmid0uDZyW945p9b5bgv_WmfsmsRHw"
+    subject: "mailto:your-email@example.org"
+    publicKey: "YOUR_PUBLIC_KEY"
+    privateKey: "YOUR_PRIVATE_KEY"
 ```
 
 ## Usage
 
-### Regenerate files
-You can regenerate all your manifest and service worker files at once from the Pwa Control (Contao Backend -> System -> PWA Configuration -> Control -> Files -> Rebuild files)
+### Regenerating Files
 
-There is also an command available: `huh:pwa:build`
+You can regenerate all manifest and service worker files at once from:
+* The PWA Control panel (Contao Backend → System → PWA Configuration → Control → Files → Rebuild files)
+* Or by using the command: `huh:pwa:build`
 
-## Developers
+## Development
 
-### JS Event
+### JavaScript Events
 
-To support custom controls, there are events and event listeners that can be used. All events are dispatched and listen to on `document`. 
+To support custom controls, the bundle provides events and event listeners that can be used. All events are dispatched and listened to on the `document` object.
 
 #### Events
 
-Event                              | Description
----------------------------------- | --------------------
-huh_pwa_sw_not_supported           | Fired if browser not supports serviceworker or no service worker found.
-huh_pwa_push_not_supported         | Fired if browser not supports push notifications
-huh_pwa_push_permission_denied     | Fired if browser has push notifications blocked
-huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when subscribe)
-huh_pwa_push_isUnsubscribed        | Fired when unsubscribed from push notification (on page load or when unsubscribe)
-huh_pwa_push_subscription_failed   | Fired when subscription to push notifications failed. Error reason can be found in event.detail.reason.
-huh_pwa_push_unsubscription_failed | Fired when unsubscribe from push notifications failed. Error reason can be found in event.detail.reason.
+| Event | Description |
+|-------|-------------|
+| huh_pwa_sw_not_supported | Fired if the browser doesn't support service workers or no service worker is found |
+| huh_pwa_push_not_supported | Fired if the browser doesn't support push notifications |
+| huh_pwa_push_permission_denied | Fired if push notifications are blocked in the browser |
+| huh_pwa_push_isSubscribed | Fired when subscribed to push notifications (on page load or when subscribing) |
+| huh_pwa_push_isUnsubscribed | Fired when unsubscribed from push notifications (on page load or when unsubscribing) |
+| huh_pwa_push_subscription_failed | Fired when subscription to push notifications fails. Error reason can be found in event.detail.reason |
+| huh_pwa_push_unsubscription_failed | Fired when unsubscribing from push notifications fails. Error reason can be found in event.detail.reason |
 
-#### Listener
+#### Listeners
 
-Event type | Usage | Description
----------- | ----- | -----------
-huh_pwa_push_changeSubscriptionState | `new CustomEvent( 'huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'\|'unsubscribe']} )` | Fire this event when the user interacts with your control to change his subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscrive.
+| Event type | Usage | Description |
+|------------|-------|-------------|
+| huh_pwa_push_changeSubscriptionState | `new CustomEvent('huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'|'unsubscribe']})` | Fire this event when the user interacts with your control to change their subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscribe |
 
-### Complete configuration
+### Complete Configuration
 
 ```yaml
 huh_pwa:
   vapid:
-    subject: "mailto:test@example.org"
-    publicKey: "BPZACSEB_Efa3_e2XdVRm4M3Suga2WnhNs9THpVixfScWicSiA3ZYQ3zCG4Uez3EnbL3q-O2RomlZtYejva642M"
-    privateKey: "W0qtmwq0aB47Swmid0uDZyW945p9b5bgv_WmfsmsRHw"
+    subject: "mailto:your-email@example.org"
+    publicKey: "YOUR_PUBLIC_KEY"
+    privateKey: "YOUR_PRIVATE_KEY"
   push:
     automatic_padding: 2847 # int (payload size in byte (min 0, max 4078)) or boolean (enable/disable)
   manifest_path: '/pwa' # where the manifest files should be located within web folder
@@ -111,24 +119,25 @@ huh_pwa:
 ```
 
 ### Commands
- 
-Command          | Description
----------------- | -----------
-huh:pwa:build    | (Re)Build config specific files like service worker and manifest
-huh:pwa:sendpush | Send unsent push notifications
 
-### Add additional head scripts
+| Command | Description |
+|---------|-------------|
+| huh:pwa:build | (Re)Build config-specific files like service worker and manifest |
+| huh:pwa:sendpush | Send unsent push notifications |
 
-It is possible to add additional js code to the head section by using the `PwaHeadScriptTags` object available available as `huh.head.tag.pwa.script` service. Code added with `addScript` will be outputted in header section of your page within `<script type='text/javascript'>` tags.
+### Adding Additional Head Scripts
+
+You can add additional JavaScript code to the head section by using the `PwaHeadScriptTags` object available as `huh.head.tag.pwa.script` service. Code added with `addScript` will be output in the header section of your page within `<script type='text/javascript'>` tags.
 
 ### Polyfills
 
-Funtion | Example Polyfill | Description
-------- | ---------------- | -----------
-CustomEvent | [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill) | Custom events are needed to update the subscribe button (to inform the user that the browser not supporting push notifications). Also an error is thrown if the browser not supporting CustomEvents.
+| Function | Example Polyfill | Description |
+|----------|------------------|-------------|
+| CustomEvent | [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill) | Custom events are needed to update the subscribe button (to inform the user that the browser doesn't support push notifications). An error is also thrown if the browser doesn't support CustomEvents |
 
 ## Todo
-* image size config
-* support svg icons
-* select pages to precache
-* customize add to homescreen and push notification notifications
+
+* Image size configuration
+* Support for SVG icons
+* Selective page precaching
+* Customizable "Add to homescreen" and push notification prompts

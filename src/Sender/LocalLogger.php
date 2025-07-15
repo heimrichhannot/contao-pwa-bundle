@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\Sender;
+namespace HeimrichHannot\PwaBundle\Sender;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
 use HeimrichHannot\UtilsBundle\Util\Utils;

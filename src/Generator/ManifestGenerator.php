@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Generator;
+namespace HeimrichHannot\PwaBundle\Generator;
 
 use Contao\FilesModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
-use HeimrichHannot\ContaoPwaBundle\Manifest\Manifest;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\Manifest\Manifest;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 

@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Generator;
+namespace HeimrichHannot\PwaBundle\Generator;
 
 
 use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
-use HeimrichHannot\ContaoPwaBundle\Manifest\ManifestIcon;
+use HeimrichHannot\PwaBundle\Manifest\ManifestIcon;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Filter\Basic\Fill;
 use Imagine\Gd\Imagine;

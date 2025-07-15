@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-
-namespace HeimrichHannot\ContaoPwaBundle\DataContainer;
+namespace HeimrichHannot\PwaBundle\DataContainer;
 
 
 use Contao\Config;
@@ -17,8 +16,7 @@ use Contao\Controller;
 use Contao\Date;
 use Contao\NewsModel;
 use Contao\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use Symfony\Component\Validator\Constraints\Url;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PwaPushNotificationContainer

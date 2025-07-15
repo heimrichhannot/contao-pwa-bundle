@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Manifest;
+namespace HeimrichHannot\PwaBundle\Manifest;
 
 class Manifest implements \JsonSerializable
 {

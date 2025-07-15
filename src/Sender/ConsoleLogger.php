@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\Sender;
+namespace HeimrichHannot\PwaBundle\Sender;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;

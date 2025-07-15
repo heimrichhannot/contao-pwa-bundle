@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\HeaderTag;
+namespace HeimrichHannot\PwaBundle\HeaderTag;
 
 
 use HeimrichHannot\HeadBundle\Head\AbstractTag;

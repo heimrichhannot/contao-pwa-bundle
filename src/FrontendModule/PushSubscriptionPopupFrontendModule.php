@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\FrontendModule;
+namespace HeimrichHannot\PwaBundle\FrontendModule;
 
 
 use Contao\Controller;

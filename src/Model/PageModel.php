@@ -9,11 +9,11 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Model;
+namespace HeimrichHannot\PwaBundle\Model;
 
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 
 /**
  * Class PageModel
