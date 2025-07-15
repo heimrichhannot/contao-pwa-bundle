@@ -25,7 +25,7 @@ After installation, update your database.
 
 ### Requirements
 
-* PHP ^8.3
+* PHP ^8.2
 * Contao ^4.13 || ^5.0 
 * [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
