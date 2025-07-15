@@ -26,7 +26,7 @@ After installation, update your database.
 ### Requirements
 
 * PHP ^8.2
-* Contao ^4.13 || ^5.0 
+* Contao ^4.13 || ^5.0
 * [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
 ### Additional Dependency for Push-Notifications
@@ -48,13 +48,13 @@ Additionally, ensure the following PHP extensions are installed and enabled:
 1. If you want to use push notifications, add VAPID keys to your configuration (see [VAPID Keys](#vapid-keys) section below).
 2. Create a PWA Configuration in the Contao backend (System → PWA Configuration).
 3. Add the configuration to a page root:
-   * Navigate to page settings
-   * Find the "Progressive Web App" section
-   * Select "Yes" and choose your configuration
-   * Upon saving, the page manifest and service worker will be generated automatically
+    * Navigate to page settings
+    * Find the "Progressive Web App" section
+    * Select "Yes" and choose your configuration
+    * Upon saving, the page manifest and service worker will be generated automatically
 4. To provide an option for users to register for push notifications, add either:
-   * The Push Subscription Button content element, or
-   * The push notification popup frontend module to your page
+    * The Push Subscription Button content element, or
+    * The push notification popup frontend module to your page
 
 > Legacy (should no longer be required): Ensure your page template (typically `fe_page.html5`) supports [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). It must output at least `$this->meta()` in the head section. See [Head Bundle documentation](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information.
 
@@ -64,10 +64,10 @@ For push notifications, you need to add your server VAPID keys to your config fi
 
 ```yaml
 huh_pwa:
-  vapid:
-    subject: "mailto:your-email@example.org"
-    publicKey: "YOUR_PUBLIC_KEY"
-    privateKey: "YOUR_PRIVATE_KEY"
+    vapid:
+        subject: "mailto:your-email@example.org"
+        publicKey: "YOUR_PUBLIC_KEY"
+        privateKey: "YOUR_PRIVATE_KEY"
 ```
 
 ## Usage
@@ -106,14 +106,14 @@ To support custom controls, the bundle provides events and event listeners that 
 
 ```yaml
 huh_pwa:
-  vapid:
-    subject: "mailto:your-email@example.org"
-    publicKey: "YOUR_PUBLIC_KEY"
-    privateKey: "YOUR_PRIVATE_KEY"
-  push:
-    automatic_padding: 2847 # int (payload size in byte (min 0, max 4078)) or boolean (enable/disable)
-  manifest_path: '/pwa' # where the manifest files should be located within web folder
-  configfile_path: '/pwa' # where the configuration files should be located within web folder
+    vapid:
+        subject: "mailto:your-email@example.org"
+        publicKey: "YOUR_PUBLIC_KEY"
+        privateKey: "YOUR_PRIVATE_KEY"
+    push:
+        automatic_padding: 2847 # int (payload size in byte (min 0, max 4078)) or boolean (enable/disable)
+    manifest_path: '/pwa' # where the manifest files should be located within web folder
+    configfile_path: '/pwa' # where the configuration files should be located within web folder
 ```
 
 ### Commands
