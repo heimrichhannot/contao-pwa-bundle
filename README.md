@@ -31,19 +31,17 @@ After installation, update your database.
 
 ### Additional Dependency for Push-Notifications
 
-To enable web push notifications, you'll need:
+To enable web push notifications, you'll need to install [web-push-libs/web-push-php](https://github.com/web-push-libs/web-push-php) (versions 5 to 8 are supported):
 
-- Composer package [`"minishlink/web-push": "^8.0"`](https://github.com/web-push-libs/web-push-php) (versions 5 to 8 are supported)
-- PHP extensions:
-  * gmp
-  * mbstring
-  * curl
-  * openssl
+```
+composer require minishlink/web-push:^8.0
+```
 
-Install the required package with:
-```
-composer require minishlink/web-push
-```
+Additionally, ensure the following PHP extensions are installed and enabled:
+* gmp
+* mbstring
+* curl
+* openssl
 
 ## Setup
 
