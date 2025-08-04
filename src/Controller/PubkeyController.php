@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
@@ -17,21 +16,23 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/_huh_pwa', name: 'huh_pwa.', defaults: ['_scope' => 'frontend', '_token_check' => false])]
 class PubkeyController extends AbstractController
 {
-    #[Route('/.pub', name: 'pubkey', methods: ['GET'])]
-    public function returnPublicKeyAction(): Response
+    #[Route('/vapid.pub', name: 'pubkey', methods: ['GET'])]
+    public function getPubkey(): Response
     {
         $config = $this->getParameter('huh_pwa');
 
         if (\is_array($config) && $key = $config['vapid']['publicKey'] ?? null)
         {
             return new Response($key, Response::HTTP_OK, [
-                'Content-Type' => 'application/x-x509-cert',
-                'Content-Disposition' => 'attachment; filename="public-key.der"',
+                'Content-Type' => 'text/plain; charset=UTF-8',
+                'Content-Disposition' => 'inline; filename="vapid.pub"',
                 'Content-Transfer-Encoding' => 'binary',
                 'Content-Length' => \strlen($key),
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',
+                'X-Content-Type-Options' => 'nosniff',
+                'Referrer-Policy' => 'no-referrer',
             ]);
         }
 

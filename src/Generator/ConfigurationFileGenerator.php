@@ -1,101 +1,90 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\PwaBundle\Generator;
-
 
 use Contao\PageModel;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use Symfony\Component\EventDispatcher\Tests\Service;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ConfigurationFileGenerator
+readonly class ConfigurationFileGenerator
 {
     public function __construct(
-        private readonly array               $bundleConfig,
-        private readonly string              $webDir,
-        private readonly RouterInterface     $router,
-        private readonly TranslatorInterface $translator
+        private array               $bundleConfig,
+        private string              $webDir,
+        private RouterInterface     $router,
+        private TranslatorInterface $translator
     ) {}
 
     /**
      * Generate a json file containing config parameters for js part of the web app into the config folder.
-     *
-     * @param PageModel $page
-     * @return bool
      */
-    public function generateConfigurationFile(PageModel $page)
+    public function generateConfigurationFile(PageModel $page): bool
     {
         if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration)
         {
             return false;
         }
+
         if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
         {
             return false;
         }
 
-        $configurationJson = json_encode($this->generateConfiguration($page, $config));
+        if (!$configurationJson = \json_encode($this->generateConfiguration($page, $config)))
+        {
+            return false;
+        }
 
-        $relativePath = $this->bundleConfig['configfile_path'];
+        $relativePath = $this->bundleConfig['configfile_path'] ?? '/pwa';
 
         if (!\str_starts_with($relativePath, '/')) {
             $relativePath = '/' . $relativePath;
         }
 
-        $path = $this->webDir . $relativePath;
-        $filename = $this->generateFileName($page);
+        $filepath = $this->webDir . $relativePath . '/' . $page->alias . '_config.json';
 
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($path.'/'.$filename, $configurationJson);
-        return true;
+        $fs = new Filesystem();
+        $fs->dumpFile($filepath, $configurationJson);
+
+        return $fs->exists($filepath);
     }
 
     /**
      * Returns the configuration
-     *
-     * @param PageModel $page
-     * @param PwaConfigurationsModel $config
-     * @return array
      */
-    public function generateConfiguration(PageModel $page, PwaConfigurationsModel $config)
+    public function generateConfiguration(PageModel $page, PwaConfigurationsModel $config): array
     {
-        $configuration = [];
-        $configuration['debug'] = (bool) $config->addDebugLog;
-        $configuration['serviceWorker'] = [
-            'path' => ServiceWorkerGenerator::generateFileName($page),
-            'scope' => ltrim($config->pwaScope, "/"),
+        return [
+            'debug' => (bool) $config->addDebugLog,
+            'serviceWorker' => [
+                'path' => ServiceWorkerGenerator::generateFileName($page),
+                'scope' => \ltrim($config->pwaScope, "/"),
+            ],
+            'pushNotifications' => [
+                'support' => (bool) $config->supportPush,
+                'subscribePath' => $this->router->generate('huh_pwa.notification.subscribe', ['config' => $config->id]),
+                'unsubscribePath' => $this->router->generate('huh_pwa.notification.unsubscribe', ['config' => $config->id]),
+            ],
+            'translations' => [
+                'pushnotifications' => [
+                    'subscribe'     => $this->translator->trans('huh.pwa.pushnotifications.subscribe'),
+                    'unsubscribe'   => $this->translator->trans('huh.pwa.pushnotifications.unsubscribe'),
+                    'blocked'       => $this->translator->trans('huh.pwa.pushnotifications.blocked'),
+                    'not_supported' => $this->translator->trans('huh.pwa.pushnotifications.not_supported'),
+                ]
+            ],
+            'hideInstallPrompt' => (bool) $config->hideInstallPrompt,
         ];
-        $configuration['pushNotifications'] = [
-            'support' => (bool) $config->supportPush,
-            'subscribePath' => $this->router->generate('huh_pwa.notification.subscribe', ['config' => $config->id]),
-            'unsubscribePath' => $this->router->generate('huh_pwa.notification.unsubscribe', ['config' => $config->id]),
-        ];
-        $configuration['translations'] = [
-            'pushnotifications' => [
-                'subscribe'     => $this->translator->trans('huh.pwa.pushnotifications.subscribe'),
-                'unsubscribe'   => $this->translator->trans('huh.pwa.pushnotifications.unsubscribe'),
-                'blocked'       => $this->translator->trans('huh.pwa.pushnotifications.blocked'),
-                'not_supported' => $this->translator->trans('huh.pwa.pushnotifications.not_supported'),
-            ]
-        ];
-        $configuration['hideInstallPrompt'] = (bool) $config->hideInstallPrompt;
-        return $configuration;
-    }
-
-    public function generateFileName (PageModel $page)
-    {
-        return $page->alias.'_config.json';
     }
 }

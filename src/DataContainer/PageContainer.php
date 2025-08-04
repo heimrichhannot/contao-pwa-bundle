@@ -1,124 +1,97 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\PwaBundle\DataContainer;
-
 
 use Contao\Message;
 use Contao\PageModel;
 use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
 use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Config\FileLocator;
-use Twig\Environment;
 
 class PageContainer
 {
-	const ADD_PWA_NO = 'no';
-	const ADD_PWA_YES = 'yes';
-	const ADD_PWA_INHERIT = 'inherit';
+    public const ADD_PWA_NO = 'no';
+    public const ADD_PWA_YES = 'yes';
+    public const ADD_PWA_INHERIT = 'inherit';
 
-	/**
-	 * @var ManifestGenerator
-	 */
-	private $manifestGenerator;
-	/**
-	 * @var FileLocator
-	 */
-	private $fileLocator;
-	/**
-	 * @var ContainerInterface
-	 */
-	private $container;
-	/**
-	 * @var Environment
-	 */
-	private $twig;
-	/**
-	 * @var ServiceWorkerGenerator
-	 */
-	private $serviceWorkerGenerator;
+    public function __construct(
+        private readonly ManifestGenerator      $manifestGenerator,
+        private readonly ServiceWorkerGenerator $serviceWorkerGenerator
+    ) {}
 
-
-	/**
-	 * PageContainer constructor.
-	 */
-	public function __construct(ManifestGenerator $manifestGenerator, FileLocator $fileLocator, ContainerInterface $container, Environment $twig, ServiceWorkerGenerator $serviceWorkerGenerator)
-	{
-		$this->manifestGenerator = $manifestGenerator;
-		$this->fileLocator = $fileLocator;
-		$this->container = $container;
-		$this->twig = $twig;
-		$this->serviceWorkerGenerator = $serviceWorkerGenerator;
-	}
-
-	public function onCreateVersionCallback($table, $pid, $version, $row)
-	{
-		if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES )
-		{
-			return;
-		}
-
-		if (!$page = PageModel::findByPk($row['id']))
-		{
-			return;
-		}
-
-		if (!$pwaConfig = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
-		{
-			return;
-		}
-
-		try {
-            $this->manifestGenerator->generatePageManifest($page);
-        } catch (\Exception $e) {
-            Message::addError(str_replace('%error%', $e->getMessage(), $GLOBALS['TL_LANG']['ERR']['huhPwaGenerateManifest']));
+    public function onCreateVersionCallback($table, $pid, $version, $row): void
+    {
+        if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES)
+        {
+            return;
         }
-		$this->serviceWorkerGenerator->generatePageServiceworker($page);
-	}
 
-	public function getPwaConfigurationsAsOptions()
-	{
-		$configs = PwaConfigurationsModel::findAll();
-		if (!$configs)
-		{
-			return [];
-		}
-		$list = [];
-		foreach ($configs as $config)
-		{
-			$list[$config->id] = $config->title;
-		}
-		return $list;
-	}
+        if (!$page = PageModel::findByPk($row['id']))
+        {
+            return;
+        }
 
-	public function getInheritPwaPageConfigOptions()
-	{
-		$pages = PageModel::findBy('addPwa', PageContainer::ADD_PWA_YES);
-		if (!$pages)
-		{
-			return [];
-		}
-		$options = [];
-		/** @var PageModel $page */
-		foreach ($pages as $page)
-		{
-			$pwaConfig = PwaConfigurationsModel::findByPk($pages->pwaConfiguration);
-			if (!$pwaConfig)
-			{
-				continue;
-			}
-			$options[$page->id] = $page->title.' ('.$pwaConfig->title.')';
-		}
-		return $options;
-	}
+        if (!PwaConfigurationsModel::findByPk($page->pwaConfiguration))
+        {
+            return;
+        }
+
+        try
+        {
+            $this->manifestGenerator->generatePageManifest($page);
+        }
+        catch (\Exception $e)
+        {
+            Message::addError(
+                str_replace('%error%', $e->getMessage(), $GLOBALS['TL_LANG']['ERR']['huhPwaGenerateManifest'])
+            );
+        }
+
+        $this->serviceWorkerGenerator->generatePageServiceworker($page);
+    }
+
+    public function getPwaConfigurationsAsOptions(): array
+    {
+        if (!$configs = PwaConfigurationsModel::findAll()) {
+            return [];
+        }
+
+        $list = [];
+
+        foreach ($configs as $config)
+        {
+            $list[$config->id] = $config->title;
+        }
+
+        return $list;
+    }
+
+    public function getInheritPwaPageConfigOptions(): array
+    {
+        if (!$pages = PageModel::findBy('addPwa', PageContainer::ADD_PWA_YES)) {
+            return [];
+        }
+
+        $options = [];
+
+        /** @var PageModel $page */
+        foreach ($pages as $page)
+        {
+            if (!$pwaConfig = PwaConfigurationsModel::findByPk($pages->pwaConfiguration)) {
+                continue;
+            }
+
+            $options[$page->id] = \sprintf('%s (%s)', $page->title, $pwaConfig->title);
+        }
+
+        return $options;
+    }
 }

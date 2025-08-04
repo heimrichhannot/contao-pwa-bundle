@@ -1,39 +1,30 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2021 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
-
 
 namespace HeimrichHannot\PwaBundle\EventListener\Contao;
 
-
 use Contao\Controller;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 
-/**
- * @Hook("loadDataContainer")
- */
+#[AsHook('loadDataContainer')]
 class LoadDataContainerListener
 {
     public function __invoke(string $table): void
     {
-        switch ($table) {
-            case 'tl_module':
-                $this->prepareModuleTable();
-
+        if ($table !== 'tl_module') {
+            return;
         }
-    }
 
-    protected function prepareModuleTable()
-    {
         $dca = &$GLOBALS['TL_DCA']['tl_module'];
 
-        if (!isset($dca['fields']['addImage'])) {
+        if (!isset($dca['fields']['addImage']))
+        {
             Controller::loadLanguageFile('tl_content');
             $dca['palettes']['__selector__'][] = 'addImage';
             $dca['subpalettes']['addImage'] = 'singleSRC,imgSize';

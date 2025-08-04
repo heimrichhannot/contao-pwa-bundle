@@ -1,6 +1,6 @@
 let HuhPwaBackend = {
     unsentCountRoute: './contao/pwa/pushnotification/unsent',
-    sendNotificationRoute: './contao/pwa/pushnotification/send',
+    sendNotificationsRoute: './contao/pwa/pushnotification/send',
     findPagesRoute: './contao/pwa/pages',
     updatePageRoute: '',
     unsentNotificationRequest: (url) => {
@@ -53,7 +53,7 @@ let HuhPwaBackend = {
             if (response.json.count > 0) {
                 let promises = [];
                 response.json.notifications.forEach((notification) => {
-                    let sendRequest = this.sendNotificationRequest(this.sendNotificationRoute);
+                    let sendRequest = this.sendNotificationRequest(this.sendNotificationsRoute);
                     promises.push(sendRequest.post('notificationId=' + notification).then((sendResponse) => {
                         if (sendResponse.json.success === false) {
                             return this.addLogEntry('Error sending notification with id ' + notification + ': ' + sendResponse.json.message);

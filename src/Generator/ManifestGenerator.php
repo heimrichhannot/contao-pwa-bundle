@@ -1,11 +1,11 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
  * @copyright 2025 Heimrich & Hannot GmbH
- * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @author Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\PwaBundle\Generator;
@@ -16,30 +16,21 @@ use Contao\StringUtil;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Manifest\Manifest;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ManifestGenerator
+readonly class ManifestGenerator
 {
-    private readonly string $defaultManifestPath;
-    /**
-     * @var ManifestIconGenerator
-     */
-    private $iconGenerator;
+    public function __construct(
+        private string                $webDir,
+        private ManifestIconGenerator $iconGenerator
+    ) {}
 
-    /**
-     * ManifestGenerator constructor.
-     *
-     * @param ContainerInterface    $container
-     * @param ManifestIconGenerator $iconGenerator
-     */
-    public function __construct(string $webDir, ManifestIconGenerator $iconGenerator)
+    public function getDefaultManifestPath(): string
     {
-        $this->defaultManifestPath = $webDir . '/pwa';
-        $this->iconGenerator = $iconGenerator;
+        return $this->webDir . '/pwa';
     }
 
-    public function generateManifest(Manifest $manifest, string $filename, string $path)
+    public function generateManifest(Manifest $manifest, string $filename, string $path): void
     {
         $manifestJson = $manifest->jsonSerialize();
         if ($manifest->icons && $manifest->icons->isIconFilesMissing())
@@ -53,34 +44,25 @@ class ManifestGenerator
     }
 
     /**
-     * Generate an manifest out of an page
-     *
-     * @param PageModel|array $page
-     * @return bool|Manifest Manifest object or false, if failure.
+     * Generate the manifest of a page.
      */
-    public function generatePageManifest(PageModel $page)
+    public function generatePageManifest(PageModel $page): ?Manifest
     {
-        if (($page->addPwa !== PageContainer::ADD_PWA_YES) || !$page->pwaConfiguration)
-        {
-            return false;
+        if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration) {
+            return null;
         }
-        if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
-        {
-            return false;
+
+        if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
+            return null;
         }
 
         $manifest = new Manifest();
-        switch ($config->pwaName)
+        $manifest->name = match ($config->pwaName)
         {
-            case PwaConfigurationsModel::PWA_NAME_CUSTOM:
-                $manifest->name = $config->pwaCustomName;
-                break;
-            case PwaConfigurationsModel::PWA_NAME_META_PAGETITLE:
-                $manifest->name = $page->pageTitle;
-                break;
-            default:
-                $manifest->name = $page->title;
-        }
+            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
+            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $page->pageTitle,
+            default => $page->title,
+        };
 
         $manifest->short_name = $config->pwaShortName;
         $manifest->description = $config->pwaDescription;
@@ -94,19 +76,18 @@ class ManifestGenerator
         $manifest->scope = $config->pwaScope;
         $manifest->prefer_related_applications = $config->pwaPreferRelatedApplication ? true : false;
 
-        $iconModel = FilesModel::findByUuid($config->pwaIcons);
-        if ($iconModel)
-        {
+        if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
             $manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);
         }
+
         $applications = StringUtil::deserialize($config->pwaRelatedApplications);
-        foreach ($applications as $application)
-        {
+        foreach ($applications as $application) {
             $manifest->addRelatedApplication($application['plattform'], $application['url'], $application['id']);
         }
 
         $filename = $page->alias . '_manifest.json';
-        $this->generateManifest($manifest, $filename, $this->defaultManifestPath);
+        $this->generateManifest($manifest, $filename, $this->getDefaultManifestPath());
+
         return $manifest;
     }
 }

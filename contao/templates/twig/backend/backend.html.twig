@@ -11,45 +11,45 @@
         {{ messages|raw }}
     {% endif %}
     <div id="tl_buttons">
-        <a href="{{ backendBackRoute }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
+        <a href="{{ backend_back_route }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
     </div>
 
-    {% if webPush|default %}
-    <div class="maintenance_inactive">
-        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.authentication'|trans }}</h2>
-        <div class="tl_tbox">
-        {% if vapidkeys|default %}
-            <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
-            <figure>
-                <figcaption><strong>Public</strong></figcaption>
-                <pre><code>{{ vapidkeys.publicKey }}</code></pre>
-            </figure>
-            <br>
-            <figure>
-                <figcaption><strong>Private</strong></figcaption>
-                <pre><code>{{ vapidkeys.privateKey }}</code></pre>
-            </figure>
-        {% elseif generatedKeys|default %}
-            <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
-            <figure>
-                <figcaption><strong>Public</strong></figcaption>
-                <pre><code>{{ generatedKeys.publicKey }}</code></pre>
-            </figure>
-            <br>
-            <figure>
-                <figcaption><strong>Private</strong></figcaption>
-                <pre><code>{{ generatedKeys.privateKey }}</code></pre>
-            </figure>
-        {% endif %}
+    {% if web_push|default %}
+        <div class="maintenance_inactive">
+            <h2 class="sub_headline">{{ 'huh.pwa.backend.control.authentication'|trans }}</h2>
+            <div class="tl_tbox">
+                {% if vapid_keys|default %}
+                    <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
+                    <figure>
+                        <figcaption><strong>Public</strong></figcaption>
+                        <pre><code>{{ vapid_keys.publicKey }}</code></pre>
+                    </figure>
+                    <br>
+                    <figure>
+                        <figcaption><strong>Private</strong></figcaption>
+                        <pre><code>{{ vapid_keys.privateKey }}</code></pre>
+                    </figure>
+                {% elseif generated_keys|default %}
+                    <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
+                    <figure>
+                        <figcaption><strong>Public</strong></figcaption>
+                        <pre><code>{{ generated_keys.publicKey }}</code></pre>
+                    </figure>
+                    <br>
+                    <figure>
+                        <figcaption><strong>Private</strong></figcaption>
+                        <pre><code>{{ generated_keys.privateKey }}</code></pre>
+                    </figure>
+                {% endif %}
+            </div>
         </div>
-    </div>
-    <div class="maintenance_inactive">
-        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
-        <div class="tl_tbox">
-            <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
-            <p id="huhPwaSendPushNotificationStatus"></p>
+        <div class="maintenance_inactive">
+            <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
+            <div class="tl_tbox">
+                <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
+                <p id="huhPwaSendPushNotificationStatus"></p>
+            </div>
         </div>
-    </div>
     {% endif %}
     <div class="maintenance_inactive">
         <h2 class="sub_headline">{{ 'huh.pwa.backend.control.files'|trans }}</h2>
@@ -61,31 +61,29 @@
     </div>
 
     <div class="tl_listing_container">
-
-
-
     </div>
 
-    <script rel="script">
-        window.addEvent('domready', function() {
-            if (null != (sendButton = document.querySelector('#huhPwaSendPushNotificationButton')))
-            {
-                console.log("Found button");
-                sendButton.addEventListener('click', function(event) {
-                    let button = event.srcElement;
-                    HuhPwaBackend.unsentCountRoute = '{{ unsentNotificationRoute }}';
-                    HuhPwaBackend.sendNotificationRoute = '{{ sendNotificationRoute }}';
-                    HuhPwaBackend.sendPushNotifications(button);
-                })
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const sendButton = document.querySelector('#huhPwaSendPushNotificationButton'),
+                  rebuildButton = document.querySelector('#huhPwaRebuildFilesButton');
+
+            if (sendButton) {
+                console.log("Found sendButton");
+                sendButton.addEventListener('click', () => {
+                    HuhPwaBackend.unsentCountRoute = '{{ unsent_notifications_route }}';
+                    HuhPwaBackend.sendNotificationsRoute = '{{ send_notifications_route }}';
+                    HuhPwaBackend.sendPushNotifications(sendButton);
+                });
             }
-            if (null != (button = document.querySelector('#huhPwaRebuildFilesButton')))
-            {
-                console.log("Found button");
-                button.addEventListener('click', function(event) {
-                    HuhPwaBackend.findPagesRoute = '{{ findPagesRoute }}';
-                    HuhPwaBackend.updatePageRoute = '{{ updatePageRoute }}';
+
+            if (rebuildButton) {
+                console.log("Found rebuildButton");
+                rebuildButton.addEventListener('click', () => {
+                    HuhPwaBackend.findPagesRoute = '{{ find_pages_route }}';
+                    HuhPwaBackend.updatePageRoute = '{{ update_page_route }}';
                     HuhPwaBackend.rebuildFiles();
-                })
+                });
             }
         });
     </script>

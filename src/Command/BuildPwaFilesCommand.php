@@ -1,11 +1,11 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\PwaBundle\Command;
@@ -38,7 +38,7 @@ class BuildPwaFilesCommand extends Command
     {
         $this->addOption(
             name: 'dry-run',
-            description: 'Performs a run without actually send notifications and making changes to the database.'
+            description: 'Performs a run without actually sending notifications or commiting changes to the database.'
         );
     }
 
@@ -81,7 +81,7 @@ class BuildPwaFilesCommand extends Command
             }
             $io->text("Use Configuration \"".$config->title."\" (ID: ".$config->id.")");
 
-            if (!$manifest = $this->manifestGenerator->generatePageManifest($page))
+            if (!$this->manifestGenerator->generatePageManifest($page))
             {
                 $io->error("Error on generating manifest file for page. Continue with next page...");
                 $hasErrors = true;

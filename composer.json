@@ -11,7 +11,7 @@
         "heimrichhannot/contao-encore-contracts": "^1.0.2",
         "heimrichhannot/contao-head-bundle": "^1.2",
         "heimrichhannot/contao-utils-bundle": "^2.215 || ^3.0",
-        "menatwork/contao-multicolumnwizard": "^3.3",
+        "menatwork/contao-multicolumnwizard-bundle": "^3.6",
         "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0 || ^7.0",
         "symfony/string": "^5.4 || ^6.0 || ^7.0",
         "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",

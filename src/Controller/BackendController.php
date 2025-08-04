@@ -1,11 +1,12 @@
-<?php /** @noinspection PhpUndefinedClassInspection, PhpUndefinedNamespaceInspection */
-
+<?php
 /**
  * Heimrich & Hannot PWA Bundle
  *
- * @copyright 2025 Heimrich & Hannot GmbH
- * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright    2025 Heimrich & Hannot GmbH
+ * @author       Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author       Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license      http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @noinspection PhpUndefinedClassInspection, PhpUndefinedNamespaceInspection
  */
 
 namespace HeimrichHannot\PwaBundle\Controller;
@@ -74,22 +75,22 @@ class BackendController extends AbstractController
         ];
 
         $backendBackRoute        = $this->generateUrl('contao_backend', [...$params, 'do' => 'huh_pwa_configurations']);
-        $unsentNotificationRoute = $this->generateUrl('huh_pwa.backend.push_notifications.unsent', $params);
-        $sendNotificationRoute   = $this->generateUrl('huh_pwa.backend.push_notifications.send', $params);
+        $unsentNotificationsRoute = $this->generateUrl('huh_pwa.backend.push_notifications.unsent', $params);
+        $sendNotificationsRoute   = $this->generateUrl('huh_pwa.backend.push_notifications.send', $params);
         $findPagesRoute          = $this->generateUrl('huh_pwa.backend.pages', $params);
         $updatePageRoute         = $this->generateUrl('huh_pwa.backend.pages.update', $params);
 
         $content = $this->twig->render('@Contao_HeimrichHannotPwaBundle/backend/backend.html.twig', [
-            'messages'              => Message::generate(),
-            "vapidkeys"               => $keys,
-            "generatedKeys"           => $generatedKeys,
-            "content"                 => "Content",
-            "backendBackRoute"        => $backendBackRoute,
-            "unsentNotificationRoute" => $unsentNotificationRoute,
-            "sendNotificationRoute"   => $sendNotificationRoute,
-            "findPagesRoute"          => $findPagesRoute,
-            "updatePageRoute"         => $updatePageRoute,
-            "webPush"                 => $webPush,
+            'messages' => Message::generate(),
+            'vapid_keys' => $keys,
+            'generatedKeys' => $generatedKeys,
+            'content' => 'Content',
+            'backend_back_route' => $backendBackRoute,
+            'unsent_notifications_route' => $unsentNotificationsRoute,
+            'send_notifications_route' => $sendNotificationsRoute,
+            'find_pages_route' => $findPagesRoute,
+            'update_page_route' => $updatePageRoute,
+            'web_push' => $webPush,
         ]);
 
         return new Response($content);

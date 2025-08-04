@@ -1,25 +1,27 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-use HeimrichHannot\PwaBundle\DataContainer\PwaConfigurationContainer;
+use Contao\DC_Table;
+use HeimrichHannot\PwaBundle\Manifest\Manifest;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 
 $table = 'tl_pwa_configurations';
 
+DateAddedField::register('tl_pwa_configurations');
+
 $GLOBALS['TL_DCA'][$table] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
         'ctable' => ['tl_pwa_pushsubscriber'],
-        'onsubmit_callback' => [
-            ['huh.utils.dca', 'setDateAdded'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -158,7 +160,7 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'pwaName' => [
             'inputType' => 'select',
-            'options' => [\HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel::PWA_NAME_OPTIONS],
+            'options' => [PwaConfigurationsModel::PWA_NAME_OPTIONS],
             'reference' => &$GLOBALS['TL_LANG'][$table]['pwaName'],
             'eval' => [
                 'tl_class' => 'w50',
@@ -215,7 +217,7 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'pwaDirection' => [
             'inputType' => 'select',
-            'options' => \HeimrichHannot\PwaBundle\Manifest\Manifest::DIR_VALUES,
+            'options' => Manifest::DIR_VALUES,
             'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDir'],
             'eval' => [
                 'maxlength' => 4,
@@ -226,7 +228,7 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'pwaDisplay' => [
             'inputType' => 'select',
-            'options' => \HeimrichHannot\PwaBundle\Manifest\Manifest::DISPLAY_VALUES,
+            'options' => Manifest::DISPLAY_VALUES,
             'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaDisplay'],
             'eval' => [
                 'tl_class' => 'w50',
@@ -248,7 +250,7 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'pwaOrientation' => [
             'inputType' => 'select',
-            'options' => \HeimrichHannot\PwaBundle\Manifest\Manifest::ORIENTATION_VALUES,
+            'options' => Manifest::ORIENTATION_VALUES,
             'reference' => &$GLOBALS['TL_LANG']['tl_page']['pwaOrientation'],
             'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
             'sql' => "varchar(32) NOT NULL default ''",

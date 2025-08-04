@@ -1,10 +1,10 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
  * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -22,7 +22,7 @@ use Twig\Error\SyntaxError as TwigSyntaxError;
 
 class ServiceWorkerGenerator
 {
-    const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotPwa/pwa/serviceworker.js.twig';
+    public const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotPwa/pwa/serviceworker.js.twig';
 
     public function __construct(
         private readonly string                $webDir,
@@ -50,7 +50,7 @@ class ServiceWorkerGenerator
 
         if ($config->serviceWorkerTemplate)
         {
-            $template = $this->container->get('huh.utils.template')->getTemplate($config->serviceWorkerTemplate, 'js.twig');
+            $template = '@Contao/' . $config->serviceWorkerTemplate . '.js.twig';
         }
         else
         {
@@ -60,13 +60,8 @@ class ServiceWorkerGenerator
         $fileName = static::generateFileName($page);
 
         $offlinePage = '';
-        if ($config->offlinePage > 0)
-        {
-            $offlinePageModel = PageModel::findById($config->offlinePage);
-            if ($offlinePageModel)
-            {
-                $offlinePage = $offlinePageModel->getFrontendUrl();
-            }
+        if ($config->offlinePage > 0 && $offlinePageModel = PageModel::findById($config->offlinePage)) {
+            $offlinePage = $offlinePageModel->getFrontendUrl();
         }
 
         $serviceworkerClass = '/bundles/heimrichhannotpwa/frontend/huh-pwa-serviceworker.js';

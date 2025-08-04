@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
  * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
- * @license   http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license   LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\PwaBundle\DependencyInjection;
