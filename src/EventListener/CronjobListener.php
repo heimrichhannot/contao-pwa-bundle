@@ -18,12 +18,12 @@ use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
 use Model\Collection;
 use Psr\Log\LoggerInterface;
 
-class CronjobListener
+readonly class CronjobListener
 {
     public function __construct(
-        private readonly PushNotificationSender $notificationSender,
-        private readonly LoggerInterface        $logger,
-        private readonly ContaoFramework        $framework
+        private PushNotificationSender $notificationSender,
+        private LoggerInterface        $logger,
+        private ContaoFramework        $framework
     ) {}
 
     /**
