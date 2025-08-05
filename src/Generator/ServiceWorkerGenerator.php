@@ -20,15 +20,15 @@ use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError as TwigRuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
 
-class ServiceWorkerGenerator
+readonly class ServiceWorkerGenerator
 {
     public const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotPwa/pwa/serviceworker.js.twig';
 
     public function __construct(
-        private readonly string                $webDir,
-        private readonly LoggerInterface       $logger,
-        private readonly TwigEnvironment       $twig,
-        private readonly UrlGeneratorInterface $router,
+        private string                $webDir,
+        private LoggerInterface       $logger,
+        private TwigEnvironment       $twig,
+        private UrlGeneratorInterface $router,
     ) {}
 
     public function generatePageServiceworker(PageModel $page): bool

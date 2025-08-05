@@ -91,14 +91,17 @@ class PushNotificationSender
                 continue;
             }
 
-            try {
+            try
+            {
                 $report = $webPush->sendOneNotification(
                     new Subscription(
                         $subscriber->endpoint,
                         $subscriber->publicKey,
                         $subscriber->authToken
                     ), json_encode($payload));
-            } catch (\ErrorException $e) {
+            }
+            catch (\ErrorException $e)
+            {
                 $log->warning("Error while sending push notification (Subscriber Id: {$subscriber->id}): " . $e->getMessage(), [
                     'function' => __FUNCTION__,
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
@@ -130,7 +133,7 @@ class PushNotificationSender
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
                     'reason' => $reason,
                     'endpoint' => $report->getEndpoint(),
-                    'response' => json_encode($report->getResponse()->getBody()),
+                    'response' => json_encode($report->getResponse()?->getBody()),
                 ]);
             }
         }

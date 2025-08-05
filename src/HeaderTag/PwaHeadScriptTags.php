@@ -1,33 +1,29 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
-
 
 namespace HeimrichHannot\PwaBundle\HeaderTag;
 
-
 use HeimrichHannot\HeadBundle\Head\AbstractTag;
 
+/**
+ * @deprecated Head Bundle AbstractTag is deprecated.
+ */
 class PwaHeadScriptTags extends AbstractTag
 {
-
-    /**
-     * @var array
-     */
-    protected $scripts;
+    protected array $scripts;
 
     /**
      * Generate the tag output.
      *
      * @return string
      */
-    public function generate()
+    public function generate(): string
     {
         if (empty($this->content))
         {
@@ -36,7 +32,7 @@ class PwaHeadScriptTags extends AbstractTag
             {
                 foreach ($this->scripts as $script)
                 {
-                    $content .= "<script>".$script."</script>";
+                    $content .= "<script>" . $script . "</script>";
                 }
             }
             $this->content = $content;
@@ -45,35 +41,33 @@ class PwaHeadScriptTags extends AbstractTag
     }
 
     /**
-     * Add head javascript for pwa
-     *
-     * @param $script
+     * Add head javascript for PWA
      */
-    public function addScript($script)
+    public function addScript($script): void
     {
         $this->scripts[] = $script;
     }
 
     /**
-     * Get head javascript for pwa
-     *
-     * @return array
+     * Get head javascript for PWA
      */
-    public function getScripts()
+    public function getScripts(): array
     {
         return $this->scripts;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return $this->generate();
     }
 
-    public function setContent($content)
+    public function setContent($content): void
     {
-        trigger_error("You should not use setContent in conjunction with PwaHeadSchriptTags. May lead to unexpected results. Use addScript instead!", E_WARNING);
+        \trigger_error(
+            "You should not use setContent in conjunction with PwaHeadSchriptTags. May lead to unexpected results. Use addScript instead!",
+            E_WARNING
+        );
+
         parent::setContent($content);
     }
-
-
 }

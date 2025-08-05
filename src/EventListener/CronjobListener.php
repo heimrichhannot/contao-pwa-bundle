@@ -70,15 +70,15 @@ readonly class CronjobListener
     {
         $this->framework->initialize();
 
-        /** @var PwaConfigurationsModel[]|Collection|null $configurations */
-        if (!$configurations = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'], ["1", $interval]))
+        /** @var PwaConfigurationsModel[]|Collection|null $configs */
+        if (!$configs = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'], ["1", $interval]))
         {
             return;
         }
 
-        foreach ($configurations as $configuration)
+        foreach ($configs as $config)
         {
-            if (!$notifications = PwaPushNotificationsModel::findUnsentPublishedNotificationsByPid($configuration->id)) {
+            if (!$notifications = PwaPushNotificationsModel::findUnsentPublishedNotificationsByPid($config->id)) {
                 continue;
             }
 
@@ -88,12 +88,16 @@ readonly class CronjobListener
 
                 try
                 {
-                    $this->notificationSender->send($pushNotification, $configuration);
+                    $this->notificationSender->send($pushNotification, $config);
                 }
                 catch (\ErrorException $e)
                 {
                     $this->logger->error(
-                        "Error while sending Push notifications (Notification ID: " . $notification->id . ", Configuration: " . $configuration->id . "): " . $e->getMessage(),
+                        \sprintf("Error while sending Push notifications (Notification ID: %s, Configuration: %s): %s",
+                            $notification->id,
+                            $config->id,
+                            $e->getMessage()
+                        ),
                         [
                             'trace' => $e->getTraceAsString(),
                             'file' => $e->getFile(),
