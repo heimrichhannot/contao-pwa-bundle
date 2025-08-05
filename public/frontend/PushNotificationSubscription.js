@@ -23,8 +23,8 @@ export default class PushNotificationSubscription {
 
         navigator.serviceWorker.ready.then((registration) => {
             fetch('/_huh_pwa/vapid.pub')
-                .then((responce) => {
-                    return responce.text();
+                .then((response) => {
+                    return response.text();
                 })
                 .then((publicKey) => {
                     return registration.pushManager.subscribe({
