@@ -94,13 +94,13 @@ export default class PushNotificationSubscription {
     setIsSubscribed() {
         if (!this.checkPermission()) return;
         document.dispatchEvent(new Event('huh_pwa_push_isSubscribed'));
-        if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
+        this.pwa.debugLog('[Push Notification Subscription] Fired huh_pwa_push_isSubscribed"');
     }
 
     checkPermission() {
         if (Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
-            if (this.debug) console.log('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
+            this.pwa.debugLog('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
             return false;
         }
         return true;

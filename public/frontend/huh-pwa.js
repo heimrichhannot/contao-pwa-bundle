@@ -109,9 +109,9 @@ fetchPwaConfig().then(config => {
     pwa.debugLog('PWA configuration loaded:', config);
     window.HuhPWA = pwa;
 
-    pwa._connected();
-
     initServiceWorker(pwa);
+
+    pwa._connected();
 }).catch(error => {
     console.info('Failed to fetch PWA configuration:', error);
 });
