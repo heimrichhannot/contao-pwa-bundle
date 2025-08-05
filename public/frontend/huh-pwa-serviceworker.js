@@ -72,32 +72,28 @@ class HuhPwaServiceWorker
      * @param {ServiceWorkerGlobalScope} serviceWorker
      * @returns {Promise<Response | never>}
      */
-    pushSubscriptionChangeEvent(event, serviceWorker)
-    {
-        if (event.oldSubscription === undefined || event.oldSubscription === null)
-        {
+    pushSubscriptionChangeEvent(event, serviceWorker) {
+        if (event.oldSubscription === undefined || event.oldSubscription === null) {
              return Promise.resolve();
-        }
-        else {
+        } else {
             return serviceWorker.registration.pushManager
-            .subscribe(event.oldSubscription.options)
-            .then(function(newSubscription) {
-                return fetch(this.updateSubscriptionPath, {
-                    method: 'post',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        newSubscription: newSubscription,
-                        oldSubscription: event.oldSubscription
-                    }),
+                .subscribe(event.oldSubscription.options)
+                .then(function(newSubscription) {
+                    return fetch(this.updateSubscriptionPath, {
+                        method: 'post',
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            newSubscription: newSubscription,
+                            oldSubscription: event.oldSubscription
+                        }),
+                    });
                 });
-            });
         }
     }
 
-    returnFromCache(request)
-    {
+    returnFromCache(request) {
         return caches.open(this.cache).then((cache) => {
             return cache.match(request).then((matching) => {
                 if (!matching || matching.status == 404)
@@ -110,18 +106,15 @@ class HuhPwaServiceWorker
     }
 
     offlineFallback(cache) {
-        if (this.offlinePage !== '')
-        {
+        if (this.offlinePage !== '') {
             return cache.match(this.offlinePage);
         }
         return Promise.reject('no-match');
     }
 
-    notificationTitle(payload)
-    {
+    notificationTitle(payload) {
         let title = this.pageTitle;
-        if (typeof payload.title === 'string')
-        {
+        if (typeof payload.title === 'string') {
             title = payload.title;
         }
         return title;

@@ -1,7 +1,7 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    <button class="huh-pwa-install-button disabled{% if buttonCssClasses|default %} {{ buttonCssClasses }}{% endif %}">
+    <button class="huh-pwa-install-button disabled{% if buttonCssClasses|default %} {{ buttonCssClasses }}{% endif %}" data-huh-pwa="action:install">
         {% if linkTitle is defined and linkTitle is not empty %}
             {{ linkTitle }}
         {% else %}

@@ -43,14 +43,21 @@ readonly class GeneratePageListener implements ServiceSubscriberInterface
             return;
         }
 
-        $this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
+        // $this->manifestLinkTag->setContent('/pwa/' . $rootPage->alias . '_manifest.json');
         $this->colorMetaTag->setContent('#' . \ltrim($config->pwaThemeColor, '#'));
 
         if (!$jsonConfig = \json_encode($this->configurationGenerator->generateConfiguration($rootPage, $config), \JSON_UNESCAPED_UNICODE)) {
             return;
         }
 
-        $this->pwaHeadScriptTags->addScript('HuhPWA=' . $jsonConfig);
+        $script = <<<HTML
+        <link rel="manifest" href="/pwa/{$rootPage->alias}_manifest.json">
+        <meta name="theme-color" content="#{$config->pwaThemeColor}">
+        <script type="application/json" id="huh-pwa-config">$jsonConfig</script>
+        <script>window.HuhPWA = JSON.parse('$jsonConfig')</script>
+        HTML;
+
+        $GLOBALS['TL_HEAD']['something'] = $script;
 
         if ($this->container->has(FrontendAsset::class)) {
             $this->container->get(FrontendAsset::class)->addActiveEntrypoint('contao-pwa-bundle');

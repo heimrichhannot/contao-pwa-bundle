@@ -26,9 +26,7 @@ $dca['palettes']['__selector__'][] = 'addPwa';
 $dca['subpalettes']['addPwa_yes'] = 'pwaConfiguration';
 $dca['subpalettes']['addPwa_inherit'] = 'pwaParent';
 
-$fields = &$dca['fields'];
-
-$fields['addPwa'] = [
+$dca['fields']['addPwa'] = [
     'exclude' => true,
     'inputType' => 'select',
     'options' => [PageContainer::ADD_PWA_NO, PageContainer::ADD_PWA_YES],
@@ -42,16 +40,14 @@ $fields['addPwa'] = [
     'sql' => "varchar(10) NOT NULL default ''",
 ];
 
-$fields['pwaConfiguration'] = [
+$dca['fields']['pwaConfiguration'] = [
     'inputType' => 'select',
     'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
     'sql' => "int(10) unsigned NOT NULL default '0'",
 ];
 
-$fields['pwaParent'] = [
+$dca['fields']['pwaParent'] = [
     'inputType' => 'select',
     'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true,],
     'sql' => "int(10) unsigned NOT NULL default '0'",
 ];
-
-$dca['fields'] += $fields;

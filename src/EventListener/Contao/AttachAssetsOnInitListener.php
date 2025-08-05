@@ -27,6 +27,21 @@ readonly class AttachAssetsOnInitListener
 
     public function attachFrontendAssets(): void
     {
-        $GLOBALS['TL_JAVASCRIPT']['huh.pwa.bundle'] = 'bundles/heimrichhannotpwa/frontend/contao-pwa-bundle.js';
+        $GLOBALS['TL_HEAD']['huh.pwa.bundle'] = <<<HTML
+        
+        <script type="importmap">
+        {
+            "imports": {
+                "@hundh/pwa/bundle": "/bundles/heimrichhannotpwa/frontend/huh-pwa.js",
+                "@hundh/pwa/serviceworker": "/bundles/heimrichhannotpwa/frontend/huh-pwa-serviceworker.js",
+                "@hundh/pwa/InstallPrompt": "/bundles/heimrichhannotpwa/frontend/InstallPrompt.js",
+                "@hundh/pwa/PushNotificationSubscription": "/bundles/heimrichhannotpwa/frontend/PushNotificationSubscription.js",
+                "@hundh/pwa/PushSubscriptionButtons": "/bundles/heimrichhannotpwa/frontend/PushSubscriptionButtons.js"
+            }
+        }
+        </script>
+        <script type="module">import '@hundh/pwa/bundle';</script>
+
+        HTML;
     }
 }

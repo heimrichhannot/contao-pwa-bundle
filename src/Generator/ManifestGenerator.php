@@ -32,12 +32,12 @@ readonly class ManifestGenerator
 
     public function generateManifest(Manifest $manifest, string $filename, string $path): void
     {
-        $manifestJson = $manifest->jsonSerialize();
         if ($manifest->icons && $manifest->icons->isIconFilesMissing())
         {
             $this->iconGenerator->generateIcons($manifest->icons, $manifest->icons->getApplicationAlias());
-            $manifestJson = $manifest->jsonSerialize();
         }
+
+        $manifestJson = \json_encode($manifest->jsonSerialize(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         $filesystem = new Filesystem();
         $filesystem->dumpFile($path . '/' . $filename, $manifestJson);
@@ -74,7 +74,7 @@ readonly class ManifestGenerator
         $manifest->orientation = $config->pwaOrientation;
         $manifest->start_url = $config->pwaStartUrl;
         $manifest->scope = $config->pwaScope;
-        $manifest->prefer_related_applications = $config->pwaPreferRelatedApplication ? true : false;
+        $manifest->prefer_related_applications = (bool) $config->pwaPreferRelatedApplication;
 
         if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
             $manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);

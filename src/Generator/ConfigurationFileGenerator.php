@@ -68,8 +68,8 @@ readonly class ConfigurationFileGenerator
         return [
             'debug' => (bool) $config->addDebugLog,
             'serviceWorker' => [
-                'path' => ServiceWorkerGenerator::generateFileName($page),
-                'scope' => \ltrim($config->pwaScope, "/"),
+                'path' => '/' . ServiceWorkerGenerator::generateFileName($page),
+                'scope' => \ltrim($config->pwaScope, '/'),
             ],
             'pushNotifications' => [
                 'support' => (bool) $config->supportPush,

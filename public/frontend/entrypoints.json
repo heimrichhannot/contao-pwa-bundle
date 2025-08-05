@@ -1,9 +1,0 @@
-{
-  "entrypoints": {
-    "contao-pwa-bundle": {
-      "js": [
-        "/public/js/contao-pwa-bundle.js"
-      ]
-    }
-  }
-}

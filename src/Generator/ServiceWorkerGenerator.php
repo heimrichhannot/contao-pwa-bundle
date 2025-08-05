@@ -22,7 +22,7 @@ use Twig\Error\SyntaxError as TwigSyntaxError;
 
 readonly class ServiceWorkerGenerator
 {
-    public const DEFAULT_SERVICEWORKER_TEMPLATE = '@HeimrichHannotPwa/pwa/serviceworker.js.twig';
+    public const DEFAULT_SERVICEWORKER_TEMPLATE = '@Contao/pwa/serviceworker.js.twig';
 
     public function __construct(
         private string                $webDir,
