@@ -10,6 +10,7 @@
 
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Message;
 use Contao\PageModel;
 use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
@@ -18,6 +19,8 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 
 class PageContainer
 {
+    public const TABLE = 'tl_page';
+
     public const ADD_PWA_NO = 'no';
     public const ADD_PWA_YES = 'yes';
     public const ADD_PWA_INHERIT = 'inherit';
@@ -27,20 +30,18 @@ class PageContainer
         private readonly ServiceWorkerGenerator $serviceWorkerGenerator
     ) {}
 
-    public function onCreateVersionCallback($table, $pid, $version, $row): void
+    #[AsCallback(self::TABLE, 'config.oncreate_version')]
+    public function onCreateVersionCallback(string $table, int $pid, int $version, array $row): void
     {
-        if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES)
-        {
+        if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES) {
             return;
         }
 
-        if (!$page = PageModel::findByPk($row['id']))
-        {
+        if (!$page = PageModel::findByPk($row['id'])) {
             return;
         }
 
-        if (!PwaConfigurationsModel::findByPk($page->pwaConfiguration))
-        {
+        if (!PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
             return;
         }
 
@@ -58,6 +59,7 @@ class PageContainer
         $this->serviceWorkerGenerator->generatePageServiceworker($page);
     }
 
+    #[AsCallback(self::TABLE, 'fields.pwaConfiguration.options')]
     public function getPwaConfigurationsAsOptions(): array
     {
         if (!$configs = PwaConfigurationsModel::findAll()) {
@@ -74,9 +76,10 @@ class PageContainer
         return $list;
     }
 
+    #[AsCallback(self::TABLE, 'fields.pwaParent.options')]
     public function getInheritPwaPageConfigOptions(): array
     {
-        if (!$pages = PageModel::findBy('addPwa', PageContainer::ADD_PWA_YES)) {
+        if (!$pages = PageModel::findBy('addPwa', self::ADD_PWA_YES)) {
             return [];
         }
 

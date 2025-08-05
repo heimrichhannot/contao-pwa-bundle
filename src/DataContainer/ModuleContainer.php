@@ -1,60 +1,61 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2021 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
-
 
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
-
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\Twig\Finder\FinderFactory;
 use Contao\DataContainer;
-use Contao\DC_Table;
 use Contao\ModuleModel;
 use HeimrichHannot\PwaBundle\Contao\FrontendModule\PushSubscriptionPopupModule;
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 
 class ModuleContainer
 {
-    /**
-     * @var TwigTemplateLocator
-     */
-    protected $templateLocator;
+    public const TABLE = 'tl_module';
 
-    /**
-     * ContentContainer constructor.
-     */
-    public function __construct(TwigTemplateLocator $templateLocator)
-    {
-        $this->templateLocator = $templateLocator;
-    }
+    public function __construct(
+        private readonly FinderFactory $templateLocator
+    ) {}
 
-    /**
-     * @param DataContainer|DC_Table|null $dc
-     */
+    #[AsCallback(self::TABLE, 'config.onload')]
     public function onLoadCallback(?DataContainer $dc = null): void
     {
-        if (!$dc || !$dc->id) {
+        if (!$dc || !$dc->id)
+        {
             return;
         }
         $module = ModuleModel::findByPk($dc->id);
-        if (!$module || PushSubscriptionPopupModule::TYPE !== $module->type) {
+        if (!$module || PushSubscriptionPopupModule::TYPE !== $module->type)
+        {
             return;
         }
         $GLOBALS['TL_DCA']['tl_module']['subpalettes']['addImage'] = 'singleSRC,imgSize';
     }
 
+    #[AsCallback(self::TABLE, 'fields.pwaSubscribeButtonTemplate.options')]
     public function onPwaSubscribeButtonTemplateOptionsCallback(): array
     {
-        return $this->templateLocator->getTemplateGroup('subscribe_button_');
+        return $this->templateLocator->create()
+            ->identifier('pwa/subscribe_button')
+            ->extension('html.twig')
+            ->withVariants()
+            ->asTemplateOptions();
     }
 
+    #[AsCallback(self::TABLE, 'fields.pwaPopupTemplate.options')]
     public function onPwaPopupTemplateOptionsCallback(): array
     {
-        return $this->templateLocator->getTemplateGroup('push_subscription_popup_');
+        return $this->templateLocator->create()
+            ->identifier('pwa/push_subscription_popup')
+            ->extension('html.twig')
+            ->withVariants()
+            ->asTemplateOptions();
     }
 }
