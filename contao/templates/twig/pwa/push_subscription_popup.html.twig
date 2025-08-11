@@ -1,16 +1,21 @@
 {% if openOnInit|default %}
     {% block script -%}
     <script>
+        window.huh_pwa_push_popup_init = window.huh_pwa_push_popup_init || function ($popup) {
+            $popup = $popup || document.getElementById('{{ cssId|default('mod_push_popup') }}');
+            if (!$popup) return;
+            popupElement.classList.add('in');
+        };
+
         /** @var {CustomEvent} event */
         document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
             let shown = (null !== localStorage.getItem('huh_pwa.push_popup.{{ cssId|default('mod_push_popup') }}.displayed'));
+            if (event.detail.context !== 'init' || shown) {
+                return;
+            }
+
             if ('init' === event.detail.context && !shown) {
-                {% block script_init %}
-                let popupElement = document.getElementById('{{ cssId|default('mod_push_popup') }}');
-                if (popupElement !== null) {
-                    popupElement.classList.add('in');
-                }
-                {% endblock %}
+                huh_pwa_push_popup_init?.();
                 localStorage.setItem('huh_pwa.push_popup.{{ cssId|default('mod_push_popup') }}.displayed', '1')
             }
         });
@@ -45,7 +50,7 @@
         transform: translate(-50%, -50%);
         padding: 2em;
         background: white;
-        box-shadow: 0px 0px 10px;
+        box-shadow: 0 0 10px;
     }
     .modal-window header {
         font-weight: bold;

@@ -16,7 +16,6 @@ use Contao\FrontendTemplate;
 use Contao\Module;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
 class PushSubscriptionPopupModule extends Module
 {
@@ -29,6 +28,8 @@ class PushSubscriptionPopupModule extends Module
     protected function compile(): void
     {
         $container = System::getContainer();
+        $twig = $container->get('twig');
+
         $templateData = [
             'headline' => $this->Template->headline,
             'hl' => $this->Template->hl,
@@ -37,8 +38,11 @@ class PushSubscriptionPopupModule extends Module
             'singleSRC' => $this->singleSRC,
         ];
 
-        $buttonTemplate = $this->pwaSubscribeButtonTemplate ?: 'subscribe_button_default';
-        $templateData['button'] = $container->get(TwigTemplateRenderer::class)?->render($buttonTemplate) ?: '';
+        $buttonTemplate = \sprintf(
+            '@Contao/%s.html.twig',
+            $this->pwaSubscribeButtonTemplate ?: 'content_element/pwa_subscribe_button'
+        );
+        $templateData['button'] = $twig?->render($buttonTemplate) ?: '';
 
         $cssId = $this->cssID[0];
         if (empty($cssId)) {
@@ -60,11 +64,12 @@ class PushSubscriptionPopupModule extends Module
             $templateData['image'] = $image;
         }
 
-        $modalTemplate = $this->pwaPopupTemplate ?: 'push_subscription_popup_default';
+        $modalTemplate = \sprintf(
+            '@Contao/%s.html.twig',
+            $this->pwaPopupTemplate ?: 'pwa/push_subscription_popup'
+        );
 
-        $this->Template->popup = $container->get(TwigTemplateRenderer::class)
-            ?->render($modalTemplate, $templateData)
-            ?: '';
+        $this->Template->popup = $twig?->render($modalTemplate, $templateData) ?: '';
 
         $this->cssID[0] = $cssId.'_wrapper';
     }

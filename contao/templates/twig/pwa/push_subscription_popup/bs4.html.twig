@@ -1,7 +1,27 @@
-{% extends '@HeimrichHannotPwa/push_subscription_popup/push_subscription_popup_default.html.twig' %}
+{% extends '@Contao_HeimrichHannotPwaBundle/pwa/push_subscription_popup.html.twig' %}
 
-{% block script_init %}
-    $('#{{ cssId|default('mod_push_popup') }}').modal({backdrop: false, show: true});
+{% block script %}
+    <script>
+        // $().modal({backdrop: false, show: true});
+        window.huh_pwa_push_popup_init = function () {
+            const $$targets = document.querySelectorAll('#{{ cssId|default('mod_push_popup') }}');
+            if (!$$targets.length) {
+                return;
+            }
+
+            const modal = bootstrap.Modal || Modal;
+            if (!modal) {
+                console.error('Bootstrap Modal not found');
+                return;
+            }
+
+            $$targets.forEach(function (element) {
+                const modalInstance = new modal(element);
+                modalInstance.show();
+            });
+        };
+    </script>
+    {{ parent() }}
 {% endblock %}
 
 {% block before %}

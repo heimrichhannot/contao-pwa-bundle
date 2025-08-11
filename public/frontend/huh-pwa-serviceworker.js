@@ -1,5 +1,4 @@
-class HuhPwaServiceWorker
-{
+class HuhPwaServiceWorker {
     constructor() {
         this.offlinePage = '';
         this.debug = false;

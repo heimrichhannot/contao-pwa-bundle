@@ -14,7 +14,6 @@ $dca['palettes'][InstallPwaButtonElementController::TYPE] =
 $dca['fields']['pwaSubscribeButtonTemplate'] = [
     'exclude' => true,
     'inputType' => 'select',
-    'options_callback' => ['huh.pwalist.choice.template.item', 'getPwaSubscriptionButtonTemplate'],
     'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
     'sql' => "varchar(128) NOT NULL default ''",
 ];

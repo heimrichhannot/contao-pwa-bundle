@@ -1,8 +1,8 @@
 {% block config_variables %}
-    const VERSION = '{{ alias }}-{{ version }}';
-    const CACHE = 'cache-sw-' + VERSION;
-    let startUrl = '{{ startUrl|default('/') }}';
-    let offlinePage = '{{ offlinePage|default('') }}';
+const VERSION = '{{ alias }}-{{ version }}';
+const CACHE = 'cache-sw-' + VERSION;
+let startUrl = '{{ startUrl|default('/') }}';
+let offlinePage = '{{ offlinePage|default('') }}';
 {% endblock %}
 
 self.importScripts('{{ serviceworkerClass|default() }}');
@@ -48,34 +48,33 @@ self.addEventListener('activate', function(event) {
 {% block fetch %}
 self.addEventListener('fetch', function(event) {
     SW.log(event, 'Fetch ' + event.request.url);
-    {% block fetch_filter %}
+  {% block fetch_filter %}
 
-        if (event.request.method !== 'GET') {
-            SW.log(event, 'POST requests are not handled by the service worker');
-            return event.respondWith(fetch(event.request));
-        }
-        var url = new URL(event.request.url);
+    if (event.request.method !== 'GET') {
+        SW.log(event, 'POST requests are not handled by the service worker');
+        return event.respondWith(fetch(event.request));
+    }
+    var url = new URL(event.request.url);
 
-        // don't cache backend or dev routes
-        if (url.pathname.match('^\/contao')
-            || url.pathname.match('^\/_contao')
-            || url.pathname.match('^\/app_dev.php')
-            || url.pathname.match('^\/api')
-        ) {
-            SW.log(event, '[Serviceworker] Fetch: Stop (' + event.request.url + ')');
-            return false;
-        }
-    {% endblock %}
-    {% block fetch_inner %}
-        event.respondWith(
-            fetch(event.request)
-        );
-    {% endblock %}
+    // don't cache backend or dev routes
+    if (url.pathname.match('^\/contao')
+        || url.pathname.match('^\/_contao')
+        || url.pathname.match('^\/app_dev.php')
+        || url.pathname.match('^\/api')) {
+        SW.log(event, '[Serviceworker] Fetch: Stop (' + event.request.url + ')');
+        return false;
+    }
+  {% endblock %}
+  {% block fetch_inner %}
+    event.respondWith(
+        fetch(event.request)
+    );
+  {% endblock %}
 });
 {% endblock %}
 
 {% block push %}
-self.addEventListener('push', /** @param {PushEvent} event */ function(event) {
+self.addEventListener('push', /** @param {PushEvent} event */ function (event) {
     {% block push_inner %}
     let payload = event.data ? event.data.text() : false;
     if (false === payload)
@@ -103,8 +102,7 @@ self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChan
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function(event) {
     SW.log(event, 'Start notification clicked event');
-    if (event.notification.data.clickJumpTo !== undefined)
-    {
+    if (event.notification.data.clickJumpTo !== undefined) {
         event.notification.close();
         event.waitUntil(
             clients.openWindow(event.notification.data.clickJumpTo)
