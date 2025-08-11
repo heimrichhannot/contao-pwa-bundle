@@ -54,7 +54,7 @@ class ConsoleLogger extends AbstractLogger
      *
      * @return void
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         if (!isset($this->verbosityLevelMap[$level]))
         {
