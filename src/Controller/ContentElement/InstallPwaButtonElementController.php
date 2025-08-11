@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Heimrich & Hannot PWA Bundle
  *
@@ -17,12 +16,12 @@ use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsContentElement(self::TYPE, category: 'pwa')]
+#[AsContentElement(type: self::TYPE, category: 'pwa', template: 'content_element/pwa_install_button')]
 class InstallPwaButtonElementController extends AbstractContentElementController
 {
-    public const TYPE = 'install_pwa_button';
+    public const TYPE = 'pwa_installButton';
 
-    protected function getResponse(Template $template, ContentModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
         if ($model->pwaButtonCssClasses) {
             $template->buttonCssClasses = $model->pwaButtonCssClasses;

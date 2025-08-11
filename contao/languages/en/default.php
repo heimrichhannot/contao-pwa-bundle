@@ -1,6 +1,6 @@
 <?php
 
-use HeimrichHannot\PwaBundle\ContentElement\PushSubscriptionElement;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionElement;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 
 $lang = &$GLOBALS['TL_LANG'];
@@ -8,9 +8,9 @@ $lang = &$GLOBALS['TL_LANG'];
 /**
  * Content Elements
  */
-$lang['CTE'][InstallPwaButtonElementController::TYPE][0] = 'PWA install button';
-$lang['CTE'][PushSubscriptionElement::TYPE]              = ['Push Notification Subscribe Button'];
-$lang['CTE']['pwa']           = ['Progressive Web App (PWA)'];
+$lang['CTE']['pwa'] = ['Progressive Web App (PWA)'];
+$lang['CTE'][InstallPwaButtonElementController::TYPE] = ['PWA install button'];
+$lang['CTE'][PushSubscriptionElement::TYPE] = ['Push Notification Subscribe Button'];
 
 /**
  * Erros

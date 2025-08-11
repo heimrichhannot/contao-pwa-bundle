@@ -43,7 +43,7 @@ class ModuleContainer
     public function onPwaSubscribeButtonTemplateOptionsCallback(): array
     {
         return $this->templateLocator->create()
-            ->identifier('content_element/pwa_subscribe_button')
+            ->identifier('pwa/subscribe_button')
             ->extension('html.twig')
             ->withVariants()
             ->asTemplateOptions();

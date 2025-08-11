@@ -1,7 +1,7 @@
 <?php
 
-use HeimrichHannot\PwaBundle\ContentElement\PushSubscriptionElement;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionElement;
 
 $dca = &$GLOBALS['TL_DCA']['tl_content'];
 

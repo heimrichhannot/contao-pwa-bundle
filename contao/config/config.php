@@ -1,6 +1,5 @@
 <?php
 
-use HeimrichHannot\PwaBundle\ContentElement\PushSubscriptionElement;
 use HeimrichHannot\PwaBundle\Contao\FrontendModule\PushSubscriptionPopupModule;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
@@ -23,11 +22,6 @@ $GLOBALS['BE_MOD']['system']['huh_pwa_configurations'] = [
 $GLOBALS['TL_MODELS'][PwaConfigurationsModel::getTable()] = PwaConfigurationsModel::class;
 $GLOBALS['TL_MODELS'][PwaPushSubscriberModel::getTable()] = PwaPushSubscriberModel::class;
 $GLOBALS['TL_MODELS'][PwaPushNotificationsModel::getTable()] = PwaPushNotificationsModel::class;
-
-/**
- * Content Elements
- */
-$GLOBALS['TL_CTE']['pwa'][PushSubscriptionElement::TYPE] = PushSubscriptionElement::class;
 
 /**
  * Frontend Modules

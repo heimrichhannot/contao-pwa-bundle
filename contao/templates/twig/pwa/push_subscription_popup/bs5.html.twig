@@ -2,10 +2,9 @@
 
 {% block script %}
     <script>
-        // $().modal({backdrop: false, show: true});
         window.huh_pwa_push_popup_init = function () {
-            const $$targets = document.querySelectorAll('#{{ cssId|default('mod_push_popup') }}');
-            if (!$$targets.length) {
+            const targets = document.querySelectorAll('#{{ cssId|default('mod_push_popup') }}');
+            if (!targets.length) {
                 return;
             }
 
@@ -15,8 +14,10 @@
                 return;
             }
 
-            $$targets.forEach(function (element) {
-                const modalInstance = new modal(element);
+            targets.forEach(function (element) {
+                const modalInstance = new modal(element, {
+                    backdrop: false,
+                });
                 modalInstance.show();
             });
         };
@@ -33,7 +34,7 @@
                 {% if headline is defined and headline is not empty %}
                 <div class="modal-header">
                     <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}Label">{{ headline|raw }}</{{ hl|default('h5') }}>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss-dismiss="modal" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -44,11 +45,10 @@
                     {% endif %}
                     {{ text|default|raw }}
                     {{ button|default|raw }}
-
                 </div>
                 <div class="modal-footer">
                     {% block modal_footer_content %}
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'Close'|trans }}</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">{{ 'Close'|trans }}</button>
                     {% endblock %}
                 </div>
             </div>
