@@ -1,0 +1,90 @@
+{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+
+{% block headline %}
+    {% trans %}huh.pwa.backend.control.headline{% endtrans %}
+{% endblock %}
+
+{% block error %}{% endblock %}
+
+{% block main %}
+    {% if messages|default %}
+        {{ messages|raw }}
+    {% endif %}
+    <div id="tl_buttons">
+        <a href="{{ backend_back_route }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
+    </div>
+
+    {% if web_push|default %}
+        <div class="maintenance_inactive">
+            <h2 class="sub_headline">{{ 'huh.pwa.backend.control.authentication'|trans }}</h2>
+            <div class="tl_tbox">
+                {% if vapid_keys|default %}
+                    <p>Ihre Server-VAPID-Keys zur Authentifizierung von Push-Benachrichtigungen.</p>
+                    <figure>
+                        <figcaption><strong>Public</strong></figcaption>
+                        <pre><code>{{ vapid_keys.publicKey }}</code></pre>
+                    </figure>
+                    <br>
+                    <figure>
+                        <figcaption><strong>Private</strong></figcaption>
+                        <pre><code>{{ vapid_keys.privateKey }}</code></pre>
+                    </figure>
+                {% elseif generated_keys|default %}
+                    <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
+                    <figure>
+                        <figcaption><strong>Public</strong></figcaption>
+                        <pre><code>{{ generated_keys.publicKey }}</code></pre>
+                    </figure>
+                    <br>
+                    <figure>
+                        <figcaption><strong>Private</strong></figcaption>
+                        <pre><code>{{ generated_keys.privateKey }}</code></pre>
+                    </figure>
+                {% endif %}
+            </div>
+        </div>
+        <div class="maintenance_inactive">
+            <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
+            <div class="tl_tbox">
+                <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
+                <p id="huhPwaSendPushNotificationStatus"></p>
+            </div>
+        </div>
+    {% endif %}
+    <div class="maintenance_inactive">
+        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.files'|trans }}</h2>
+        <div class="tl_tbox">
+            <p>Rebuild manifest and serviceworker files</p>
+            <p><button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button></p>
+            <p id="huhPwaRebuildFilesStatus"></p>
+        </div>
+    </div>
+
+    <div class="tl_listing_container">
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const sendButton = document.querySelector('#huhPwaSendPushNotificationButton'),
+                  rebuildButton = document.querySelector('#huhPwaRebuildFilesButton');
+
+            if (sendButton) {
+                console.log("Found sendButton");
+                sendButton.addEventListener('click', () => {
+                    HuhPwaBackend.unsentCountRoute = '{{ unsent_notifications_route }}';
+                    HuhPwaBackend.sendNotificationsRoute = '{{ send_notifications_route }}';
+                    HuhPwaBackend.sendPushNotifications(sendButton);
+                });
+            }
+
+            if (rebuildButton) {
+                console.log("Found rebuildButton");
+                rebuildButton.addEventListener('click', () => {
+                    HuhPwaBackend.findPagesRoute = '{{ find_pages_route }}';
+                    HuhPwaBackend.updatePageRoute = '{{ update_page_route }}';
+                    HuhPwaBackend.rebuildFiles();
+                });
+            }
+        });
+    </script>
+{% endblock %}

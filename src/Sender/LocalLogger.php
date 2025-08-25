@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\ContaoPwaBundle\Sender;
+namespace HeimrichHannot\PwaBundle\Sender;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -22,22 +22,22 @@ class LocalLogger implements LoggerInterface
         $this->utils = $utils;
     }
 
-    public function emergency($message, array $context = [])
+    public function emergency($message, array $context = []): void
     {
         // TODO: Implement emergency() method.
     }
 
-    public function alert($message, array $context = [])
+    public function alert($message, array $context = []): void
     {
         // TODO: Implement alert() method.
     }
 
-    public function critical($message, array $context = [])
+    public function critical($message, array $context = []): void
     {
         // TODO: Implement critical() method.
     }
 
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         $this->utils->container()->log(
             $message,
@@ -50,7 +50,7 @@ class LocalLogger implements LoggerInterface
         ];
     }
 
-    public function warning($message, array $context = [])
+    public function warning($message, array $context = []): void
     {
         $this->warnings[] = [
             'message' => $message,
@@ -58,12 +58,12 @@ class LocalLogger implements LoggerInterface
         ];
     }
 
-    public function notice($message, array $context = [])
+    public function notice($message, array $context = []): void
     {
         // TODO: Implement notice() method.
     }
 
-    public function info($message, array $context = [])
+    public function info($message, array $context = []): void
     {
         $this->info[] = [
             'message' => $message,
@@ -71,12 +71,12 @@ class LocalLogger implements LoggerInterface
         ];
     }
 
-    public function debug($message, array $context = [])
+    public function debug($message, array $context = []): void
     {
         // TODO: Implement debug() method.
     }
 
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         // TODO: Implement log() method.
     }
@@ -91,7 +91,7 @@ class LocalLogger implements LoggerInterface
         return $this->errors[count($this->errors) - 1] ?? null;
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

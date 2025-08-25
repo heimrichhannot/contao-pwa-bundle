@@ -1,193 +1,149 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-
-namespace HeimrichHannot\ContaoPwaBundle\Manifest;
+namespace HeimrichHannot\PwaBundle\Manifest;
 
 class Manifest implements \JsonSerializable
 {
+    public const DISPLAY_VALUES = [
+        'standalone',
+        'fullscreen',
+        'minimal-ui',
+        'browser',
+    ];
+    public const ICONS_VALUE = [
+        "src" => "",
+        "type" => "",
+        "sizes" => "",
+    ];
+    public const DIR_VALUES = ["ltr", "rtl", "auto"];
+    public const ORIENTATION_VALUES = [
+        'any',
+        'natural',
+        'landscape',
+        'landscape-primary',
+        'landscape-secondary',
+        'portrait',
+        'portrait-primary',
+        'portrait-secondary',
+    ];
+    public const RELATED_APPLICATIONS_VALUES = [
+        'platform',
+        'url',
+        'id',
+        'min_version',
+        'sequence',
+    ];
 
-	const DISPLAY_VALUES = [
-		'standalone',
-		'fullscreen',
-		'minimal-ui',
-		'browser'
-	];
+    public ?string $name;
+    public ?string $short_name;
+    public ?string $description;
+    public ?string $dir;
+    public ?string $lang;
+    public ?string $orientation;
+    public bool $prefer_related_applications = false;
+    private array $related_applications = [];
+    public ?string $start_url;
+    public ?string $scope;
+    public ?ManifestIcon $icons;
+    /** @var string Valid CSS color. RGB-Colors with # at the beginning */
+    public ?string $background_color;
+    /** @var string Valid CSS color. RGB-Colors with # at the beginning */
+    public ?string $theme_color;
+    public ?string $display;
 
-	const ICONS_VALUE = [
-		"src" => "",
-		"type" => "",
-		"sizes" => ""
-	];
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * which is a value of any type other than a resource.
+     * @throws \ReflectionException
+     */
+    public function jsonSerialize(): ?array
+    {
+        $reflectionClass = new \ReflectionClass($this);
+        $classProperties = $reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC);
 
-	const DIR_VALUES = ["ltr","rtl","auto"];
+        $manifestProperties = [];
+        foreach ($classProperties as $property)
+        {
+            if ($this->{$property->getName()})
+            {
+                $manifestProperties[$property->getName()] = $this->{$property->getName()};
+            }
+        }
 
-	const ORIENTATION_VALUES = [
-		'any',
-		'natural',
-		'landscape',
-		'landscape-primary',
-		'landscape-secondary',
-		'portrait',
-		'portrait-primary',
-		'portrait-secondary'
-	];
+        $classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+        foreach ($classMethods as $method)
+        {
+            if (!\str_starts_with($method->getName(), 'get')) {
+                continue;
+            }
 
+            if ($method->getNumberOfParameters() > 0) {
+                continue;
+            }
 
+            $value = $this->{$method->getName()}();
 
-	const RELATED_APPLICATIONS_VALUES = [
-		'platform',
-		'url',
-		'id',
-		'min_version',
-		'sequence',
-	];
+            if (!\is_null($value)) {
+                $manifestProperties[\lcfirst(\substr($method->getName(), 3))] = $value;
+            }
+        }
 
-	/**
-	 * @var string
-	 */
-	public $name;
-	/**
-	 * @var string
-	 */
-	public $short_name;
-	/**
-	 * @var string
-	 */
-	public $description;
-	/**
-	 * @var string
-	 */
-	public $dir;
-	/**
-	 * @var string
-	 */
-	public $lang;
-	/**
-	 * @var string
-	 */
-	public $orientation;
-	/**
-	 * @var bool
-	 */
-	public $prefer_related_applications;
-	/**
-	 * @var array
-	 */
-	private $related_applications;
-	/**
-	 * @var string
-	 */
-	public $start_url;
-	/**
-	 * @var string
-	 */
-	public $scope;
-	/**
-	 * @var ManifestIcon
-	 */
-	public $icons;
-	/**
-	 * @var string Valid CSS color. RGB-Colors with # at the beginning
-	 */
-	public $background_color;
-	/**
-	 * @var string Valid CSS color. RGB-Colors with # at the beginning
-	 */
-	public $theme_color;
-	/**
-	 * @var string
-	 */
-	public $display;
+        if ($this->icons)
+        {
+            $manifestProperties['icons'] = $this->icons->toArray();
+        }
 
-	/**
-	 * Specify data which should be serialized to JSON
-	 * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 * @throws \ReflectionException
-	 */
-	public function jsonSerialize()
-	{
+        return $manifestProperties;
+    }
 
-		$reflectionClass = new \ReflectionClass($this);
-		$classProperties = $reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC);
+    public function getRelatedApplications(): ?array
+    {
+        return $this->related_applications;
+    }
 
-		$manifestProperties = [];
-		foreach ($classProperties as $property)
-		{
-			if ($this->{$property->getName()}) {
-				$manifestProperties[$property->getName()] = $this->{$property->getName()};
-			}
-		}
-		$classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-		foreach ($classMethods as $method)
-		{
-			if (substr($method->getName(),0,3) !== 'get')
-			{
-				continue;
-			}
-			if ($method->getNumberOfParameters() > 0)
-			{
-				continue;
-			}
-			if (null !== ($value = $this->{$method->getName()}()))
-			{
-				$manifestProperties[lcfirst(substr($method->getName(),3))] = $value;
-			}
-		}
+    /**
+     * @param string $plattform
+     * @param string|null $url
+     * @param null|string $id
+     * @param null|string $min_version
+     * @param array|null $fingerprints
+     * @return bool
+     */
+    public function addRelatedApplication(
+        string  $plattform,
+        string  $url = null,
+        ?string $id = null,
+        ?string $min_version = null,
+        ?array  $fingerprints = null
+    ): bool {
+        if (empty($plattform)) {
+            return false;
+        }
 
-		if ($this->icons)
-		{
-			$manifestProperties['icons'] = $this->icons->toArray();
-		}
+        if (empty($url) && empty($id)) {
+            return false;
+        }
 
+        $application = [];
+        $application['plattform'] = $plattform;
 
+        if ($url) $application['url'] = $url;
+        if ($id) $application['id'] = $id;
+        if ($min_version) $application['min_version'] = $min_version;
+        if ($fingerprints) $application['fingerprints'] = $fingerprints;
 
-		return json_encode($manifestProperties);
-	}
+        $this->related_applications[] = $application;
 
-	/**
-	 * @return array|null
-	 */
-	public function getRelatedApplications()
-	{
-		return $this->related_applications;
-	}
-
-	/**
-	 * @param string $plattform
-	 * @param string|null $url
-	 * @param null|string $id
-	 * @param null|string $min_version
-	 * @param array|null $fingerprints
-	 * @return bool
-	 */
-	public function addRelatedApplication(string $plattform, string $url = null, ?string $id = null, ?string $min_version = null, ?array $fingerprints = null)
-	{
-		if (empty($plattform))
-		{
-			return false;
-		}
-		if (empty($url) && empty($id))
-		{
-			return false;
-		}
-		$application = [];
-		$application['plattform'] = $plattform;
-		if ($url) $application['url'] = $url;
-		if ($id) $application['id'] = $id;
-		if ($min_version) $application['min_version'] = $min_version;
-		if ($fingerprints) $application['fingerprints'] = $fingerprints;
-		$this->related_applications[] = $application;
-		return true;
-	}
+        return true;
+    }
 }

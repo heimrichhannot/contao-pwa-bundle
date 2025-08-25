@@ -1,137 +1,98 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license LGPL-3.0-or-later
  */
 
+namespace HeimrichHannot\PwaBundle\Generator;
 
-namespace HeimrichHannot\ContaoPwaBundle\Generator;
-
-
-use Contao\CoreBundle\Image\ImageFactoryInterface;
-use Contao\Image\ResizeConfiguration;
-use Contao\Image\ResizeOptions;
-use Contao\Image\ResizerInterface;
-use HeimrichHannot\ContaoPwaBundle\Manifest\ManifestIcon;
-use Imagine\Exception\InvalidArgumentException;
-use Imagine\Filter\Basic\Fill;
+use HeimrichHannot\PwaBundle\Manifest\ManifestIcon;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ManifestIconGenerator
+final class ManifestIconGenerator
 {
-	/**
-	 * @var ImageFactoryInterface
-	 */
-	protected $imageFactory;
-	/**
-	 * @var ResizerInterface
-	 */
-	protected $resizer;
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
-	/**
-	 * @var string
-	 */
-	protected $iconBasePath;
+    private string $iconBasePath;
 
+    public function __construct(
+        private readonly string $webDir,
+    ) {}
 
-	/**
-	 * ManifestIconGenerator constructor.
-	 */
-	public function __construct(ImageFactoryInterface $imageFactory, ResizerInterface $resizer, ContainerInterface $container)
-	{
-		$this->imageFactory = $imageFactory;
-		$this->resizer      = $resizer;
-		$this->container    = $container;
-	}
+    public function createIconInstance(
+        string $sourceIconPath,
+        string $applicationAlias,
+        bool   $addDefaultSizes = false,
+    ): ManifestIcon {
+        return (new ManifestIcon($sourceIconPath, $applicationAlias, $addDefaultSizes))
+            ->setWebRootPath($this->webDir)
+            ->setManifestPath('..');
+    }
 
-	/**
-	 * @param string $sourceIconPath
-	 * @param string $applicationAlias
-	 * @param bool $addDefaultSizes
-	 * @return ManifestIcon
-	 */
-	public function createIconInstance(string $sourceIconPath, string $applicationAlias, bool $addDefaultSizes = false)
-	{
-		$icon = new ManifestIcon($sourceIconPath, $applicationAlias, $addDefaultSizes);
-		$icon->setWebRootPath($this->container->getParameter('contao.web_dir'));
-		$icon->setManifestPath('..');
-		return $icon;
-	}
+    public function getIconBasePath(): string
+    {
+        return $this->iconBasePath;
+    }
 
-	/**
-	 * Create icons in the correct size
-	 *
-	 * @param ManifestIcon $icon
-	 * @param string $appAlias
-	 */
-	public function generateIcons(ManifestIcon $icon)
-	{
-		$filesystem = new Filesystem();
-		if (!$filesystem->exists($icon->getIconsPath()))
-		{
-			$filesystem->mkdir($icon->getIconsPath());
-		}
-		$imagine = new Imagine();
-		foreach ($icon->getSizes() as $size)
-		{
+    public function setIconBasePath(string $iconBasePath): static
+    {
+        $this->iconBasePath = $iconBasePath;
 
-			$iconPath = $icon->generateIconName($size, true);
+        return $this;
+    }
 
-			if ($size !== 'all')
-			{
-				$sizes = explode('x', $size);
+    /**
+     * Create icons in the correct size
+     *
+     * @param ManifestIcon $icon
+     */
+    public function generateIcons(ManifestIcon $icon): void
+    {
+        $fs = new Filesystem();
 
-				$mask = $imagine->create(new Box($sizes[0], $sizes[1]));
+        if (!$fs->exists($icon->getIconsPath())) {
+            $fs->mkdir($icon->getIconsPath());
+        }
 
-				$image = $imagine->open($icon->getSourceIconPath(true));
-				$thumb = $image->thumbnail(new Box($sizes[0], $sizes[1]), ImageInterface::THUMBNAIL_INSET);
+        $imagine = new Imagine();
+        foreach ($icon->getSizes() as $size)
+        {
+            $iconPath = $icon->generateIconName($size, true);
 
-				$posX = 0;
-				$posY = 0;
-				$iconWidth = $thumb->getSize()->getWidth();
-				$iconHeigth = $thumb->getSize()->getHeight();
+            if ($size === 'all')
+            {
+                \copy($icon->getSourceIconPath(), $iconPath);
+                continue;
+            }
 
-				if ($iconWidth < $sizes[0])
-				{
-					$posX = (($sizes[0]- $iconWidth) / 2);
-				}
-				if ($iconHeigth < $sizes[1])
-				{
-					$posY = (($sizes[1]- $iconHeigth) / 2);
-				}
-				$mask->paste($thumb, new Point($posX, $posY))->save($iconPath);
-			}
-			else {
-				copy($icon->getSourceIconPath(), $iconPath);
-			}
-		}
-	}
+            $sizes = explode('x', $size);
 
-	/**
-	 * @return string
-	 */
-	public function getIconBasePath(): string
-	{
-		return $this->iconBasePath;
-	}
+            $mask = $imagine->create(new Box($sizes[0], $sizes[1]));
 
-	/**
-	 * @param string $iconBasePath
-	 */
-	public function setIconBasePath(string $iconBasePath): void
-	{
-		$this->iconBasePath = $iconBasePath;
-	}
+            $image = $imagine->open($icon->getSourceIconPath(true));
+            $thumb = $image->thumbnail(new Box($sizes[0], $sizes[1]), ImageInterface::THUMBNAIL_INSET);
+
+            $posX = 0;
+            $posY = 0;
+            $iconWidth = $thumb->getSize()->getWidth();
+            $iconHeight = $thumb->getSize()->getHeight();
+
+            if ($iconWidth < $sizes[0]) {
+                $posX = (($sizes[0] - $iconWidth) / 2);
+            }
+
+            if ($iconHeight < $sizes[1]) {
+                $posY = (($sizes[1] - $iconHeight) / 2);
+            }
+
+            $mask->paste($thumb, new Point($posX, $posY))
+                ->save($iconPath);
+        }
+    }
 }

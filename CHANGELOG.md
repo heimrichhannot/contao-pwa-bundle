@@ -184,7 +184,7 @@ All notable changes to this project will be documented in this file.
 * an undefined error in PushSubscriptionBottons.js
 
 #### Changed
-* moved translations to HuhContaoPwaBundle js class
+* moved translations to HuhPWA js class
 * removed translation.js.twig
 
 ## [0.2.0] - 2019-02-19

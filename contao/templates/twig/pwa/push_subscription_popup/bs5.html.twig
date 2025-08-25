@@ -1,0 +1,59 @@
+{% extends '@Contao_HeimrichHannotPwaBundle/pwa/push_subscription_popup.html.twig' %}
+
+{% block script %}
+    <script>
+        window.huh_pwa_push_popup_init = function () {
+            const targets = document.querySelectorAll('#{{ cssId|default('mod_push_popup') }}');
+            if (!targets.length) {
+                return;
+            }
+
+            const modal = bootstrap.Modal || Modal;
+            if (!modal) {
+                console.error('Bootstrap Modal not found');
+                return;
+            }
+
+            targets.forEach(function (element) {
+                const modalInstance = new modal(element, {
+                    backdrop: false,
+                });
+                modalInstance.show();
+            });
+        };
+    </script>
+    {{ parent() }}
+{% endblock %}
+
+{% block before %}
+    <div class="modal fade {{modelCssClasses|default}}" id="{{ cssId|default('mod_push_popup') }}" tabindex="-1" aria-labelledby="{{ cssId|default('mod_push_popup') }}Label" aria-hidden="true">
+        <div class="modal-dialog">
+{% endblock %}
+{% block content %}
+            <div class="modal-content">
+                {% if headline is defined and headline is not empty %}
+                <div class="modal-header">
+                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}Label">{{ headline|raw }}</{{ hl|default('h5') }}>
+                    <button type="button" class="close" data-dismiss-dismiss="modal" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+                <div class="modal-body">
+                    {% if image is defined %}
+                        {{ image.buffer|raw }}
+                    {% endif %}
+                    {{ text|default|raw }}
+                    {{ button|default|raw }}
+                </div>
+                <div class="modal-footer">
+                    {% block modal_footer_content %}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">{{ 'Close'|trans }}</button>
+                    {% endblock %}
+                </div>
+            </div>
+{% endblock %}
+{% block after %}
+    </div>
+</div>
+{% endblock %}

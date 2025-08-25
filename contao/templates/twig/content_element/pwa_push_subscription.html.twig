@@ -1,0 +1,7 @@
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    {% if button is defined and button|default(false) %}
+        {{ button|raw }}
+    {% endif %}
+{% endblock %}

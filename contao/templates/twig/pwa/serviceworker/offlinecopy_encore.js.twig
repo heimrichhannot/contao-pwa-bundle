@@ -1,0 +1,6 @@
+{% extends "@HeimrichHannotPwa/pwa/serviceworker.js.twig" %}
+
+{% block configuration %}
+{{ parent() }}
+SW.supportEncorePrecache = true;
+{% endblock %}

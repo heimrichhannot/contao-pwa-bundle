@@ -1,62 +1,45 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @author    Eric Gesemann <e.gesemann@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
+namespace HeimrichHannot\PwaBundle\Command;
 
-namespace HeimrichHannot\ContaoPwaBundle\Command;
-
-
-use Contao\CoreBundle\Command\AbstractLockedCommand;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use HeimrichHannot\ContaoPwaBundle\Generator\ConfigurationFileGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\ContaoPwaBundle\Generator\ServiceWorkerGenerator;
-use HeimrichHannot\ContaoPwaBundle\Model\PageModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
+use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
+use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
+use HeimrichHannot\PwaBundle\Model\PageModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('huh:pwa:build', 'Build or rebuild file for pwa.')]
 class BuildPwaFilesCommand extends Command
 {
-    protected static                   $defaultName = 'huh:pwa:build';
-    protected static                   $defaultDescription = 'Build or rebuild file for pwa.';
-    private ContaoFramework            $contaoFramework;
-    private ManifestGenerator          $manifestGenerator;
-    private ServiceWorkerGenerator     $serviceWorkerGenerator;
-    private ConfigurationFileGenerator $configurationFileGenerator;
-
     public function __construct(
-        ContaoFramework $contaoFramework,
-        ManifestGenerator $manifestGenerator,
-        ServiceWorkerGenerator $serviceWorkerGenerator,
-        ConfigurationFileGenerator $configurationFileGenerator
-    )
-    {
+        private readonly ContaoFramework $contaoFramework,
+        private readonly ManifestGenerator $manifestGenerator,
+        private readonly ServiceWorkerGenerator $serviceWorkerGenerator,
+        private readonly ConfigurationFileGenerator $configurationFileGenerator
+    ) {
         parent::__construct();
-
-        $this->contaoFramework = $contaoFramework;
-        $this->manifestGenerator = $manifestGenerator;
-        $this->serviceWorkerGenerator = $serviceWorkerGenerator;
-        $this->configurationFileGenerator = $configurationFileGenerator;
     }
 
-
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setDescription(static::$defaultDescription)
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, "Performs a run without actually send notifications and making changes to the database.")
-        ;
-
+        $this->addOption(
+            name: 'dry-run',
+            description: 'Performs a run without actually sending notifications or commiting changes to the database.'
+        );
     }
 
     /**
@@ -67,7 +50,7 @@ class BuildPwaFilesCommand extends Command
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->contaoFramework->initialize();
         $io = new SymfonyStyle($input, $output);
@@ -98,7 +81,7 @@ class BuildPwaFilesCommand extends Command
             }
             $io->text("Use Configuration \"".$config->title."\" (ID: ".$config->id.")");
 
-            if (!$manifest = $this->manifestGenerator->generatePageManifest($page))
+            if (!$this->manifestGenerator->generatePageManifest($page))
             {
                 $io->error("Error on generating manifest file for page. Continue with next page...");
                 $hasErrors = true;
@@ -126,11 +109,11 @@ class BuildPwaFilesCommand extends Command
         if ($hasErrors)
         {
             $io->warning("Finished with error!");
-            return 1;
+            return Command::FAILURE;
         }
 
         $io->success("Successfully created PWA files!");
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

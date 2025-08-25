@@ -1,22 +1,20 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-
-namespace HeimrichHannot\ContaoPwaBundle\Model;
-
+namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model;
 
 /**
  * Class PwaConfigurationsModel
- * @package HeimrichHannot\ContaoPwaBundle\Model
+ *
+ * @package HeimrichHannot\PwaBundle\Model
  *
  * @property int $id
  * @property int $tstamp
@@ -46,10 +44,10 @@ use Contao\Model;
  */
 class PwaConfigurationsModel extends Model
 {
-	protected static $strTable = 'tl_pwa_configurations';
+    protected static $strTable = 'tl_pwa_configurations';
 
-	const PWA_NAME_CUSTOM = 'custom';
-	const PWA_NAME_PAGETITLE = 'title';
-	const PWA_NAME_META_PAGETITLE = 'pageTitle';
-	const PWA_NAME_OPTIONS = [self::PWA_NAME_PAGETITLE, self::PWA_NAME_META_PAGETITLE, self::PWA_NAME_CUSTOM];
+    public const PWA_NAME_CUSTOM = 'custom';
+    public const PWA_NAME_PAGETITLE = 'title';
+    public const PWA_NAME_META_PAGETITLE = 'pageTitle';
+    public const PWA_NAME_OPTIONS = [self::PWA_NAME_PAGETITLE, self::PWA_NAME_META_PAGETITLE, self::PWA_NAME_CUSTOM];
 }
