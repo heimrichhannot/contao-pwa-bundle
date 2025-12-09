@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.20] - 2025-12-09
+- Fixed: warnings
+- Fixed: missing locales
+
 ## [0.8.19] - 2025-03-07
 - Fixed: Syntax error in PushNotificationSender.php
 
