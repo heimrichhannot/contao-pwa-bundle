@@ -15,23 +15,22 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
 $dca['palettes'][PushSubscriptionPopupModule::TYPE] =
     '{title_legend},name,headline,type;{config_legend},pwaPopupToggle;{content_legend},pwaText;{image_legend},addImage;{template_legend:hide},pwaPopupTemplate,pwaSubscribeButtonTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-$fields = &$dca['fields'];
 
-$fields['pwaSubscribeButtonTemplate'] = [
+$dca['fields']['pwaSubscribeButtonTemplate'] = [
     'exclude' => true,
     'inputType' => 'select',
     'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
     'sql' => "varchar(64) NOT NULL default ''",
 ];
 
-$fields['pwaPopupTemplate'] = [
+$dca['fields']['pwaPopupTemplate'] = [
     'exclude' => true,
     'inputType' => 'select',
     'eval' => ['tl_class' => 'w50 clr', 'includeBlankOption' => true],
     'sql' => "varchar(64) NOT NULL default ''",
 ];
 
-$fields['pwaPopupToggle'] = [
+$dca['fields']['pwaPopupToggle'] = [
     'exclude' => true,
     'inputType' => 'select',
     'options' => [
@@ -44,7 +43,7 @@ $fields['pwaPopupToggle'] = [
     'sql' => "varchar(64) NOT NULL default ''",
 ];
 
-$fields['pwaText'] = [
+$dca['fields']['pwaText'] = [
     'exclude' => true,
     'search' => false,
     'filter' => false,
