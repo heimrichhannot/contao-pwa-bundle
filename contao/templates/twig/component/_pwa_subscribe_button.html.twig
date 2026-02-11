@@ -3,8 +3,10 @@
     .set('disabled', 'disabled')
     .mergeWith(button_attrs|default) %}
 
+{% set button_label = button_label|default('huh.pwa.pushnotifications.wait'|trans) %}
+
 <button class="huhPwaWebSubscription" disabled="disabled">
     {% block button_content %}
-        <span class="label">{% trans %}huh.pwa.pushnotifications.wait{% endtrans %}</span>
+        <span class="label">{{ button_label }}</span>
     {% endblock %}
 </button>

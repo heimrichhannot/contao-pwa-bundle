@@ -1,0 +1,48 @@
+{% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
+
+{% block modal %}
+    <div class="modal fade" id="{{ model_css_id }}" tabindex="-1"
+         aria-labelledby="{{ model_css_id }}Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {% if headline is defined and headline is not empty %}
+                <div class="modal-header">
+                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}
+                    Label">{{ headline|raw }}</{{ hl|default('h5') }}>
+                <button type="button" class="close" data-dismiss-dismiss="modal" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+            <div class="modal-body">
+                {{ block('modal_content') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        data-dismiss="modal">{{ 'Close'|trans }}</button>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block open_modal_js %}
+    <script>
+        function open(popupElement) {
+            popupElement = popupElement || document.getElementById('{{ model_css_id }}');
+            if (!popupElement) return;
+
+            const modal = bootstrap.Modal || Modal;
+            if (!modal) {
+                console.error('Bootstrap Modal not found');
+                return;
+            }
+
+            const modalInstance = new modal(popupElement, {
+                backdrop: false,
+            });
+            modalInstance.show();
+        }
+    </script>
+{% endblock %}

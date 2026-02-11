@@ -2,6 +2,7 @@
 
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionElement;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionPopupElementController;
 
 $dca = &$GLOBALS['TL_DCA']['tl_content'];
 
@@ -22,6 +23,16 @@ $dca['palettes'][InstallPwaButtonElementController::TYPE] = <<< PALETTE
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID;
     {invisible_legend:hide},invisible;';
+PALETTE;
+
+$dca['palettes'][PushSubscriptionPopupElementController::TYPE] = <<< PALETTE
+    {type_legend},type,headline;
+    {text_legend},text;
+    {image_legend},addImage;
+    {template_legend:hide},customTpl;
+    {protected_legend:hide},protected;
+    {expert_legend:hide},cssID;
+    {invisible_legend:hide},invisible,start,stop
 PALETTE;
 
 

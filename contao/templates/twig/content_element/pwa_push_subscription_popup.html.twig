@@ -1,0 +1,122 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+
+{% set model_css_id = element_html_id ~ '-modal' %}
+
+{% block modal_content %}
+    {{ block('inner', '@Contao/content_element/text.html.twig') }}
+
+    {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
+{% endblock %}
+
+{% block content %}
+    <button onclick="window.huh_pwa_push_popup_open(document.getElementById('{{ model_css_id }}'))">Open Modal</button>
+
+    {% block modal %}
+        <div id="{{ model_css_id }}" class="huh_pwa-modal-window">
+            <div>
+                <button onclick="document.getElementById('{{ model_css_id }}').classList.remove('in');"
+                        title="Close" class="modal-close">x
+                </button>
+                {{ block('modal_content') }}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block style %}
+    {% add "pwa_popup_css" to stylesheets %}
+        <style>
+            .huh_pwa-modal-window {
+                position: fixed;
+                background-color: rgba(255, 255, 255, 0.25);
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                visibility: hidden;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s;
+                z-index: 2;
+            }
+
+            .huh_pwa-modal-window.in {
+                visibility: visible;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .huh_pwa-modal-window > div {
+                width: 400px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 2em;
+                background: white;
+                box-shadow: 0 0 10px;
+            }
+
+            .huh_pwa-modal-window header {
+                font-weight: bold;
+            }
+
+            .huh_pwa-modal-window h1 {
+                font-size: 150%;
+                margin: 0 0 15px;
+            }
+
+            .huh_pwa-modal-window .modal-close {
+                color: #aaa;
+                line-height: 50px;
+                position: absolute;
+                right: 0;
+                text-align: center;
+                top: 0;
+                width: 70px;
+                text-decoration: none;
+                background-color: transparent;
+                border: none;
+            }
+
+            .huh_pwa-modal-window .modal-close:hover {
+                color: black;
+            }
+        </style>
+    {% endadd %}
+{% endblock %}
+
+{% block script %}
+    {% add "pwa_popup_js" to body %}
+        <script nonce="{{ csp_nonce('script-src') }}">
+            {% block open_modal_js %}
+            function open(popupElement) {
+                popupElement = popupElement || document.getElementById('{{ model_css_id }}');
+                if (!popupElement) return;
+                popupElement.classList.add('in');
+            }
+            {% endblock %}
+
+            window.huh_pwa_push_popup_open = window.huh_pwa_push_popup_open || open;
+        </script>
+    {% endadd %}
+
+    {% if openOnInit|default %}
+        {% add "pwa_popup_js_init" to body %}
+            <script nonce="{{ csp_nonce('script-src') }}">
+                /** @var {CustomEvent} event */
+                document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
+                    let shown = (null !== localStorage.getItem('huh_pwa.push_popup.{{ model_css_id }}.displayed'));
+                    if (event.detail.context !== 'init' || shown) {
+                        return;
+                    }
+
+                    if ('init' === event.detail.context && !shown) {
+                        huh_pwa_push_popup_open?.();
+                        localStorage.setItem('huh_pwa.push_popup.{{ model_css_id }}.displayed', (Math.floor(Date.now() / 1000)))
+                    }
+                });
+            </script>
+        {% endadd %}
+    {% endif %}
+{% endblock %}
