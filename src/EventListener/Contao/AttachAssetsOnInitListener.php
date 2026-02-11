@@ -27,7 +27,7 @@ readonly class AttachAssetsOnInitListener
 
     public function attachFrontendAssets(): void
     {
-        $GLOBALS['TL_HEAD']['huh.pwa.bundle'] = <<<HTML
+        $GLOBALS['TL_HEAD']['huh_pwa_imports'] = <<<HTML
         
         <script type="importmap">
         {

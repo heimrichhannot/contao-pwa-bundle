@@ -9,15 +9,11 @@ use Contao\PageRegular;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 #[AsHook('generatePage', priority: 5)]
-readonly class GeneratePageListener implements ServiceSubscriberInterface
+readonly class GeneratePageListener
 {
     public function __construct(
-        private ContainerInterface         $container,
         private ConfigurationFileGenerator $configurationGenerator
 
     ) {}
@@ -50,20 +46,5 @@ readonly class GeneratePageListener implements ServiceSubscriberInterface
         HTML;
 
         $GLOBALS['TL_HEAD']['huh_pwa'] = $script;
-
-        if ($this->container->has(FrontendAsset::class)) {
-            $this->container->get(FrontendAsset::class)->addActiveEntrypoint('contao-pwa-bundle');
-        }
-    }
-
-    public static function getSubscribedServices(): array
-    {
-        $services = [];
-
-        if (\class_exists(FrontendAsset::class)) {
-            $services[] = '?' . FrontendAsset::class;
-        }
-
-        return $services;
     }
 }
