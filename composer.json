@@ -9,7 +9,6 @@
         "ext-fileinfo": "*",
         "contao/core-bundle": "^4.13 || ^5.3",
         "heimrichhannot/contao-encore-contracts": "^1.0.2",
-        "heimrichhannot/contao-head-bundle": "^1.2",
         "heimrichhannot/contao-utils-bundle": "^2.215 || ^3.0",
         "menatwork/contao-multicolumnwizard-bundle": "^3.6",
         "symfony/framework-bundle": "^4.4 || ^5.4 || ^6.0 || ^7.0",
@@ -27,9 +26,6 @@
         "psr-4": {
             "HeimrichHannot\\PwaBundle\\": "src/"
         },
-        "classmap": [
-            "src/"
-        ]
     },
     "extra": {
         "contao-manager-plugin": "HeimrichHannot\\PwaBundle\\ContaoManager\\Plugin"

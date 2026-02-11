@@ -27,7 +27,6 @@ After installation, update your database.
 
 * PHP ^8.2
 * Contao ^4.13 || ^5.0
-* [Contao Head Bundle](https://github.com/heimrichhannot/contao-head-bundle)
 
 ### Additional Dependency for Push-Notifications
 
@@ -55,8 +54,6 @@ Additionally, ensure the following PHP extensions are installed and enabled:
 4. To provide an option for users to register for push notifications, add either:
     * The Push Subscription Button content element, or
     * The push notification popup frontend module to your page
-
-> Legacy (should no longer be required): Ensure your page template (typically `fe_page.html5`) supports [Head Bundle](https://github.com/heimrichhannot/contao-head-bundle). It must output at least `$this->meta()` in the head section. See [Head Bundle documentation](https://github.com/heimrichhannot/contao-head-bundle/blob/master/README.md) for more information.
 
 ### VAPID Keys
 
@@ -122,10 +119,6 @@ huh_pwa:
 |-------------------|-------------|
 | huh:pwa:build     | (Re)Build config-specific files like service worker and manifest |
 | huh:pwa:send-push | Send unsent push notifications |
-
-### Adding Additional Head Scripts
-
-You can add additional JavaScript code to the head section by using the `PwaHeadScriptTags` object available as `huh.head.tag.pwa.script` service. Code added with `addScript` will be output in the header section of your page within `<script type='text/javascript'>` tags.
 
 ### Polyfills
 
