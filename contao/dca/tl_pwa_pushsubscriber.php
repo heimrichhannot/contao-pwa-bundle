@@ -1,8 +1,10 @@
 <?php
 
+use Contao\DC_Table;
+
 $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	'config'   => [
-		'dataContainer'     => 'Table',
+		'dataContainer'     => DC_Table::class,
 		'ptable'           => 'tl_pwa_configurations',
 		'enableVersioning'  => false,
 		'closed' => true,

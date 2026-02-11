@@ -1,7 +1,5 @@
-{% extends '@Contao/block_unsearchable' %}
+{% extends '@Contao/content_element/_base.html.twig' %}
 
 {% block content %}
-    {% if button is defined and button|default(false) %}
-        {{ button|raw }}
-    {% endif %}
+    {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
 {% endblock %}

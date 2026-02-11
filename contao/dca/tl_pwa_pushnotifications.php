@@ -8,6 +8,7 @@
  * @license   LGPL-3.0-or-later
  */
 
+use Contao\DC_Table;
 use HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 
@@ -17,7 +18,7 @@ DateAddedField::register($table);
 
 $GLOBALS['TL_DCA'][$table] = [
     'config' => [
-        'dataContainer' => \Contao\DC_Table::class,
+        'dataContainer' => DC_Table::class,
         'ptable' => 'tl_pwa_configurations',
         'enableVersioning' => true,
         'sql' => [

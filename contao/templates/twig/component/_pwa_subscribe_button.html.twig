@@ -1,0 +1,10 @@
+{% set button_attrs = attrs()
+    .addClass(['huhPwaWebSubscription'])
+    .set('disabled', 'disabled')
+    .mergeWith(button_attrs|default) %}
+
+<button class="huhPwaWebSubscription" disabled="disabled">
+    {% block button_content %}
+        <span class="label">{% trans %}huh.pwa.pushnotifications.wait{% endtrans %}</span>
+    {% endblock %}
+</button>

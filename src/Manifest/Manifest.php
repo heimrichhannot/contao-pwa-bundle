@@ -121,7 +121,7 @@ class Manifest implements \JsonSerializable
      */
     public function addRelatedApplication(
         string  $plattform,
-        string  $url = null,
+        ?string  $url = null,
         ?string $id = null,
         ?string $min_version = null,
         ?array  $fingerprints = null
