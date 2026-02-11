@@ -22,31 +22,6 @@ services:
     exclude:
       - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model}
 
-  # Generators
-
-  # Header Tags
-
-  huh.head.tag.pwa.link_manifest:
-    class: HeimrichHannot\PwaBundle\HeaderTag\ManifestLinkTag
-    public: true
-    arguments:
-      ['@huh.head.tag_manager']
-  HeimrichHannot\PwaBundle\HeaderTag\ManifestLinkTag: "@huh.head.tag.pwa.link_manifest"
-
-  huh.head.tag.pwa.meta_themecolor:
-    class: HeimrichHannot\PwaBundle\HeaderTag\ThemeColorMetaTag
-    public: true
-    arguments:
-      ['@huh.head.tag_manager']
-  HeimrichHannot\PwaBundle\HeaderTag\ThemeColorMetaTag: "@huh.head.tag.pwa.meta_themecolor"
-
-  huh.head.tag.pwa.script:
-    class: HeimrichHannot\PwaBundle\HeaderTag\PwaHeadScriptTags
-    public: true
-    arguments:
-      ['@huh.head.tag_manager']
-  HeimrichHannot\PwaBundle\HeaderTag\PwaHeadScriptTags: "@huh.head.tag.pwa.script"
-
 # Sender
 
   huh.pwa.sender.pushnotification:

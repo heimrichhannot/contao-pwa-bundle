@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+##[DEV]
+- Removed: old head bundle MetaTags
+
 ## [0.8.19] - 2025-03-07
 - Fixed: Syntax error in PushNotificationSender.php
 
