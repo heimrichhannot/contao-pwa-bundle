@@ -12,6 +12,7 @@ namespace HeimrichHannot\PwaBundle\Controller\ContentElement;
 use Contao\ContentModel;
 use Contao\CoreBundle\Controller\ContentElement\AbstractContentElementController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsContentElement;
+use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +25,17 @@ class InstallPwaButtonElementController extends AbstractContentElementController
 
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
+        $buttonAttrs = new HtmlAttributes();
+
         if ($model->pwaButtonCssClasses) {
-            $template->buttonCssClasses = $model->pwaButtonCssClasses;
+            $buttonAttrs->addClass($model->pwaButtonCssClasses);
         }
 
         if ($model->text) {
-            $template->installNotSupportedMessage = $model->text;
+            $template->set('installNotSupportedMessage', $model->text);
         }
+
+        $template->set('button_attrs', $buttonAttrs);
 
         return $template->getResponse();
     }
