@@ -88,15 +88,16 @@
 
 {% block script %}
     {% add "pwa_popup_js" to body %}
+        {% block open_modal_js %}
+            <script nonce="{{ csp_nonce('script-src') }}">
+                function open(popupElement) {
+                    popupElement = popupElement || document.getElementById('{{ model_css_id }}');
+                    if (!popupElement) return;
+                    popupElement.classList.add('in');
+                }
+            </script>
+        {% endblock %}
         <script nonce="{{ csp_nonce('script-src') }}">
-            {% block open_modal_js %}
-            function open(popupElement) {
-                popupElement = popupElement || document.getElementById('{{ model_css_id }}');
-                if (!popupElement) return;
-                popupElement.classList.add('in');
-            }
-            {% endblock %}
-
             window.huh_pwa_push_popup_open = window.huh_pwa_push_popup_open || open;
         </script>
     {% endadd %}

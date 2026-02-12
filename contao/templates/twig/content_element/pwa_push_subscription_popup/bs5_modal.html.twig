@@ -1,34 +1,39 @@
 {% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
 
+{% block modal_content %}
+    {{ block('content', '@Contao/content_element/text.html.twig') }}
+    {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
+{% endblock %}
+
 {% block modal %}
-    <div class="modal fade" id="{{ model_css_id }}" tabindex="-1"
+    <div class="modal fade {{ modelCssClasses|default }}" id="{{ model_css_id }}" tabindex="-1"
          aria-labelledby="{{ model_css_id }}Label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                {% if headline is defined and headline is not empty %}
-                <div class="modal-header">
-                    <{{ hl|default('h5') }} class="modal-title" id="{{ cssId|default('mod_push_popup') }}
-                    Label">{{ headline|raw }}</{{ hl|default('h5') }}>
-                <button type="button" class="close" data-dismiss-dismiss="modal" data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% endif %}
-            <div class="modal-body">
-                {{ block('modal_content') }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        data-dismiss="modal">{{ 'Close'|trans }}</button>
+                {% block modal_header %}
+                    {% if headline.text %}
+                        <div class="modal-header">
+                            {{ block('headline_component') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+                <div class="modal-body">
+                    {{ block('modal_content') }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-bs-dismiss="modal"
+                            data-dismiss="modal">
+                        {{ 'MSC.close'|trans(domain: 'contao_default') }}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
 
 {% block open_modal_js %}
-    <script>
+    <script nonce="{{ csp_nonce('script-src') }}">
         function open(popupElement) {
             popupElement = popupElement || document.getElementById('{{ model_css_id }}');
             if (!popupElement) return;
@@ -45,4 +50,7 @@
             modalInstance.show();
         }
     </script>
+{% endblock %}
+
+{% block style %}
 {% endblock %}
