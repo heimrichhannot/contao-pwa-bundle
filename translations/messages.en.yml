@@ -14,6 +14,9 @@ huh.pwa:
     unsubscribe: "Unsubscribe push notifications"
     blocked: "Push notifications were blocked by your browser"
     not_supported: "Push notifications not supported by your browser"
+  offline_pages:
+    empty: "No offline pages available yet. Open pages while online to make them available offline."
+    unsupported: "This browser does not support listing offline pages."
   backend:
     message:
       disabled: "PWA is not enabled for the current page tree!"

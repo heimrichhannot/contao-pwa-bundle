@@ -14,6 +14,9 @@ huh.pwa:
     unsubscribe: "Benachrichtigungen nicht mehr empfangen"
     blocked: "Benachrichtigungen wurden von Ihrem Browser blockiert"
     not_supported: "Benachrichtigungen werden von Ihrem Browser nicht unterstützt"
+  offline_pages:
+    empty: "Noch keine Offline-Seiten verfügbar. Öffnen Sie Seiten im Online-Modus, damit sie offline verfügbar werden."
+    unsupported: "Dieser Browser unterstützt die Anzeige offline verfügbarer Seiten nicht."
   backend:
     message:
       disabled: "PWA ist für den aktuellen Seitenbaum nicht aktiviert!"

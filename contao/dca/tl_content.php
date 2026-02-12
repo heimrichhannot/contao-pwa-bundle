@@ -1,6 +1,7 @@
 <?php
 
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\OfflinePagesElementController;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionElement;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionPopupElementController;
 
@@ -32,6 +33,15 @@ $dca['palettes'][PushSubscriptionPopupElementController::TYPE] = <<< PALETTE
     {template_legend:hide},customTpl;
     {protected_legend:hide},protected;
     {expert_legend:hide},cssID;
+    {invisible_legend:hide},invisible,start,stop
+PALETTE;
+
+$dca['palettes'][OfflinePagesElementController::TYPE] = <<< PALETTE
+    {type_legend},type,headline;
+    {text_legend},text;
+    {template_legend:hide},customTpl;
+    {protected_legend:hide},protected;
+    {expert_legend:hide},guests,cssID;
     {invisible_legend:hide},invisible,start,stop
 PALETTE;
 
