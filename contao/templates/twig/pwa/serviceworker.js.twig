@@ -82,7 +82,13 @@ self.addEventListener('push', /** @param {PushEvent} event */ function (event) {
         return;
     }
     SW.log(event, 'Push payload: ' + payload);
-    payload = JSON.parse(payload);
+
+    try {
+        payload = JSON.parse(payload);
+    } catch (e) {
+        SW.log(event, 'Push payload is not a valid JSON: ' + e.message);
+        return;
+    }
 
     event.waitUntil(
         self.registration.showNotification(SW.notificationTitle(payload), payload)

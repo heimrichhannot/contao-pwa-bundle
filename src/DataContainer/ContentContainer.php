@@ -32,7 +32,7 @@ class ContentContainer
     ) {}
 
     #[AsCallback(self::TABLE, 'config.onload')]
-    public function onLoadCallback(DataContainer $dc = null): void
+    public function onLoadCallback(?DataContainer $dc = null): void
     {
         if (!$dc || !$dc->id) {
             return;
