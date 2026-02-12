@@ -33,18 +33,8 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			],
 		],
 		'operations'        => [
-			'delete' => [
-				'label'      => &$GLOBALS['TL_LANG']['MSC']['delete'],
-				'href'       => 'act=delete',
-				'icon'       => 'delete.gif',
-				'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? 'Delete this item?')
-					. '\'))return false;Backend.getScrollOffset()"',
-			],
-			'show'   => [
-				'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['show'],
-				'href'  => 'act=show',
-				'icon'  => 'show.gif',
-			],
+			'delete',
+			'show',
 		],
 	],
 	'palettes' => [

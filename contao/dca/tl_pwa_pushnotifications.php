@@ -47,28 +47,10 @@ $GLOBALS['TL_DCA'][$table] = [
             ],
         ],
         'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.gif',
-            ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['copy'],
-                'href' => 'act=copy',
-                'icon' => 'copy.gif',
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? 'Delete this item?')
-                    . '\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.gif',
-            ],
+            'edit',
+            'copy',
+            'delete',
+            'show',
         ],
     ],
     'palettes' => [

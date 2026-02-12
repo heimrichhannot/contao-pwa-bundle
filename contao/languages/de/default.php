@@ -2,6 +2,7 @@
 
 use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionElement;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
+use HeimrichHannot\PwaBundle\Controller\ContentElement\PushSubscriptionPopupElementController;
 
 $lang = &$GLOBALS['TL_LANG'];
 
@@ -10,9 +11,10 @@ $lang = &$GLOBALS['TL_LANG'];
  */
 $lang['CTE']['pwa'] = ['Progressive Web App (PWA)'];
 $lang['CTE'][InstallPwaButtonElementController::TYPE] = ['PWA installieren Button'];
-$lang['CTE'][PushSubscriptionElement::TYPE] = ['Push Notification Abonnieren Button'];
+$lang['CTE'][PushSubscriptionElement::TYPE] = ['Push Benachrichtigung abonnieren Button (PWA)'];
+$lang['CTE'][PushSubscriptionPopupElementController::TYPE] = ['Push Benachrichtigung abonnieren Popup (PWA)'];
 
 /**
- * Erros
+ * Errors
  */
 $lang['ERR']['huhPwaGenerateManifest'] = "Es gab einen Fehler beim generieren der Manifest-Datei für die aktuelle Seite: %error%";

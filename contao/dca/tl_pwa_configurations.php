@@ -39,14 +39,8 @@ $GLOBALS['TL_DCA'][$table] = [
             'panelLayout' => 'filter;search,limit',
         ],
         'global_operations' => [
-            'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset();"',
-            ],
+            'all',
             'control' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_pwa_configurations']['control'],
                 'href' => 'huh_pwa.backend.control',
                 'attributes' => 'onclick="Backend.getScrollOffset();"',
                 'class' => 'header_icon',
@@ -56,26 +50,15 @@ $GLOBALS['TL_DCA'][$table] = [
         'operations' => [
             'pushNotifications' => [
                 'href' => 'table=tl_pwa_pushnotifications',
-                'icon' => 'edit.svg',
+                'icon' => 'bundles/heimrichhannotpwa/backend/img/message-square-dot.svg',
             ],
-            'edit' => [
-                'href' => 'act=edit',
-                'icon' => 'header.svg',
-            ],
+            'edit',
             'copy' => [
                 'href' => 'act=copy',
                 'icon' => 'copy.gif',
             ],
-            'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['tl_pwa_configurations']['deleteConfirm'] ?? 'Delete this item?')
-                    . '\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'href' => 'act=show',
-                'icon' => 'show.gif',
-            ],
+            'delete',
+            'show',
             'subscriber' => [
                 'href' => 'table=tl_pwa_pushsubscriber',
                 'icon' => 'mgroup.svg',
@@ -130,6 +113,7 @@ $GLOBALS['TL_DCA'][$table] = [
         'cronIntervall' => [
             'inputType' => 'select',
             'options' => ['minutely', 'hourly', 'daily', 'weekly', 'monthly'],
+            'reference' => &$GLOBALS['TL_LANG'][$table]['cronIntervall'],
             'eval' => [
                 'tl_class' => 'w50',
                 'includeBlankOption' => false,

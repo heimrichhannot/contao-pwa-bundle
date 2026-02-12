@@ -12,6 +12,11 @@ $lang['supportPush'] = ["Push-Benachrichtigungen unterstützen","Aktivieren Sie 
 $lang['addDebugLog'] = ["Debug-Ausgabe aktivieren","Wenn aktiviert, werden umfangreiche Debug-Ausgaben in der Browserkonsole ausgegeben. Achtung: Der Serviceworker muss dazu neu erzeugt werden!"];
 $lang['sendWithCron'] = ["Benachrichtigungen automatisch per Cron senden","Wenn aktiviert, werden Push-Benachrichtigungen automatisch per Cronjob im festgelegten Interval sendet"];
 $lang['cronIntervall'] = ["Sende-Intervall","Intervall in welchem nach ungesendeten Push-Benachrichtigungen gesucht und diese gesendet werden sollen."];
+$lang['cronIntervall']['minutely'] = "Minütlich";
+$lang['cronIntervall']['hourly'] = "Stündlich";
+$lang['cronIntervall']['daily'] = "Täglich";
+$lang['cronIntervall']['weekly'] = "Wöchentlich";
+$lang['cronIntervall']['monthly'] = "Monatlich";
 
 $lang['hideInstallPrompt'][0] = "Installationsmeldung unterdrücken";
 $lang['hideInstallPrompt'][1] = "Browsermeldung über die Installationsmöglichkeit der Anwendlung unterdrücken. Notwendig, um das Inhaltselement \"Zum Startbildschirm hinzufügen\" zu nutzen.";
