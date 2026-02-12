@@ -205,16 +205,16 @@ class HuhPwaServiceWorker {
             if (cached) {
                 return cached;
             }
+            const offline = await this.offlineFallback(cache);
+            if (offline) {
+                return offline;
+            }
             const startUrl = this.toCachePath(this.startUrl || '/');
             if (startUrl) {
                 const startPage = await cache.match(startUrl);
                 if (startPage) {
                     return startPage;
                 }
-            }
-            const offline = await this.offlineFallback(cache);
-            if (offline) {
-                return offline;
             }
             return Response.error();
         }
