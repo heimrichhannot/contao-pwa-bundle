@@ -31,27 +31,8 @@ class ContentOnLoadListener
 
         $fields = &$GLOBALS['TL_DCA']['tl_content']['fields'];
 
-        // Contao labels can be translated through Symfony Translator with domain `contao_<table>`.
-        // Example: `tl_content.text.pwa_offline_pages_0` in domain `contao_tl_content`.
-        $fields['text']['label'][0] = $this->translateLabel(
-            'tl_content.text.pwa_offline_pages_0',
-            $fields['text']['label'][0] ?? ''
-        );
-        $fields['text']['label'][1] = $this->translateLabel(
-            'tl_content.text.pwa_offline_pages_1',
-            $fields['text']['label'][1] ?? ''
-        );
+        $fields['text']['label'][0] = $this->translator->trans('tl_content.text.pwa_offline_pages_0', [], 'contao_tl_content');
+        $fields['text']['label'][1] = $this->translator->trans('tl_content.text.pwa_offline_pages_1', [], 'contao_tl_content');
         $fields['text']['eval']['mandatory'] = false;
-    }
-
-    private function translateLabel(string $key, string $fallback): string
-    {
-        $translation = (string) $this->translator->trans($key, [], 'contao_tl_content');
-
-        if ($translation === '' || $translation === $key) {
-            return $fallback;
-        }
-
-        return $translation;
     }
 }
