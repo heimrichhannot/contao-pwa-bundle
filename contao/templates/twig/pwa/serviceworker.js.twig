@@ -20,7 +20,11 @@ SW.updateSubscriptionPath = '{{ updateSubscriptionPath }}';
 
 self.addEventListener('install', function (event) {
     SW.log(event, 'Start install event');
-    event.waitUntil(SW.installEvent(event).then(self.skipWaiting()));
+    event.waitUntil(
+        SW.installEvent(event).then(function () {
+            return self.skipWaiting();
+        })
+    );
 });
 
 {% block activate %}
@@ -49,25 +53,14 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function (event) {
     SW.log(event, 'Fetch ' + event.request.url);
     {% block fetch_filter %}
-
-    if (event.request.method !== 'GET') {
-        SW.log(event, 'POST requests are not handled by the service worker');
-        return event.respondWith(fetch(event.request));
-    }
-    var url = new URL(event.request.url);
-
-    // don't cache backend or dev routes
-    if (url.pathname.match('^\/contao')
-        || url.pathname.match('^\/_contao')
-        || url.pathname.match('^\/app_dev.php')
-        || url.pathname.match('^\/api')) {
+    if (!SW.shouldHandleRequest(event.request)) {
         SW.log(event, '[Serviceworker] Fetch: Stop (' + event.request.url + ')');
-        return false;
+        return;
     }
     {% endblock %}
     {% block fetch_inner %}
     event.respondWith(
-        fetch(event.request)
+        SW.fetchEvent(event)
     );
     {% endblock %}
 });
@@ -107,7 +100,7 @@ self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChan
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function (event) {
     SW.log(event, 'Start notification clicked event');
-    if (event.notification.data.clickJumpTo !== undefined) {
+    if (event.notification && event.notification.data && event.notification.data.clickJumpTo !== undefined) {
         event.notification.close();
         event.waitUntil(
             clients.openWindow(event.notification.data.clickJumpTo)

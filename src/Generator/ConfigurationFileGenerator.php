@@ -69,7 +69,7 @@ readonly class ConfigurationFileGenerator
             'debug' => (bool) $config->addDebugLog,
             'serviceWorker' => [
                 'path' => '/' . ServiceWorkerGenerator::generateFileName($page),
-                'scope' => \ltrim($config->pwaScope, '/'),
+                'scope' => $this->normalizeServiceWorkerScope($config->pwaScope),
             ],
             'pushNotifications' => [
                 'support' => (bool) $config->supportPush,
@@ -86,5 +86,20 @@ readonly class ConfigurationFileGenerator
             ],
             'hideInstallPrompt' => (bool) $config->hideInstallPrompt,
         ];
+    }
+
+    private function normalizeServiceWorkerScope(string $scope): string
+    {
+        $scope = \trim($scope);
+
+        if ($scope === '') {
+            return '/';
+        }
+
+        if (!\str_starts_with($scope, '/')) {
+            return '/' . $scope;
+        }
+
+        return $scope;
     }
 }

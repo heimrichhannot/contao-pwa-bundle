@@ -42,7 +42,6 @@ readonly class GeneratePageListener
         <link rel="manifest" href="/pwa/{$rootPage->alias}_manifest.json">
         <meta name="theme-color" content="#{$config->pwaThemeColor}">
         <script type="application/json" id="huh-pwa-config">$jsonConfig</script>
-        <script>window.HuhPWA = JSON.parse('$jsonConfig')</script>
         HTML;
 
         $GLOBALS['TL_HEAD']['huh_pwa'] = $script;

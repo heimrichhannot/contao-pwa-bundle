@@ -91,13 +91,18 @@ function initServiceWorker(pwa) {
 
     pwa.debugLog("[SW Registration] Register service worker");
 
-    navigator.serviceWorker.register(pwa.config.serviceWorker.path, {
-        scope: pwa.config.serviceWorker.scope
-    }).then(function(registration) {
+    const registrationOptions = {};
+    if (pwa.config.serviceWorker?.scope) {
+        registrationOptions.scope = pwa.config.serviceWorker.scope;
+    }
+
+    navigator.serviceWorker.register(pwa.config.serviceWorker.path, registrationOptions).then(function(registration) {
         registration.addEventListener('updatefound', function() {
             pwa.debugLog("[SW Registration] New service worker found for scope " + registration.scope);
         });
         initPush(pwa);
+    }).catch(function(error) {
+        pwa.debugLog('[SW Registration] Service worker registration failed', error);
     });
 }
 
