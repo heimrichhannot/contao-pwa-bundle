@@ -16,7 +16,9 @@
             .mergeWith(button_open_attributes|default)
         %}
         <{{ buttton_open_tag|default('button') }}{{ button_open_attributes }}>
-            {{ button_open_text|default('pwa_push_subscription_popup.open'|trans) }}
+            {% block button_open_content %}
+                {{ 'pwa_push_subscription_popup.open'|trans }}
+            {% endblock button_open_content %}
         </{{ buttton_open_tag|default('button') }}>
     {% endblock %}
 
