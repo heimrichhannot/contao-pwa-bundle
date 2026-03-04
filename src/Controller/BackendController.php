@@ -39,62 +39,10 @@ use Twig\Environment as TwigEnvironment;
 class BackendController extends AbstractController
 {
     public function __construct(
-        private readonly ContaoFramework           $contaoFramework,
-        private readonly TwigEnvironment           $twig,
         private readonly ManifestGenerator         $manifestGenerator,
         private readonly ServiceWorkerGenerator    $serviceWorkerGenerator,
-        private readonly CsrfTokenManagerInterface $csrfTokenManager,
         private readonly PushNotificationSender    $pushNotificationSender
     ) {}
-
-    #[Route('/control', name: 'control')]
-    public function huhBackendControlAction(Request $request): Response
-    {
-        if (!$webPush = \class_exists(WebPush::class))
-        {
-            Message::addInfo(
-                'Install WebPush to use web push notifications. See the installation instructions in the
-                <a href="https://github.com/heimrichhannot/contao-pwa-bundle/blob/main/README.md" target="_blank">README</a>.'
-            );
-        }
-
-        $this->contaoFramework->initialize();
-
-        $config = $this->getParameter('huh_pwa') ?: [];
-
-        $keys = $config['vapid'] ?? null;
-        $generatedKeys = null;
-
-        if (!$keys && \class_exists(VAPID::class)) {
-            $generatedKeys = VAPID::createVapidKeys();
-        }
-
-        $params = [
-            'rt' => $this->csrfTokenManager->getToken($this->getParameter('contao.csrf_token_name'))->getValue(),
-            'ref' => $request->get('_contao_referer_id'),
-        ];
-
-        $backendBackRoute        = $this->generateUrl('contao_backend', [...$params, 'do' => 'huh_pwa_configurations']);
-        $unsentNotificationsRoute = $this->generateUrl('huh_pwa.backend.push_notifications.unsent', $params);
-        $sendNotificationsRoute   = $this->generateUrl('huh_pwa.backend.push_notifications.send', $params);
-        $findPagesRoute          = $this->generateUrl('huh_pwa.backend.pages', $params);
-        $updatePageRoute         = $this->generateUrl('huh_pwa.backend.pages.update', $params);
-
-        $content = $this->twig->render('@Contao_HeimrichHannotPwaBundle/backend/backend.html.twig', [
-            'messages' => Message::generate(),
-            'vapid_keys' => $keys,
-            'generatedKeys' => $generatedKeys,
-            'content' => 'Content',
-            'backend_back_route' => $backendBackRoute,
-            'unsent_notifications_route' => $unsentNotificationsRoute,
-            'send_notifications_route' => $sendNotificationsRoute,
-            'find_pages_route' => $findPagesRoute,
-            'update_page_route' => $updatePageRoute,
-            'web_push' => $webPush,
-        ]);
-
-        return new Response($content);
-    }
 
     #[Route('/push_notifications/unsent', name: 'push_notifications.unsent', methods: ['GET'])]
     public function findUnsentNotificationAction(): Response

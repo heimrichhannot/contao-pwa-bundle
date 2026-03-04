@@ -1,17 +1,14 @@
-{% extends "@ContaoCore/Backend/be_page.html.twig" %}
+{% extends "@Contao/be_main" %}
 
-{% block headline %}
-    {% trans %}huh.pwa.backend.control.headline{% endtrans %}
-{% endblock %}
 
-{% block error %}{% endblock %}
 
-{% block main %}
+{% block main_content %}
     {% if messages|default %}
         {{ messages|raw }}
     {% endif %}
     <div id="tl_buttons">
-        <a href="{{ backend_back_route }}" class="header_back" title="" accesskey="b" onclick="Backend.getScrollOffset()">Zurück</a>
+        <a href="{{ backend_back_route }}" class="header_back" title="" accesskey="b"
+           onclick="Backend.getScrollOffset()">Zurück</a>
     </div>
 
     {% if web_push|default %}
@@ -30,7 +27,9 @@
                         <pre><code>{{ vapid_keys.privateKey }}</code></pre>
                     </figure>
                 {% elseif generated_keys|default %}
-                    <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel nutzen:</p>
+                    <p>Es wurden keine Schlüssel hinterlegt. Wenn Sie Web Notifications nutzen möchten, müssen Sie diese
+                        in der Konfiguration hinterlegen (Informationen dazu in der README). Sie können diese Schlüssel
+                        nutzen:</p>
                     <figure>
                         <figcaption><strong>Public</strong></figcaption>
                         <pre><code>{{ generated_keys.publicKey }}</code></pre>
@@ -46,7 +45,10 @@
         <div class="maintenance_inactive">
             <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
             <div class="tl_tbox">
-                <p><button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications</button></p>
+                <p>
+                    <button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications
+                    </button>
+                </p>
                 <p id="huhPwaSendPushNotificationStatus"></p>
             </div>
         </div>
@@ -55,7 +57,9 @@
         <h2 class="sub_headline">{{ 'huh.pwa.backend.control.files'|trans }}</h2>
         <div class="tl_tbox">
             <p>Rebuild manifest and serviceworker files</p>
-            <p><button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button></p>
+            <p>
+                <button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button>
+            </p>
             <p id="huhPwaRebuildFilesStatus"></p>
         </div>
     </div>
