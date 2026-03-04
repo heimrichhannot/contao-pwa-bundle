@@ -13,7 +13,6 @@ namespace HeimrichHannot\PwaBundle\DataContainer;
 use Contao\ArticleModel;
 use Contao\ContentModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\CoreBundle\Twig\Finder\FinderFactory;
 use Contao\DataContainer;
 use Contao\Message;
 use HeimrichHannot\PwaBundle\Controller\ContentElement\InstallPwaButtonElementController;
@@ -26,7 +25,6 @@ class ContentContainer
     public const TABLE = 'tl_content';
 
     public function __construct(
-        private readonly FinderFactory       $templateLocator,
         private readonly TranslatorInterface $translator,
         private readonly Utils               $utils,
     ) {}
@@ -81,15 +79,5 @@ class ContentContainer
         {
             Message::addInfo($this->translator->trans('huh.pwa.backend.message.hideInstallNotEnabled'));
         }
-    }
-
-    #[AsCallback(self::TABLE, 'fields.pwaSubscribeButtonTemplate.options')]
-    public function onPwaSubscribeButtonTemplateOptionsCallback(): array
-    {
-        return $this->templateLocator->create()
-            ->identifier('pwa/subscribe_button')
-            ->extension('html.twig')
-            ->withVariants()
-            ->asTemplateOptions();
     }
 }

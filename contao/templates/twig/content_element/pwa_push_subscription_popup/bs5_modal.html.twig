@@ -1,5 +1,13 @@
 {% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
 
+{% block button_open %}
+    {% set button_open_attributes = attrs()
+        .addClass('btn')
+        .mergeWith(button_open_attributes|default)
+    %}
+    {{ parent() }}
+{% endblock %}
+
 {% block modal_content %}
     {{ block('content', '@Contao/content_element/text.html.twig') }}
     {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}

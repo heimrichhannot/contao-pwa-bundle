@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\PwaBundle\EventListener\DataContainer;
+namespace HeimrichHannot\PwaBundle\EventListener\DataContainer\Content;
 
 use Contao\ContentModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
@@ -9,7 +9,7 @@ use HeimrichHannot\PwaBundle\Controller\ContentElement\OfflinePagesElementContro
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCallback('tl_content', 'config.onload')]
-class ContentOnLoadListener
+class ConfigOnLoadListener
 {
     public function __construct(
         private readonly TranslatorInterface $translator,

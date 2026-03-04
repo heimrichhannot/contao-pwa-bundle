@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ##[DEV]
+- Changed: modernized bundle structure
+- Changed: raised minimum contao version to 5.3
+- Changed: raised minimum php version to 8.2
 - Removed: old head bundle MetaTags
 
 ## [0.8.19] - 2025-03-07

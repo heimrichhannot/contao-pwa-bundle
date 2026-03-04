@@ -1,4 +1,5 @@
 {% extends '@Contao/content_element/_base.html.twig' %}
+{% trans_default_domain 'huh_pwa' %}
 
 {% set model_css_id = element_html_id ~ '-modal' %}
 
@@ -8,8 +9,16 @@
     {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
 {% endblock %}
 
-{% block content %}
-    <button onclick="window.huh_pwa_push_popup_open(document.getElementById('{{ model_css_id }}'))">Open Modal</button>
+{% block inner %}
+    {% block button_open %}
+        {% set button_open_attributes = attrs()
+            .set('onclick', "window.huh_pwa_push_popup_open(document.getElementById('" ~ model_css_id ~ "'))")
+            .mergeWith(button_open_attributes|default)
+        %}
+        <{{ buttton_open_tag|default('button') }}{{ button_open_attributes }}>
+            {{ button_open_text|default('pwa_push_subscription_popup.open'|trans) }}
+        </{{ buttton_open_tag|default('button') }}>
+    {% endblock %}
 
     {% block modal %}
         <div id="{{ model_css_id }}" class="huh_pwa-modal-window">
