@@ -6,8 +6,15 @@
 {% endblock %}
 
 {% block modal %}
-    <div class="modal fade {{ modelCssClasses|default }}" id="{{ model_css_id }}" tabindex="-1"
-         aria-labelledby="{{ model_css_id }}Label" aria-hidden="true">
+    {% set modal_wrapper_attributes = attrs()
+        .addClass('modal fade')
+        .set('id', model_css_id)
+        .set('tabindex', '-1')
+        .set('aria-labelledby', model_css_id ~ 'Label')
+        .set('aria-hidden', 'true')
+        .mergeWith(modal_wrapper_attributes|default) %}
+
+    <div{{ modal_wrapper_attributes }}>
         <div class="modal-dialog">
             <div class="modal-content">
                 {% block modal_header %}
@@ -21,12 +28,22 @@
                 <div class="modal-body">
                     {{ block('modal_content') }}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-bs-dismiss="modal"
-                            data-dismiss="modal">
-                        {{ 'MSC.close'|trans(domain: 'contao_default') }}
-                    </button>
-                </div>
+                {% block modal_footer %}
+                    <div class="modal-footer">
+                        {% block modal_footer_content %}
+                            {% set footer_close_button_attributes = attrs()
+                                .set('type', 'button')
+                                .addClass('btn')
+                                .set('data-bs-dismiss', 'modal')
+                                .set('data-dismiss', 'modal')
+                                .mergeWith(footer_close_button_attributes|default)
+                            %}
+                            <button{{ footer_close_button_attributes }}>
+                                {{ footer_close_button_text|default('MSC.close'|trans(domain: 'contao_default')) }}
+                            </button>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
             </div>
         </div>
     </div>
