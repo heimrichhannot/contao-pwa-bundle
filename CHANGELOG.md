@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-##[DEV]
+## [0.9.0]
 - Added: offline pages element ([#25](https://github.com/heimrichhannot/contao-pwa-bundle/pull/25))
 - Changed: replace popup module with content element (possibly BREAKING)
 - Changed: refactor templates including service worker templates (possibly BREAKING)
@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 - Changed: allow minishlink/web-push up to v10
 - Removed: old head bundle MetaTags
 - Removed: encore bundle integration
+
+## [0.8.20] - 2025-12-09
+- Fixed: warnings
+- Fixed: missing locales
 
 ## [0.8.19] - 2025-03-07
 - Fixed: Syntax error in PushNotificationSender.php
@@ -195,7 +199,7 @@ All notable changes to this project will be documented in this file.
 * an undefined error in PushSubscriptionBottons.js
 
 #### Changed
-* moved translations to HuhPWA js class
+* moved translations to HuhContaoPwaBundle js class
 * removed translation.js.twig
 
 ## [0.2.0] - 2019-02-19
