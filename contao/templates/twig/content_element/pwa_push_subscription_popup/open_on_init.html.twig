@@ -12,12 +12,17 @@
     - Adjust the open behavior:
 
         Active the open on page visit behavior by setting the variable `open_on_init` to `true` (already set in this template).
+
         {% set open_on_init = true %}
 
         Delay the open behavior by setting the variable `open_delay` to the desired delay in milliseconds (default: 0).
-        {% set open_delay = 500 %}
+        5000 ms = 5 seconds
+
+        {% set open_delay = 5000 %}
 
         Show the popup again after a certain time (in hours) by setting the variable `expire_time` (default: 0 / off).
+        168 = 7 days, 720 = 30 days
+
         {% set expire_time = 168 %}
 
     Hint: if you want the open on init behavior, don't forget to remove the open button like shown in this template (by overriding the `button_open` block).
@@ -32,7 +37,7 @@
 
 {% block script %}
     {% set open_on_init = true %}
-{#    {% set open_delay = 500 %}#}
+{#    {% set open_delay = 5000 %}#}
 {#    {% set expire_time = 168 %}#}
     {{ parent() }}
 {% endblock %}
