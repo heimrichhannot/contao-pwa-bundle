@@ -12,7 +12,7 @@ $dca['palettes'][PushSubscriptionElement::TYPE] = <<< PALETTE
     {template_legend:hide},customTpl;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests;
-    {invisible_legend:hide},invisible,start,stop'
+    {invisible_legend:hide},invisible,start,stop
 PALETTE;
 
 
@@ -23,7 +23,7 @@ $dca['palettes'][InstallPwaButtonElementController::TYPE] = <<< PALETTE
     {template_legend:hide},customTpl;
     {protected_legend:hide},protected;
     {expert_legend:hide},guests,cssID;
-    {invisible_legend:hide},invisible;';
+    {invisible_legend:hide},invisible,start,stop
 PALETTE;
 
 $dca['palettes'][PushSubscriptionPopupElementController::TYPE] = <<< PALETTE
