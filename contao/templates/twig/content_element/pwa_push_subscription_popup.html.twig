@@ -118,15 +118,23 @@
             <script nonce="{{ csp_nonce('script-src') }}">
                 /** @var {CustomEvent} event */
                 document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
-                    let shown = (null !== localStorage.getItem('huh_pwa.push_popup.{{ model_css_id }}.displayed'));
-                    if (event.detail.context !== 'init' || shown) {
+                    const storageKey = 'huh_pwa.push_popup.{{ model_css_id }}.displayed';
+                    const openDelay = {{ open_delay|default(0)|int }};
+                    const expireTime = {{ expire_time|default(0)|int }};
+                    const shownAt = parseInt(localStorage.getItem(storageKey), 10) || 0;
+                    const now = Math.floor(Date.now() / 1000);
+                    const shouldShow = (shownAt === 0) || (expireTime > 0 && ((now - shownAt) >= (expireTime * 3600)));
+
+                    if (event.detail.context !== 'init' || !shouldShow) {
                         return;
                     }
 
-                    if ('init' === event.detail.context && !shown) {
-                        window.huh_pwa_push_popup_open(document.getElementById('" ~ model_css_id ~ "'));
-                        localStorage.setItem('huh_pwa.push_popup.{{ model_css_id }}.displayed', (Math.floor(Date.now() / 1000)))
-                    }
+                    const popupElement = document.getElementById('{{ model_css_id }}');
+
+                    setTimeout(function () {
+                        window.huh_pwa_push_popup_open(popupElement);
+                        localStorage.setItem(storageKey, String(Math.floor(Date.now() / 1000)));
+                    }, openDelay);
                 });
             </script>
         {% endadd %}
