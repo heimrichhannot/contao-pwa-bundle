@@ -17,6 +17,6 @@ $lang['CTE'][PushSubscriptionPopupElementController::TYPE] = ['Push Notification
 $lang['CTE'][OfflinePagesElementController::TYPE] = ['Offline pages list (PWA)'];
 
 /**
- * Erros
+ * Errors
  */
 $lang['ERR']['huhPwaGenerateManifest'] = "There was an error while generating the manifest file for the current page: %error%";

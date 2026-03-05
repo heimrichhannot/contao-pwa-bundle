@@ -75,26 +75,4 @@ class PageContainer
 
         return $list;
     }
-
-    #[AsCallback(self::TABLE, 'fields.pwaParent.options')]
-    public function getInheritPwaPageConfigOptions(): array
-    {
-        if (!$pages = PageModel::findBy('addPwa', self::ADD_PWA_YES)) {
-            return [];
-        }
-
-        $options = [];
-
-        /** @var PageModel $page */
-        foreach ($pages as $page)
-        {
-            if (!$pwaConfig = PwaConfigurationsModel::findByPk($pages->pwaConfiguration)) {
-                continue;
-            }
-
-            $options[$page->id] = \sprintf('%s (%s)', $page->title, $pwaConfig->title);
-        }
-
-        return $options;
-    }
 }

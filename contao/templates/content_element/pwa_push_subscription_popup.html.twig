@@ -15,11 +15,11 @@
             .set('onclick', "window.huh_pwa_push_popup_open(document.getElementById('" ~ model_css_id ~ "'))")
             .mergeWith(button_open_attributes|default)
         %}
-        <{{ buttton_open_tag|default('button') }}{{ button_open_attributes }}>
+        <{{ button_open_tag|default('button') }}{{ button_open_attributes }}>
             {% block button_open_content %}
                 {{ 'pwa_push_subscription_popup.open'|trans }}
             {% endblock button_open_content %}
-        </{{ buttton_open_tag|default('button') }}>
+        </{{ button_open_tag|default('button') }}>
     {% endblock %}
 
     {% block modal %}

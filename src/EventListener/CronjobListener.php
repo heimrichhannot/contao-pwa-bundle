@@ -53,7 +53,7 @@ readonly class CronjobListener
     /**
      * @CronJob("weekly")
      */
-    public function weekly()
+    public function weekly(): void
     {
         $this->sendPushNotifications('weekly');
     }

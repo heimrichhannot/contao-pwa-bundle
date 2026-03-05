@@ -34,14 +34,6 @@ class BuildPwaFilesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->addOption(
-            name: 'dry-run',
-            description: 'Performs a run without actually sending notifications or commiting changes to the database.'
-        );
-    }
-
     /**
      * Executes the command.
      *

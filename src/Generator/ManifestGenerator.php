@@ -34,7 +34,7 @@ readonly class ManifestGenerator
     {
         if ($manifest->icons && $manifest->icons->isIconFilesMissing())
         {
-            $this->iconGenerator->generateIcons($manifest->icons, $manifest->icons->getApplicationAlias());
+            $this->iconGenerator->generateIcons($manifest->icons);
         }
 
         $manifestJson = \json_encode($manifest->jsonSerialize(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

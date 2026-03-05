@@ -24,7 +24,6 @@ class PushSubscriptionPopupElementController extends AbstractContentElementContr
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
     {
         $template->set('text', $model->text ?: '');
-        $template->set('openOnInit', (static::TOGGLE_EVENT === $model->pwaPopupToggle));
 
         $figure = !$model->addImage ? null : $this->studio
             ->createFigureBuilder()
