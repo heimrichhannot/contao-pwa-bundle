@@ -113,7 +113,7 @@
         </script>
     {% endadd %}
 
-    {% if openOnInit|default %}
+    {% if open_on_init|default %}
         {% add "pwa_popup_js_init" to body %}
             <script nonce="{{ csp_nonce('script-src') }}">
                 /** @var {CustomEvent} event */
@@ -124,7 +124,7 @@
                     }
 
                     if ('init' === event.detail.context && !shown) {
-                        huh_pwa_push_popup_open?.();
+                        window.huh_pwa_push_popup_open(document.getElementById('" ~ model_css_id ~ "'));
                         localStorage.setItem('huh_pwa.push_popup.{{ model_css_id }}.displayed', (Math.floor(Date.now() / 1000)))
                     }
                 });

@@ -1,0 +1,9 @@
+{% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
+
+{% block button_open %}
+{% endblock %}
+
+{% block script %}
+    {% set open_on_init = true %}
+    {{ parent() }}
+{% endblock %}
