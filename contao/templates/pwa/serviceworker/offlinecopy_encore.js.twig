@@ -1,0 +1,6 @@
+{% extends "@Contao/pwa/serviceworker/offlinecopy.js.twig" %}
+
+{% block configuration %}
+{{ parent() }}
+SW.supportEncorePrecache = true;
+{% endblock %}

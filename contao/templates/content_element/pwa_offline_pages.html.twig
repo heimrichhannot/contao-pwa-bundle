@@ -1,0 +1,227 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+
+{% block content %}
+    <div id="{{ element_html_id }}" class="huh-pwa-offline-pages" data-empty-message="{{ emptyMessage|e('html_attr') }}" data-unsupported-message="{{ unsupportedMessage|e('html_attr') }}">
+        <ul class="huh-pwa-offline-pages__list" data-role="page-list"></ul>
+        <p class="huh-pwa-offline-pages__state" data-role="state"></p>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {% add "huh_pwa_offline_pages" to body %}
+        <script nonce="{{ csp_nonce('script-src') }}">
+            (function () {
+                const roots = document.querySelectorAll('.huh-pwa-offline-pages');
+                if (!roots.length) {
+                    return;
+                }
+
+                const assetExtensionPattern = /\.(css|js|mjs|json|xml|txt|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot|pdf|mp4|webm|mp3|wav|ogg|zip)(\?.*)?$/i;
+
+                function setState(stateElement, message) {
+                    if (!stateElement) {
+                        return;
+                    }
+
+                    stateElement.textContent = message;
+                }
+
+                function isVisiblePageUrl(rawUrl) {
+                    const url = new URL(rawUrl, window.location.origin);
+
+                    if (url.origin !== window.location.origin) {
+                        return false;
+                    }
+
+                    if (
+                        url.pathname.startsWith('/contao')
+                        || url.pathname.startsWith('/_contao')
+                        || url.pathname.startsWith('/_wdt')
+                        || url.pathname.startsWith('/_profiler')
+                        || url.pathname.startsWith('/api')
+                    ) {
+                        return false;
+                    }
+
+                    if (url.pathname.startsWith('/sw_')) {
+                        return false;
+                    }
+
+                    return !assetExtensionPattern.test(url.pathname);
+                }
+
+                function toLabel(url) {
+                    const path = decodeURIComponent(url.pathname);
+                    if (path === '/') {
+                        return '/';
+                    }
+
+                    const normalized = path.endsWith('/') ? path.slice(0, -1) : path;
+                    return normalized || '/';
+                }
+
+                function extractTitle(response) {
+                    if (!response) {
+                        return Promise.resolve('');
+                    }
+
+                    const contentType = response.headers.get('content-type') || '';
+                    if (contentType.indexOf('text/html') !== 0 && contentType.indexOf('application/xhtml+xml') !== 0) {
+                        return Promise.resolve('');
+                    }
+
+                    return response.text().then(function (html) {
+                        try {
+                            const parser = new DOMParser();
+                            const documentNode = parser.parseFromString(html, 'text/html');
+                            const titleNode = documentNode.querySelector('title');
+
+                            if (!titleNode || !titleNode.textContent) {
+                                return '';
+                            }
+
+                            return titleNode.textContent.trim();
+                        } catch (e) {
+                            return '';
+                        }
+                    }).catch(function () {
+                        return '';
+                    });
+                }
+
+                function getPageTitle(entry) {
+                    return caches.open(entry.cacheName)
+                        .then(function (cache) {
+                            return cache.match(entry.request);
+                        })
+                        .then(function (response) {
+                            return extractTitle(response);
+                        })
+                        .then(function (title) {
+                            return {
+                                url: entry.url,
+                                title: title
+                            };
+                        })
+                        .catch(function () {
+                            return {
+                                url: entry.url,
+                                title: ''
+                            };
+                        });
+                }
+
+                function renderPages(root, pages) {
+                    const listElement = root.querySelector('[data-role="page-list"]');
+                    const stateElement = root.querySelector('[data-role="state"]');
+                    const emptyMessage = root.dataset.emptyMessage || '';
+
+                    if (!listElement) {
+                        return;
+                    }
+
+                    listElement.innerHTML = '';
+
+                    if (pages.length < 1) {
+                        setState(stateElement, emptyMessage);
+                        return;
+                    }
+
+                    pages.forEach(function (page) {
+                        const item = document.createElement('li');
+                        item.className = 'huh-pwa-offline-pages__item';
+
+                        const link = document.createElement('a');
+                        link.className = 'huh-pwa-offline-pages__link';
+                        link.href = page.url.pathname + page.url.search;
+                        link.textContent = page.title || toLabel(page.url);
+
+                        item.appendChild(link);
+                        listElement.appendChild(item);
+                    });
+
+                    setState(stateElement, '');
+                }
+
+                if (!('caches' in window)) {
+                    roots.forEach(function (root) {
+                        setState(root.querySelector('[data-role="state"]'), root.dataset.unsupportedMessage || '');
+                    });
+                    return;
+                }
+
+                caches.keys()
+                    .then(function (cacheNames) {
+                        return cacheNames.filter(function (name) {
+                            return name.indexOf('cache-sw-') === 0;
+                        });
+                    })
+                    .then(function (cacheNames) {
+                        if (cacheNames.length < 1) {
+                            return [];
+                        }
+
+                        return Promise.all(
+                            cacheNames.map(function (name) {
+                                return caches.open(name).then(function (cache) {
+                                    return cache.keys().then(function (requests) {
+                                        return {
+                                            name: name,
+                                            requests: requests
+                                        };
+                                    });
+                                });
+                            })
+                        );
+                    })
+                    .then(function (cacheEntries) {
+                        const uniquePages = new Map();
+
+                        cacheEntries.forEach(function (cacheEntry) {
+                            cacheEntry.requests.forEach(function (request) {
+                                if (!request || !request.url) {
+                                    return;
+                                }
+
+                                if (!isVisiblePageUrl(request.url)) {
+                                    return;
+                                }
+
+                                const url = new URL(request.url, window.location.origin);
+                                const key = url.pathname + url.search;
+
+                                if (!uniquePages.has(key)) {
+                                    uniquePages.set(key, {
+                                        url: url,
+                                        request: request,
+                                        cacheName: cacheEntry.name
+                                    });
+                                }
+                            });
+                        });
+
+                        return Array.from(uniquePages.values()).sort(function (a, b) {
+                            return a.url.pathname.localeCompare(b.url.pathname);
+                        });
+                    })
+                    .then(function (pages) {
+                        return Promise.all(
+                            pages.map(function (entry) {
+                                return getPageTitle(entry);
+                            })
+                        );
+                    })
+                    .then(function (pages) {
+                        roots.forEach(function (root) {
+                            renderPages(root, pages);
+                        });
+                    })
+                    .catch(function () {
+                        roots.forEach(function (root) {
+                            setState(root.querySelector('[data-role="state"]'), root.dataset.emptyMessage || '');
+                        });
+                    });
+            })();
+        </script>
+    {% endadd %}
+{% endblock %}

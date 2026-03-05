@@ -1,0 +1,28 @@
+huh.pwa:
+  install_button: "Add to home screen"
+  tl_pwa_pushnotifications:
+    label:
+      notificationSent: "Sent at %date%"
+      notificationUnsentPublished: "Will soon be sent"
+      notificationUnsentPublishedDate: "Will be sent from %date%"
+      notificationUnsentNotPublished: "Not published yet"
+      groupSent: "Sent notifications"
+      groupUnsent: "Unsent notifications"
+  pushnotifications:
+    wait: "We currently checking if push notifications are supported by your browser"
+    subscribe: "Subscribe push notifications"
+    unsubscribe: "Unsubscribe push notifications"
+    blocked: "Push notifications were blocked by your browser"
+    not_supported: "Push notifications not supported by your browser"
+  offline_pages:
+    empty: "No offline pages available yet. Open pages while online to make them available offline."
+    unsupported: "This browser does not support listing offline pages."
+  backend:
+    message:
+      disabled: "PWA is not enabled for the current page tree!"
+      hideInstallNotEnabled: "'Suppress install prompt' must be activated in pwa configuration for this element to work!"
+    control:
+      headline: "PWA control"
+      files: "Files"
+      notifications: "Notifications"
+      authentication: "Authentication (VAPID keys)"

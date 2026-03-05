@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.0]
+- Added: offline pages element ([#25](https://github.com/heimrichhannot/contao-pwa-bundle/pull/25))
+- Changed: replace popup module with content element (possibly BREAKING)
+- Changed: refactor templates including service worker templates (possibly BREAKING)
+- Changed: modernized bundle structure
+- Changed: raised minimum contao version to 5.3
+- Changed: raised minimum php version to 8.2
+- Changed: allow minishlink/web-push up to v10
+- Removed: old head bundle MetaTags
+- Removed: encore bundle integration
+
 ## [0.8.20] - 2025-12-09
 - Fixed: warnings
 - Fixed: missing locales

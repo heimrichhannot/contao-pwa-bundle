@@ -1,0 +1,20 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+
+{% set button_attrs = attrs()
+    .addClass('huh-pwa-install-button disabled')
+    .set('data-huh-pwa', 'action:install')
+    .mergeWith(button_attrs|default)
+%}
+
+{% block content %}
+    <button {{ button_attrs }}>
+        {% if linkTitle is defined and linkTitle is not empty %}
+            {{ linkTitle }}
+        {% else %}
+            {{ 'huh.pwa.install_button'|trans() }}
+        {% endif %}
+    </button>
+    <div class="huh-pwa-install-message hidden">
+        {{ installNotSupportedMessage|default|raw }}
+    </div>
+{% endblock %}

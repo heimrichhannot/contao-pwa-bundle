@@ -1,0 +1,142 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+{% trans_default_domain 'huh_pwa' %}
+
+{% set model_css_id = element_html_id ~ '-modal' %}
+
+{% block modal_content %}
+    {{ block('inner', '@Contao/content_element/text.html.twig') }}
+
+    {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
+{% endblock %}
+
+{% block inner %}
+    {% block button_open %}
+        {% set button_open_attributes = attrs()
+            .set('onclick', "window.huh_pwa_push_popup_open(document.getElementById('" ~ model_css_id ~ "'))")
+            .mergeWith(button_open_attributes|default)
+        %}
+        <{{ button_open_tag|default('button') }}{{ button_open_attributes }}>
+            {% block button_open_content %}
+                {{ 'pwa_push_subscription_popup.open'|trans }}
+            {% endblock button_open_content %}
+        </{{ button_open_tag|default('button') }}>
+    {% endblock %}
+
+    {% block modal %}
+        <div id="{{ model_css_id }}" class="huh_pwa-modal-window">
+            <div>
+                <button onclick="document.getElementById('{{ model_css_id }}').classList.remove('in');"
+                        title="Close" class="modal-close">x
+                </button>
+                {{ block('modal_content') }}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block style %}
+    {% add "pwa_popup_css" to stylesheets %}
+        <style>
+            .huh_pwa-modal-window {
+                position: fixed;
+                background-color: rgba(255, 255, 255, 0.25);
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                visibility: hidden;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s;
+                z-index: 2;
+            }
+
+            .huh_pwa-modal-window.in {
+                visibility: visible;
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .huh_pwa-modal-window > div {
+                width: 400px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 2em;
+                background: white;
+                box-shadow: 0 0 10px;
+            }
+
+            .huh_pwa-modal-window header {
+                font-weight: bold;
+            }
+
+            .huh_pwa-modal-window h1 {
+                font-size: 150%;
+                margin: 0 0 15px;
+            }
+
+            .huh_pwa-modal-window .modal-close {
+                color: #aaa;
+                line-height: 50px;
+                position: absolute;
+                right: 0;
+                text-align: center;
+                top: 0;
+                width: 70px;
+                text-decoration: none;
+                background-color: transparent;
+                border: none;
+            }
+
+            .huh_pwa-modal-window .modal-close:hover {
+                color: black;
+            }
+        </style>
+    {% endadd %}
+{% endblock %}
+
+{% block script %}
+    {% add "pwa_popup_js" to body %}
+        {% block open_modal_js %}
+            <script nonce="{{ csp_nonce('script-src') }}">
+                function huh_pwa_push_popup_open(popupElement) {
+                    popupElement = popupElement || document.getElementById('{{ model_css_id }}');
+                    if (!popupElement) return;
+                    popupElement.classList.add('in');
+                }
+            </script>
+        {% endblock %}
+        <script nonce="{{ csp_nonce('script-src') }}">
+            window.huh_pwa_push_popup_open = window.huh_pwa_push_popup_open || huh_pwa_push_popup_open;
+        </script>
+    {% endadd %}
+
+    {% if open_on_init|default %}
+        {% add "pwa_popup_js_init" to body %}
+            <script nonce="{{ csp_nonce('script-src') }}">
+                /** @var {CustomEvent} event */
+                document.addEventListener('huh_pwa_push_isUnsubscribed', function (event) {
+                    const storageKey = 'huh_pwa.push_popup.{{ model_css_id }}.displayed';
+                    const openDelay = {{ open_delay|default(0) }};
+                    const expireTime = {{ expire_time|default(0) }};
+                    const shownAt = parseInt(localStorage.getItem(storageKey), 10) || 0;
+                    const now = Math.floor(Date.now() / 1000);
+                    const shouldShow = (shownAt === 0) || (expireTime > 0 && ((now - shownAt) >= (expireTime * 3600)));
+
+                    if (event.detail.context !== 'init' || !shouldShow) {
+                        return;
+                    }
+
+                    const popupElement = document.getElementById('{{ model_css_id }}');
+
+                    setTimeout(function () {
+                        window.huh_pwa_push_popup_open(popupElement);
+                        localStorage.setItem(storageKey, String(Math.floor(Date.now() / 1000)));
+                    }, openDelay);
+                });
+            </script>
+        {% endadd %}
+    {% endif %}
+{% endblock %}

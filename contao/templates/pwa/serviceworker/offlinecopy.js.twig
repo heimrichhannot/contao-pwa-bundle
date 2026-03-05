@@ -1,0 +1,6 @@
+{% extends "@Contao/pwa/serviceworker.js.twig" %}
+
+{% block configuration %}
+    {{ parent() }}
+    SW.supportOfflineCaching = true;
+{% endblock %}

@@ -1,0 +1,43 @@
+{#
+    With this template, you can adjust the modal open behavior to open on page visit.
+
+    It is recommended to create a variant of this template to adjust it to your needs.
+
+    Following possibilities:
+
+    - Change layout to bootstrap 5 (or any other layout, if a template is provided):
+        Replace the extends statement with:
+        {% extends "@Contao/content_element/pwa_push_subscription_popup/bs5_modal.html.twig" %}
+
+    - Adjust the open behavior:
+
+        Active the open on page visit behavior by setting the variable `open_on_init` to `true` (already set in this template).
+
+        {% set open_on_init = true %}
+
+        Delay the open behavior by setting the variable `open_delay` to the desired delay in milliseconds (default: 0).
+        5000 ms = 5 seconds
+
+        {% set open_delay = 5000 %}
+
+        Show the popup again after a certain time (in hours) by setting the variable `expire_time` (default: 0 / off).
+        168 = 7 days, 720 = 30 days
+
+        {% set expire_time = 168 %}
+
+    Hint: if you want the open on init behavior, don't forget to remove the open button like shown in this template (by overriding the `button_open` block).
+
+#}
+
+{% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
+{#{% extends "@Contao/content_element/pwa_push_subscription_popup/bs5_modal.html.twig" %}#}
+
+{% block button_open %}
+{% endblock %}
+
+{% block script %}
+    {% set open_on_init = true %}
+{#    {% set open_delay = 5000 %}#}
+{#    {% set expire_time = 168 %}#}
+    {{ parent() }}
+{% endblock %}

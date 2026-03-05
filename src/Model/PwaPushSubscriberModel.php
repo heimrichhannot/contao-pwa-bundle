@@ -1,21 +1,19 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-
-namespace HeimrichHannot\ContaoPwaBundle\Model;
+namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model;
 
 /**
  * Class PwaSubscriberModel
- * @package HeimrichHannot\ContaoPwaBundle\Model
+ * @package HeimrichHannot\PwaBundle\Model
  *
  * @property int $id
  * @property int $pid

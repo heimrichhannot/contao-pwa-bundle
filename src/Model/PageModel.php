@@ -1,19 +1,16 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
-
-namespace HeimrichHannot\ContaoPwaBundle\Model;
-
+namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PageContainer;
+use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 
 /**
  * Class PageModel
@@ -30,7 +27,7 @@ class PageModel extends \Contao\PageModel
      * @param array $options
      * @return Collection|PageModel|PageModel[]|null
      */
-    public static function findAllWithActivePwaConfiguration(array $options = [])
+    public static function findAllWithActivePwaConfiguration(array $options = []): array|Collection|PageModel|null
     {
         return static::findByAddPwa(PageContainer::ADD_PWA_YES, $options);
     }

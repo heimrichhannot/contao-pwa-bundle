@@ -1,0 +1,81 @@
+{% extends "@Contao/content_element/pwa_push_subscription_popup.html.twig" %}
+
+{% block button_open %}
+    {% set button_open_attributes = attrs()
+        .addClass('btn')
+        .mergeWith(button_open_attributes|default)
+    %}
+    {{ parent() }}
+{% endblock %}
+
+{% block modal_content %}
+    {{ block('content', '@Contao/content_element/text.html.twig') }}
+    {{ include('@Contao/component/_pwa_subscribe_button.html.twig') }}
+{% endblock %}
+
+{% block modal %}
+    {% set modal_wrapper_attributes = attrs()
+        .addClass('modal fade')
+        .set('id', model_css_id)
+        .set('tabindex', '-1')
+        .set('aria-labelledby', model_css_id ~ 'Label')
+        .set('aria-hidden', 'true')
+        .mergeWith(modal_wrapper_attributes|default) %}
+
+    <div{{ modal_wrapper_attributes }}>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {% block modal_header %}
+                    {% if headline.text %}
+                        <div class="modal-header">
+                            {{ block('headline_component') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+                <div class="modal-body">
+                    {{ block('modal_content') }}
+                </div>
+                {% block modal_footer %}
+                    <div class="modal-footer">
+                        {% block modal_footer_content %}
+                            {% set footer_close_button_attributes = attrs()
+                                .set('type', 'button')
+                                .addClass('btn')
+                                .set('data-bs-dismiss', 'modal')
+                                .set('data-dismiss', 'modal')
+                                .mergeWith(footer_close_button_attributes|default)
+                            %}
+                            <button{{ footer_close_button_attributes }}>
+                                {{ footer_close_button_text|default('MSC.close'|trans(domain: 'contao_default')) }}
+                            </button>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block open_modal_js %}
+    <script nonce="{{ csp_nonce('script-src') }}">
+        function huh_pwa_push_popup_open(popupElement) {
+            popupElement = popupElement || document.getElementById('{{ model_css_id }}');
+            if (!popupElement) return;
+
+            const modal = bootstrap.Modal || Modal;
+            if (!modal) {
+                console.error('Bootstrap Modal not found');
+                return;
+            }
+
+            const modalInstance = new modal(popupElement, {
+                backdrop: false,
+            });
+            modalInstance.show();
+        }
+    </script>
+{% endblock %}
+
+{% block style %}
+{% endblock %}

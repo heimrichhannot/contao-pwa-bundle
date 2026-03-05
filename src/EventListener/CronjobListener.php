@@ -1,124 +1,102 @@
 <?php
 /**
- * Contao Open Source CMS
+ * Heimrich & Hannot PWA Bundle
  *
- * Copyright (c) 2018 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @copyright 2025 Heimrich & Hannot GmbH
+ * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license   LGPL-3.0-or-later
  */
 
+namespace HeimrichHannot\PwaBundle\EventListener;
 
-namespace HeimrichHannot\ContaoPwaBundle\EventListener;
-
-
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\CronJob;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushNotificationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\DefaultNotification;
-use HeimrichHannot\ContaoPwaBundle\Sender\PushNotificationSender;
-use Model\Collection;
+use Contao\Model\Collection;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
+use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
+use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Monolog\Logger;
 
-class CronjobListener
+readonly class CronjobListener
 {
-	/**
-	 * @var PushNotificationSender
-	 */
-	private $notificationSender;
-	/**
-	 * @var Logger
-	 */
-	private $logger;
-    private ContaoFramework $framework;
+    public function __construct(
+        private PushNotificationSender $notificationSender,
+        private LoggerInterface        $logger,
+        private ContaoFramework        $framework
+    ) {}
 
-
-    /**
-	 * CommandSchedulerListener constructor.
-	 * @param PushNotificationSender $notificationSender
-	 */
-	public function __construct(PushNotificationSender $notificationSender, LoggerInterface $logger, ContaoFramework $framework)
-	{
-		$this->notificationSender = $notificationSender;
-		$this->logger = $logger;
-        $this->framework = $framework;
+    #[AsCronJob('minutely')]
+    public function minutely(): void
+    {
+        $this->sendPushNotifications('minutely');
     }
 
-    /**
-     * @CronJob("minutely")
-     */
-	public function minutely()
-	{
-		$this->sendPushNotifications('minutely');
-	}
-    /**
-     * @CronJob("hourly")
-     */
-	public function hourly()
-	{
-		$this->sendPushNotifications('hourly');
-	}
-    /**
-     * @CronJob("daily")
-     */
-	public function daily()
-	{
-		$this->sendPushNotifications('daily');
-	}
-    /**
-     * @CronJob("weekly")
-     */
-	public function weekly()
-	{
-		$this->sendPushNotifications('weekly');
-	}
-    /**
-     * @CronJob("monthly")
-     */
-	public function monthly()
-	{
-		$this->sendPushNotifications('monthly');
-	}
+    #[AsCronJob('hourly')]
+    public function hourly(): void
+    {
+        $this->sendPushNotifications('hourly');
+    }
 
-	private function sendPushNotifications(string $interval)
-	{
+    #[AsCronJob('daily')]
+    public function daily(): void
+    {
+        $this->sendPushNotifications('daily');
+    }
+
+    #[AsCronJob('weekly')]
+    public function weekly(): void
+    {
+        $this->sendPushNotifications('weekly');
+    }
+
+    #[AsCronJob('monthly')]
+    public function monthly(): void
+    {
+        $this->sendPushNotifications('monthly');
+    }
+
+    private function sendPushNotifications(string $interval): void
+    {
         $this->framework->initialize();
 
-		/** @var PwaConfigurationsModel[]|Collection|null $configurations */
-		$configurations = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'],["1",$interval]);
-		if (!$configurations)
-		{
-			return;
-		}
+        /** @var PwaConfigurationsModel[]|Collection|null $configs */
+        if (!$configs = PwaConfigurationsModel::findBy(['sendWithCron=?', 'cronIntervall=?'], ["1", $interval]))
+        {
+            return;
+        }
 
-		foreach ($configurations as $configuration)
-		{
-			$notifications = PwaPushNotificationsModel::findUnsentPublishedNotificationsByPid($configuration->id);
-			if (!$notifications)
-			{
-				continue;
-			}
-			foreach ($notifications as $notification)
-			{
-				$pushNotification = new DefaultNotification($notification);
-				try
-				{
-					$this->notificationSender->send($pushNotification, $configuration);
-				} catch (\ErrorException $e)
-				{
-					$this->logger->error("Error while sending Push notifications 
-										(Notification ID: " .$notification->id.", Configuration: ".$configuration->id."): ".$e->getMessage(),
-						[
-							'trace' => $e->getTraceAsString(),
-							'file' => $e->getFile(),
-							'line' => $e->getLine(),
-						]);
-					continue;
-				}
-			}
+        foreach ($configs as $config)
+        {
+            if (!$notifications = PwaPushNotificationsModel::findUnsentPublishedNotificationsByPid($config->id)) {
+                continue;
+            }
 
-		}
-	}
+            foreach ($notifications as $notification)
+            {
+                $pushNotification = new DefaultNotification($notification);
+
+                try
+                {
+                    $this->notificationSender->send($pushNotification, $config);
+                }
+                catch (\ErrorException $e)
+                {
+                    $this->logger->error(
+                        \sprintf("Error while sending Push notifications (Notification ID: %s, Configuration: %s): %s",
+                            $notification->id,
+                            $config->id,
+                            $e->getMessage()
+                        ),
+                        [
+                            'trace' => $e->getTraceAsString(),
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                        ]
+                    );
+                    continue;
+                }
+            }
+        }
+    }
 }

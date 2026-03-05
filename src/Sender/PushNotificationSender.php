@@ -9,14 +9,14 @@
  */
 
 
-namespace HeimrichHannot\ContaoPwaBundle\Sender;
+namespace HeimrichHannot\PwaBundle\Sender;
 
 
 use Contao\Model\Collection;
-use HeimrichHannot\ContaoPwaBundle\DataContainer\PwaPushNotificationContainer;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaPushSubscriberModel;
-use HeimrichHannot\ContaoPwaBundle\Model\PwaConfigurationsModel;
-use HeimrichHannot\ContaoPwaBundle\Notification\AbstractNotification;
+use HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer;
+use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
+use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Notification\AbstractNotification;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Minishlink\WebPush\Encryption;
 use Minishlink\WebPush\Subscription;
@@ -26,41 +26,37 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PushNotificationSender
 {
-    private ?array $bundleConfig;
-    private PwaPushNotificationContainer $notificationContainer;
-    private Utils $utils;
-
     /**
      * PushNotificationSender constructor.
      */
-    public function __construct(?array $bundleConfig, PwaPushNotificationContainer $notificationContainer, Utils $utils)
+    public function __construct(private ?array $bundleConfig, private readonly PwaPushNotificationContainer $notificationContainer, private readonly Utils $utils)
     {
-        $this->bundleConfig = $bundleConfig;
-        $this->notificationContainer = $notificationContainer;
-        $this->utils = $utils;
     }
 
-    public function sendWithLog(AbstractNotification $notification, PwaConfigurationsModel $config, LoggerInterface $log, ?array $subscribers = null): bool
-    {
+    public function sendWithLog(
+        AbstractNotification   $notification,
+        PwaConfigurationsModel $config,
+        LoggerInterface        $log,
+        ?array                 $subscribers = null,
+    ): bool {
         if (!$this->checkRequirements($log)) {
             return false;
         }
 
         $log->info("Requirements checked.");
 
-        if (!$subscribers) {
-            /** @var PwaPushSubscriberModel[]|PwaPushSubscriberModel|Collection|null $subscribers */
-            if (!$subscribers = PwaPushSubscriberModel::findByPid($config->id)) {
-                $log->error("No subscribers found.");
-                return false;
-            }
+        /** @var PwaPushSubscriberModel[]|Collection<PwaPushSubscriberModel>|null $subscribers */
+        if (!$subscribers && !($subscribers = PwaPushSubscriberModel::findByPid($config->id)))
+        {
+            $log->error("No subscribers found.");
+            return false;
         }
 
         $log->info("Found " . count($subscribers) . " subscribers.");
 
-        $webPush = $this->createPushInstance($log);
-        if (!$webPush)
+        if (!$webPush = $this->createPushInstance($log)) {
             return false;
+        }
 
         try {
             $payload = $notification->toArray();
@@ -88,14 +84,17 @@ class PushNotificationSender
                 continue;
             }
 
-            try {
+            try
+            {
                 $report = $webPush->sendOneNotification(
                     new Subscription(
                         $subscriber->endpoint,
                         $subscriber->publicKey,
                         $subscriber->authToken
                     ), json_encode($payload));
-            } catch (\ErrorException $e) {
+            }
+            catch (\ErrorException $e)
+            {
                 $log->warning("Error while sending push notification (Subscriber Id: {$subscriber->id}): " . $e->getMessage(), [
                     'function' => __FUNCTION__,
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
@@ -127,7 +126,7 @@ class PushNotificationSender
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
                     'reason' => $reason,
                     'endpoint' => $report->getEndpoint(),
-                    'response' => json_encode($report->getResponse()->getBody()),
+                    'response' => json_encode($report->getResponse()?->getBody()),
                 ]);
             }
         }
