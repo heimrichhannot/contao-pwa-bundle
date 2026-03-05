@@ -11,11 +11,11 @@ namespace HeimrichHannot\PwaBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\CronJob;
+use Contao\Model\Collection;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
-use Model\Collection;
 use Psr\Log\LoggerInterface;
 
 readonly class CronjobListener

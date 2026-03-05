@@ -30,7 +30,7 @@ readonly class ServiceWorkerGenerator
         private LoggerInterface       $logger,
         private TwigEnvironment       $twig,
         private UrlGeneratorInterface $router,
-        private readonly ContentUrlGenerator $contentUrlGenerator,
+        private ContentUrlGenerator $contentUrlGenerator,
     ) {}
 
     public function generatePageServiceworker(PageModel $page): bool
