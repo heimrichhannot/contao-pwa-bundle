@@ -42,22 +42,22 @@ class Manifest implements \JsonSerializable
         'sequence',
     ];
 
-    public ?string $name;
-    public ?string $short_name;
-    public ?string $description;
-    public ?string $dir;
-    public ?string $lang;
-    public ?string $orientation;
+    public ?string $name = null;
+    public ?string $short_name = null;
+    public ?string $description = null;
+    public ?string $dir = null;
+    public ?string $lang = null;
+    public ?string $orientation = null;
     public bool $prefer_related_applications = false;
     private array $related_applications = [];
-    public ?string $start_url;
-    public ?string $scope;
-    public ?ManifestIcon $icons;
+    public ?string $start_url = null;
+    public ?string $scope = null;
+    public ?ManifestIcon $icons = null;
     /** @var string Valid CSS color. RGB-Colors with # at the beginning */
-    public ?string $background_color;
+    public ?string $background_color = null;
     /** @var string Valid CSS color. RGB-Colors with # at the beginning */
-    public ?string $theme_color;
-    public ?string $display;
+    public ?string $theme_color = null;
+    public ?string $display = null;
 
     /**
      * Specify data which should be serialized to JSON

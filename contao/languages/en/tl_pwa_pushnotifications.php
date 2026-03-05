@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer;
+
 $lang = &$GLOBALS['TL_LANG']['tl_pwa_pushnotifications'];
 
 /**
@@ -12,8 +14,8 @@ $lang['iconSize'] = ["Icon size","Size of the image."];
 $lang['sent'] = ["Sent","Select if message is already sent."];
 $lang['receiverCount'] = ["Recipient count","The number of recipients the message was sent."];
 $lang['clickEvent'] = ["Notification click behavior","Select what to do if the notification is clicked."];
-$lang['clickEvent'][\HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE] = "Open page";
-$lang['clickEvent'][\HeimrichHannot\PwaBundle\DataContainer\PwaPushNotificationContainer::CLICKEVENT_OPEN_URL] = "Open url/news";
+$lang['clickEvent'][PwaPushNotificationContainer::CLICKEVENT_OPEN_PAGE] = "Open page";
+$lang['clickEvent'][PwaPushNotificationContainer::CLICKEVENT_OPEN_URL] = "Open url/news";
 $lang['clickJumpTo'] = ["Jump to page","Select the page that should be opened when the notification is clicked."];
 $lang['clickUrl'] = ["Target url","The url that should be opened when notification is clicked."];
 $lang['published'] = ["Publish notification","Activate the delivery of the push notification."];

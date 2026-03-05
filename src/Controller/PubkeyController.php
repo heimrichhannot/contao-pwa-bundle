@@ -9,9 +9,9 @@
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
+use Symfony\Component\Routing\Attribute\Route;
 use Contao\CoreBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/_huh_pwa', name: 'huh_pwa.', defaults: ['_scope' => 'frontend', '_token_check' => false])]
 class PubkeyController extends AbstractController

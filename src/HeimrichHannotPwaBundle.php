@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\PwaBundle;
 
+use HeimrichHannot\PwaBundle\DependencyInjection\HeimrichHannotPwaExtension;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,7 +28,7 @@ class HeimrichHannotPwaBundle extends Bundle
      */
     public function getContainerExtensionClass(): string
     {
-        return DependencyInjection\HeimrichHannotPwaExtension::class;
+        return HeimrichHannotPwaExtension::class;
     }
 
     public function getContainerExtension(): ?ExtensionInterface

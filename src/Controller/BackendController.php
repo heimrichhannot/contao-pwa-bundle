@@ -11,9 +11,8 @@
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
+use Symfony\Component\Routing\Attribute\Route;
 use Contao\CoreBundle\Controller\AbstractController;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Message;
 use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
 use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\PwaBundle\Model\PageModel;
@@ -21,14 +20,9 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
 use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
 use HeimrichHannot\PwaBundle\Sender\PushNotificationSender;
-use Minishlink\WebPush\WebPush;
-use Minishlink\WebPush\VAPID;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Twig\Environment as TwigEnvironment;
 
 #[Route('/%contao.backend.route_prefix%/huh_pwa', name: 'huh_pwa.backend.', defaults: [
     '_scope' => 'backend',

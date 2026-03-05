@@ -14,7 +14,7 @@ use Rector\ValueObject\PhpVersion;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
-//        __DIR__ . '/contao',
+        __DIR__ . '/contao',
 
     ])
     ->withPhpVersion(PhpVersion::PHP_84)

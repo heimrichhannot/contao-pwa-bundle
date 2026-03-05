@@ -9,8 +9,8 @@
 
 namespace HeimrichHannot\PwaBundle\EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\CronJob;
 use Contao\Model\Collection;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use HeimrichHannot\PwaBundle\Model\PwaPushNotificationsModel;
@@ -26,41 +26,31 @@ readonly class CronjobListener
         private ContaoFramework        $framework
     ) {}
 
-    /**
-     * @CronJob("minutely")
-     */
+    #[AsCronJob('minutely')]
     public function minutely(): void
     {
         $this->sendPushNotifications('minutely');
     }
 
-    /**
-     * @CronJob("hourly")
-     */
+    #[AsCronJob('hourly')]
     public function hourly(): void
     {
         $this->sendPushNotifications('hourly');
     }
 
-    /**
-     * @CronJob("daily")
-     */
+    #[AsCronJob('daily')]
     public function daily(): void
     {
         $this->sendPushNotifications('daily');
     }
 
-    /**
-     * @CronJob("weekly")
-     */
+    #[AsCronJob('weekly')]
     public function weekly(): void
     {
         $this->sendPushNotifications('weekly');
     }
 
-    /**
-     * @CronJob("monthly")
-     */
+    #[AsCronJob('monthly')]
     public function monthly(): void
     {
         $this->sendPushNotifications('monthly');

@@ -12,7 +12,6 @@ namespace HeimrichHannot\PwaBundle\Model;
 use Contao\Date;
 use Contao\Model;
 use Contao\Model\Collection;
-use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
 
 /**
  * Class PwaPushNotificationsModel

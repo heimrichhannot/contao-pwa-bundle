@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
+use Symfony\Component\Routing\Attribute\Route;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
@@ -18,7 +19,6 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/_huh_pwa/notification/{config}', name: 'huh_pwa.notification.', defaults: ['_scope' => 'frontend', '_token_check' => false])]
 class NotificationController extends AbstractController

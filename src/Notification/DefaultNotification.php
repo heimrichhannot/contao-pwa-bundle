@@ -10,6 +10,7 @@
 
 namespace HeimrichHannot\PwaBundle\Notification;
 
+use Contao\StringUtil;
 use Contao\FilesModel;
 use Contao\Model;
 use Contao\System;
@@ -113,11 +114,11 @@ class DefaultNotification extends AbstractNotification
      *
      * @todo Refactor this out to a factory class
      */
-    public function setIconFromModel(string $icon, string $iconSize = null)
+    public function setIconFromModel(string $icon, ?string $iconSize = null): void
     {
         if ($iconSize)
         {
-            $iconSize = deserialize($iconSize);
+            $iconSize = StringUtil::deserialize($iconSize);
         }
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
