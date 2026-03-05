@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.1]
+- Fixed: hide more invalid urls in offline pages element
+
 ## [0.9.0]
 - Added: offline pages element ([#25](https://github.com/heimrichhannot/contao-pwa-bundle/pull/25))
 - Changed: replace popup module with content element (possibly BREAKING)

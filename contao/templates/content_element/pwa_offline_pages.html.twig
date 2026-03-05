@@ -35,9 +35,7 @@
 
                     if (
                         url.pathname.startsWith('/contao')
-                        || url.pathname.startsWith('/_contao')
-                        || url.pathname.startsWith('/_wdt')
-                        || url.pathname.startsWith('/_profiler')
+                        || url.pathname.startsWith('/_')
                         || url.pathname.startsWith('/api')
                     ) {
                         return false;
