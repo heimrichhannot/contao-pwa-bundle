@@ -9,6 +9,7 @@
 
 namespace HeimrichHannot\PwaBundle\Model;
 
+use Contao\Date;
 use Contao\Model;
 use Contao\Model\Collection;
 use HeimrichHannot\PwaBundle\Notification\DefaultNotification;
@@ -45,7 +46,7 @@ class PwaPushNotificationsModel extends Model
     public static function findUnsentPublishedNotifications(array $options = [])
     {
         $t = static::$strTable;
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
 
         $columns = [
             "$t.sent=''",
@@ -63,7 +64,7 @@ class PwaPushNotificationsModel extends Model
     public static function findUnsentPublishedNotificationsByPid(int $pid, array $options = [])
     {
         $t = static::$strTable;
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
         $columns = [
             "$t.pid=?",
             "$t.sent=''",
@@ -81,7 +82,7 @@ class PwaPushNotificationsModel extends Model
     public static function findUnsentNotificationById(int $id)
     {
         $t = static::$strTable;
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
         $columns = [
             "$t.id=?",
             "$t.sent=''",
