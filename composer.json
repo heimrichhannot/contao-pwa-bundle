@@ -16,6 +16,15 @@
         "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",
         "twig/twig": "^3.0"
     },
+    "require-dev": {
+        "contao/core-bundle": "5.3.*",
+        "rector/rector": "*",
+        "contao/contao-rector": "dev-main",
+        "symplify/easy-coding-standard": "*",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-symfony": "*",
+        "contao/manager-plugin": "*"
+    },
     "conflict": {
         "minishlink/web-push": "<5.0 || >=11.0"
     },
@@ -29,5 +38,8 @@
     },
     "extra": {
         "contao-manager-plugin": "HeimrichHannot\\PwaBundle\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": false
     }
 }
