@@ -1,6 +1,7 @@
 # Contao Progressive Web App Bundle
 
-A comprehensive bundle that provides Progressive Web App (PWA) support for Contao CMS, enabling modern web application features for your Contao websites.
+A comprehensive bundle that provides Progressive Web App (PWA) support for Contao CMS, 
+enabling modern web application features for your Contao websites.
 
 ## Features
 
@@ -8,10 +9,7 @@ A comprehensive bundle that provides Progressive Web App (PWA) support for Conta
 * Generate and register service workers for each page root
 * Send custom push notifications from the backend
 * Set an offline fallback page for improved user experience
-* Frontend module and content element to manage push notification subscriptions
-* Includes a content element with an easy to use subscribe button
-* [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support, including asset precaching
-* Expandable architecture for custom implementations
+* content elements to manage push notification subscriptions
 
 ## Installation
 
@@ -26,11 +24,11 @@ After installation, update your database.
 ### Requirements
 
 * PHP ^8.2
-* Contao ^4.13 || ^5.0
+* Contao ^5.3
 
 ### Additional Dependency for Push-Notifications
 
-To enable web push notifications, you'll need to install [web-push-libs/web-push-php](https://github.com/web-push-libs/web-push-php) (versions 5 to 8 are supported):
+To enable web push notifications, you'll need to install [web-push-libs/web-push-php](https://github.com/web-push-libs/web-push-php) (versions 5 to 10 are supported):
 
 ```
 composer require minishlink/web-push:^8.0
@@ -52,8 +50,8 @@ Additionally, ensure the following PHP extensions are installed and enabled:
     * Select "Yes" and choose your configuration
     * Upon saving, the page manifest and service worker will be generated automatically
 4. To provide an option for users to register for push notifications, add either:
-    * The Push Subscription Button content element, or
-    * The push notification popup frontend module to your page
+    * The push subscription button content element, or
+    * The push notification popup element to your page
 
 ### VAPID Keys
 
@@ -69,6 +67,21 @@ huh_pwa:
 
 ## Usage
 
+### Content Elements
+
+This bundle provide 4 content elements:
+- Install Pwa Button: A simple button that can be used to trigger the "Add to homescreen" prompt
+- Offline Pages: Show cached offline pages (can be used to show the user all working link on the offline page)
+- Push Subscription: Display a button to subscribe/unsubscribe to push notifications
+- Push Notification Popup: See description below
+
+#### Push Notification Popup
+
+This content element can be used to show a popup to the user, asking them to subscribe to push notifications. 
+By default, the popup opens on button click, but you can also set it to open automatically when the page loads.
+A template for bootstrap 5 modals is included.
+The templates are prepared to easily create variant of them without overriding greater parts of the template.
+
 ### Regenerating Files
 
 You can regenerate all manifest and service worker files at once from:
@@ -83,21 +96,21 @@ To support custom controls, the bundle provides events and event listeners that 
 
 #### Events
 
-| Event | Description |
-|-------|-------------|
-| huh_pwa_sw_not_supported | Fired if the browser doesn't support service workers or no service worker is found |
-| huh_pwa_push_not_supported | Fired if the browser doesn't support push notifications |
-| huh_pwa_push_permission_denied | Fired if push notifications are blocked in the browser |
-| huh_pwa_push_isSubscribed | Fired when subscribed to push notifications (on page load or when subscribing) |
-| huh_pwa_push_isUnsubscribed | Fired when unsubscribed from push notifications (on page load or when unsubscribing) |
-| huh_pwa_push_subscription_failed | Fired when subscription to push notifications fails. Error reason can be found in event.detail.reason |
+| Event                              | Description                                                                                              |
+|------------------------------------|----------------------------------------------------------------------------------------------------------|
+| huh_pwa_sw_not_supported           | Fired if the browser doesn't support service workers or no service worker is found                       |
+| huh_pwa_push_not_supported         | Fired if the browser doesn't support push notifications                                                  |
+| huh_pwa_push_permission_denied     | Fired if push notifications are blocked in the browser                                                   |
+| huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when subscribing)                           |
+| huh_pwa_push_isUnsubscribed        | Fired when unsubscribed from push notifications (on page load or when unsubscribing)                     |
+| huh_pwa_push_subscription_failed   | Fired when subscription to push notifications fails. Error reason can be found in event.detail.reason    |
 | huh_pwa_push_unsubscription_failed | Fired when unsubscribing from push notifications fails. Error reason can be found in event.detail.reason |
 
 #### Listeners
 
-| Event type | Usage | Description |
-|------------|-------|-------------|
-| huh_pwa_push_changeSubscriptionState | `new CustomEvent('huh_pwa_push_changeSubscriptionState', {detail: ['subscribe'|'unsubscribe']})` | Fire this event when the user interacts with your control to change their subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscribe |
+| Event type                           | Usage                                                                                               | Description                                                                                                                                                             |
+|--------------------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| huh_pwa_push_changeSubscriptionState | `new CustomEvent('huh_pwa_push_changeSubscriptionState', {detail: ['subscribe' \| 'unsubscribe']})` | Fire this event when the user interacts with your control to change their subscription state. Use a `CustomEvent` with detail parameter set to subscribe or unsubscribe |
 
 ### Complete Configuration
 
@@ -119,12 +132,6 @@ huh_pwa:
 |-------------------|-------------|
 | huh:pwa:build     | (Re)Build config-specific files like service worker and manifest |
 | huh:pwa:send-push | Send unsent push notifications |
-
-### Polyfills
-
-| Function | Example Polyfill | Description |
-|----------|------------------|-------------|
-| CustomEvent | [custom-event-polyfill](https://github.com/kumarharsh/custom-event-polyfill) | Custom events are needed to update the subscribe button (to inform the user that the browser doesn't support push notifications). An error is also thrown if the browser doesn't support CustomEvents |
 
 ## Todo
 
