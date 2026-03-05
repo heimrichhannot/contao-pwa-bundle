@@ -27,7 +27,7 @@ class PubkeyController extends AbstractController
                 'Content-Type' => 'text/plain; charset=UTF-8',
                 'Content-Disposition' => 'inline; filename="vapid.pub"',
                 'Content-Transfer-Encoding' => 'binary',
-                'Content-Length' => \strlen($key),
+                'Content-Length' => \strlen((string) $key),
                 'Cache-Control' => 'no-cache, no-store, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Expires' => '0',

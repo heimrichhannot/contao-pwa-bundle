@@ -30,12 +30,10 @@ final class ManifestIcon
     private string $manifestPath = '';
     /** @var string Absolute path to the web root */
     private string $webRootPath = __DIR__ . '/../../../../..';
-    private string $applicationAlias;
     private bool $iconFilesMissing = false;
 
-    public function __construct(string $sourceIconPath, string $applicationAlias, bool $addDefaultSizes = false)
+    public function __construct(string $sourceIconPath, private string $applicationAlias, bool $addDefaultSizes = false)
     {
-        $this->applicationAlias = $applicationAlias;
         $this->setSourceIconPath($sourceIconPath);
 
         if ($addDefaultSizes)

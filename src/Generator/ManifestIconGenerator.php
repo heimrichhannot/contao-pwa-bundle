@@ -71,7 +71,7 @@ final class ManifestIconGenerator
                 continue;
             }
 
-            $sizes = explode('x', $size);
+            $sizes = explode('x', (string) $size);
 
             $mask = $imagine->create(new Box($sizes[0], $sizes[1]));
 

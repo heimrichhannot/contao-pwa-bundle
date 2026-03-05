@@ -10,8 +10,8 @@
 
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
+use Contao\System;
 use Contao\Config;
-use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Date;
 use Contao\NewsModel;
@@ -132,7 +132,7 @@ class PwaPushNotificationContainer
             }
         }
 
-        $url = Controller::replaceInsertTags($notificationsModel->clickUrl);
+        $url = System::getContainer()->get('contao.insert_tag.parser')->replace($notificationsModel->clickUrl);
         $payload['data']['clickJumpTo'] = $url;
     }
 }

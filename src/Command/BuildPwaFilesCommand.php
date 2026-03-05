@@ -54,7 +54,7 @@ class BuildPwaFilesCommand extends Command
         if (null === $pages || ($pageNumber = $pages->count()) < 1)
         {
             $io->text("Found no pages with active PWA Configuration. ");
-            return 0;
+            return Command::SUCCESS;
         }
 
         $io->text("Found $pageNumber pages with active PWA Configuration.");

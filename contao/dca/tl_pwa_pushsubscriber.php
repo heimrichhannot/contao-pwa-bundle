@@ -1,5 +1,6 @@
 <?php
 
+use Contao\DataContainer;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
@@ -20,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'format' => '%s',
 		],
 		'sorting'           => [
-			'mode'         => 2,
+			'mode'         => DataContainer::MODE_SORTABLE,
 			'fields'       => ['dateAdded DESC'],
 			'panelLayout'  => 'filter;search,limit',
 		],
@@ -56,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 		'dateAdded' => [
 			'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
 			'sorting' => true,
-			'flag'    => 6,
+			'flag'    => DataContainer::SORT_DAY_DESC,
 			'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
 			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		],

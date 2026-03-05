@@ -11,15 +11,12 @@ use Psr\Log\LoggerInterface;
  */
 class LocalLogger implements LoggerInterface
 {
-    private Utils $utils;
-
     private array $errors = [];
     private array $warnings = [];
     private array $info = [];
 
-    public function __construct(Utils $utils)
+    public function __construct(private readonly Utils $utils)
     {
-        $this->utils = $utils;
     }
 
     public function emergency($message, array $context = []): void

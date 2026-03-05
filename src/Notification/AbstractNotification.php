@@ -34,7 +34,7 @@ abstract class AbstractNotification implements \JsonSerializable
         $properties = [];
         foreach ($classMethods as $method)
         {
-            if (substr($method->getName(), 0, 3) !== 'get')
+            if (!str_starts_with($method->getName(), 'get'))
             {
                 continue;
             }

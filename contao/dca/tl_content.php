@@ -9,10 +9,10 @@ $dca = &$GLOBALS['TL_DCA']['tl_content'];
 
 $dca['palettes'][PushSubscriptionElement::TYPE] = <<< PALETTE
     {type_legend},type,headline;
-    {template_legend:hide},customTpl;
-    {protected_legend:hide},protected;
-    {expert_legend:hide},guests;
-    {invisible_legend:hide},invisible,start,stop
+    {template_legend:collapsed},customTpl;
+    {protected_legend:collapsed},protected;
+    {expert_legend:collapsed},guests;
+    {invisible_legend:collapsed},invisible,start,stop
 PALETTE;
 
 
@@ -20,29 +20,29 @@ $dca['palettes'][InstallPwaButtonElementController::TYPE] = <<< PALETTE
     {type_legend},type;
     {link_legend},linkTitle,pwaButtonCssClasses;
     {text_legend},text;
-    {template_legend:hide},customTpl;
-    {protected_legend:hide},protected;
-    {expert_legend:hide},guests,cssID;
-    {invisible_legend:hide},invisible,start,stop
+    {template_legend:collapsed},customTpl;
+    {protected_legend:collapsed},protected;
+    {expert_legend:collapsed},guests,cssID;
+    {invisible_legend:collapsed},invisible,start,stop
 PALETTE;
 
 $dca['palettes'][PushSubscriptionPopupElementController::TYPE] = <<< PALETTE
     {type_legend},type,headline;
     {text_legend},text;
     {image_legend},addImage;
-    {template_legend:hide},customTpl;
-    {protected_legend:hide},protected;
-    {expert_legend:hide},cssID;
-    {invisible_legend:hide},invisible,start,stop
+    {template_legend:collapsed},customTpl;
+    {protected_legend:collapsed},protected;
+    {expert_legend:collapsed},cssID;
+    {invisible_legend:collapsed},invisible,start,stop
 PALETTE;
 
 $dca['palettes'][OfflinePagesElementController::TYPE] = <<< PALETTE
     {type_legend},type,headline;
     {text_legend},text;
-    {template_legend:hide},customTpl;
-    {protected_legend:hide},protected;
-    {expert_legend:hide},guests,cssID;
-    {invisible_legend:hide},invisible,start,stop
+    {template_legend:collapsed},customTpl;
+    {protected_legend:collapsed},protected;
+    {expert_legend:collapsed},guests,cssID;
+    {invisible_legend:collapsed},invisible,start,stop
 PALETTE;
 
 

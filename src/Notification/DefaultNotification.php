@@ -122,7 +122,7 @@ class DefaultNotification extends AbstractNotification
         }
 
         $rootDir = System::getContainer()->getParameter('kernel.project_dir');
-        $imageFactory = System::getContainer()->get('contao.image.image_factory');
+        $imageFactory = System::getContainer()->get('contao.image.factory');
         if (($objModel = FilesModel::findByUuid($icon)) && (is_file($rootDir . '/' . $objModel->path)))
         {
             $image = $imageFactory->create($rootDir . '/' . $objModel->path, $iconSize);

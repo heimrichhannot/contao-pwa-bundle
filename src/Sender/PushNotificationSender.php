@@ -26,18 +26,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PushNotificationSender
 {
-    private ?array $bundleConfig;
-    private PwaPushNotificationContainer $notificationContainer;
-    private Utils $utils;
-
     /**
      * PushNotificationSender constructor.
      */
-    public function __construct(?array $bundleConfig, PwaPushNotificationContainer $notificationContainer, Utils $utils)
+    public function __construct(private ?array $bundleConfig, private readonly PwaPushNotificationContainer $notificationContainer, private readonly Utils $utils)
     {
-        $this->bundleConfig = $bundleConfig;
-        $this->notificationContainer = $notificationContainer;
-        $this->utils = $utils;
     }
 
     public function sendWithLog(
