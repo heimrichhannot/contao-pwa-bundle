@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.2] - 2026-05-19
+- Fixed: exception on saving to long message content
+
 ## [0.9.1]
 - Fixed: hide more invalid urls in offline pages element
 

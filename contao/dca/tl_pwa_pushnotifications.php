@@ -86,7 +86,10 @@ $GLOBALS['TL_DCA'][$table] = [
         ],
         'body' => [
             'inputType' => 'text',
-            'eval' => ['tl_class' => 'clr'],
+            'eval' => [
+                'tl_class' => 'clr',
+                'maxlength' => 128,
+            ],
             'sql' => "varchar(128) NOT NULL default ''",
         ],
         'icon' => [
