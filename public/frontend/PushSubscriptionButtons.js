@@ -71,7 +71,7 @@ export default class PushSubscriptionButtons {
 
     setBlocked(event) {
         this.beforeEvent('Update Buttons to blocked');
-        this.buttons.forEach(function(button) {
+        this.buttons.forEach((button) => {
             button.querySelector('.label').innerHTML = this.pwa.config.translations.pushnotifications.blocked;
             button.classList.add('blocked');
             button.classList.remove('unsubscribed');
@@ -82,7 +82,7 @@ export default class PushSubscriptionButtons {
 
     setNotSupported(event) {
         this.beforeEvent('Serviceworker not supported');
-        this.buttons.forEach(function(button) {
+        this.buttons.forEach((button) => {
             button.querySelector('.label').innerHTML = this.pwa.config.translations.pushnotifications.not_supported;
             button.classList.add('blocked');
             button.classList.remove('unsubscribed');
