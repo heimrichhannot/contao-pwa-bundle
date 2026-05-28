@@ -9,6 +9,7 @@
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Contao\CoreBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,8 +35,8 @@ class PubkeyController extends AbstractController
                 'X-Content-Type-Options' => 'nosniff',
                 'Referrer-Policy' => 'no-referrer',
             ]);
+        } else {
+            throw new NotFoundHttpException('VAPID public key not found in configuration.');
         }
-
-        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
