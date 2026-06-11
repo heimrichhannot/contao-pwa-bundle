@@ -73,7 +73,7 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'sql'        => "varchar(255) NOT NULL default ''",
 		],
 		'publicKey'                 => [
-			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['authToken'],
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['publicKey'],
 			'inputType'  => 'text',
 			'eval'       => ['tl_class'  => 'w50'],
 			'sql'        => "varchar(128) NOT NULL default ''",

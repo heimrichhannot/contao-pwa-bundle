@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.4] - 2026-06-11
+- Changed: migrated translations to symfony format
+- Fixed: missing english locales
+
 ## [0.9.3] - 2026-05-28
 - Changed: throw exception in vapid key route when no keys configured
 - Fixed: push subscription button error when browser notifications are blocked
