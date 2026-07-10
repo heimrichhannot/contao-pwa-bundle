@@ -68,7 +68,7 @@ class AdministrationController extends AbstractBackendController
                 'headline' => $this->translator->trans('huh.pwa.backend.control.headline'),
                 'messages' => Message::generate(),
                 'vapid_keys' => $keys,
-                'generatedKeys' => $generatedKeys,
+                'generated_keys' => $generatedKeys,
                 'content' => 'Content',
                 'backend_back_route' => $backendBackRoute,
                 'unsent_notifications_route' => $unsentNotificationsRoute,
