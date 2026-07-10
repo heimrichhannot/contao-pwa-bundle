@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.9.5] - 2026-07-10
+- Fixed: compatibility issue with contao 5.7
+- Fixed: generated vapid key not showing up in backend
+
 ## [0.9.4] - 2026-06-11
 - Changed: migrated translations to symfony format
 - Fixed: missing english locales
