@@ -51,12 +51,10 @@ $GLOBALS['TL_DCA'][$table] = [
             'pushNotifications' => [
                 'href' => 'table=tl_pwa_pushnotifications',
                 'icon' => 'bundles/heimrichhannotpwa/backend/img/message-square-dot.svg',
+                'primary' => true,
             ],
             'edit',
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.gif',
-            ],
+            'copy',
             'delete',
             'show',
             'subscriber' => [
