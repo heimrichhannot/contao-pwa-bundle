@@ -60,6 +60,7 @@ class PageContainer
     }
 
     #[AsCallback(self::TABLE, 'fields.pwaConfiguration.options')]
+    #[AsCallback('tl_nc_gateway', 'fields.pwaConfiguration.options')]
     public function getPwaConfigurationsAsOptions(): array
     {
         if (!$configs = PwaConfigurationsModel::findAll()) {

@@ -23,13 +23,15 @@
         "symplify/easy-coding-standard": "*",
         "phpstan/phpstan": "*",
         "phpstan/phpstan-symfony": "*",
-        "contao/manager-plugin": "*"
+        "contao/manager-plugin": "*",
+        "terminal42/notification_center": "^2.0"
     },
     "conflict": {
         "minishlink/web-push": "<5.0 || >=11.0"
     },
     "suggest": {
-        "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\"."
+        "minishlink/web-push": "Used for sending push notifications. Require as \"^5.0\".",
+        "terminal42/notification_center": "Deliver push notifications through Notification Center 2. Require as \"^2.0\"."
     },
     "autoload": {
         "psr-4": {

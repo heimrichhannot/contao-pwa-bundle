@@ -39,12 +39,6 @@ class PushNotificationSender
         LoggerInterface        $log,
         ?array                 $subscribers = null,
     ): bool {
-        if (!$this->checkRequirements($log)) {
-            return false;
-        }
-
-        $log->info("Requirements checked.");
-
         /** @var PwaPushSubscriberModel[]|Collection<PwaPushSubscriberModel>|null $subscribers */
         if (!$subscribers && !($subscribers = PwaPushSubscriberModel::findByPid($config->id)))
         {
@@ -53,10 +47,6 @@ class PushNotificationSender
         }
 
         $log->info("Found " . count($subscribers) . " subscribers.");
-
-        if (!$webPush = $this->createPushInstance($log)) {
-            return false;
-        }
 
         try {
             $payload = $notification->toArray();
@@ -68,11 +58,51 @@ class PushNotificationSender
             $this->notificationContainer->notificationClickEvent($notificationsModel, $payload);
         }
 
+        $result = $this->deliverPayload($payload, $subscribers, $log);
+
+        if (!$result['ok']) {
+            return false;
+        }
+
         $sendDate = time(); //same send time for all subscribers and the notification
-        $skipped = 0;
-        $errors = 0;
-        $success = 0;
-        $sendCount = 0;
+
+        if ($notification->getModel()) {
+            $notification->getModel()->sent = true;
+            $notification->getModel()->dateSent = $sendDate;
+            $notification->getModel()->receiverCount = $result['success'];
+            $notification->getModel()->save();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @param iterable<mixed>      $subscribers
+     *
+     * @return array{ok: bool, success: int, errors: int, skipped: int, sendCount: int}
+     */
+    public function deliverPayload(array $payload, iterable $subscribers, LoggerInterface $log): array
+    {
+        $result = [
+            'ok' => false,
+            'success' => 0,
+            'errors' => 0,
+            'skipped' => 0,
+            'sendCount' => 0,
+        ];
+
+        if (!$this->checkRequirements($log)) {
+            return $result;
+        }
+
+        $log->info("Requirements checked.");
+
+        if (!$webPush = $this->createPushInstance($log)) {
+            return $result;
+        }
+
+        $sendDate = time();
 
         foreach ($subscribers as $subscriber) {
             if (!$subscriber instanceof PwaPushSubscriberModel) {
@@ -80,7 +110,7 @@ class PushNotificationSender
                     'function' => __FUNCTION__,
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
                 ]);
-                $skipped++;
+                $result['skipped']++;
                 continue;
             }
 
@@ -99,11 +129,11 @@ class PushNotificationSender
                     'function' => __FUNCTION__,
                     'verbosity' => OutputInterface::VERBOSITY_VERBOSE,
                 ]);
-                $errors++;
+                $result['errors']++;
                 continue;
             }
 
-            $sendCount++;
+            $result['sendCount']++;
 
             if ($report->isSuccess()) {
                 $subscriber->lastSuccessfulSend = $sendDate;
@@ -112,7 +142,7 @@ class PushNotificationSender
                     'function' => __FUNCTION__,
                     'verbosity' => OutputInterface::VERBOSITY_DEBUG,
                 ]);
-                $success++;
+                $result['success']++;
             } else {
                 if ($report->isSubscriptionExpired()) {
                     // TODO
@@ -131,23 +161,18 @@ class PushNotificationSender
             }
         }
 
-        if ($notification->getModel()) {
-            $notification->getModel()->sent = true;
-            $notification->getModel()->dateSent = $sendDate;
-            $notification->getModel()->receiverCount = $success;
-            $notification->getModel()->save();
-        }
+        $result['ok'] = true;
 
-        $log->info("Push notification sent to {$success} subscribers. {$skipped} subscribers skipped. {$errors} errors.", [
+        $log->info("Push notification sent to {$result['success']} subscribers. {$result['skipped']} subscribers skipped. {$result['errors']} errors.", [
             'function' => __FUNCTION__,
-            'successCount' => $success,
-            'skippedCount' => $skipped,
-            'errorCount' => $errors,
-            'sendCount' => $sendCount,
+            'successCount' => $result['success'],
+            'skippedCount' => $result['skipped'],
+            'errorCount' => $result['errors'],
+            'sendCount' => $result['sendCount'],
             'verbosity' => OutputInterface::VERBOSITY_NORMAL,
         ]);
 
-        return true;
+        return $result;
     }
 
     private function checkRequirements(LoggerInterface $log): bool
