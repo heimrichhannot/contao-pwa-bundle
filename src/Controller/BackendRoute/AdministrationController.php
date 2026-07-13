@@ -49,8 +49,9 @@ class AdministrationController extends AbstractBackendController
             $generatedKeys = VAPID::createVapidKeys();
         }
 
+        $requestToken = $this->csrfTokenManager->getToken($this->getParameter('contao.csrf_token_name'))->getValue();
         $params = [
-            'rt' => $this->csrfTokenManager->getToken($this->getParameter('contao.csrf_token_name'))->getValue(),
+            'rt' => $requestToken,
             'ref' => $request->get('_contao_referer_id'),
         ];
 
@@ -75,6 +76,7 @@ class AdministrationController extends AbstractBackendController
                 'send_notifications_route' => $sendNotificationsRoute,
                 'find_pages_route' => $findPagesRoute,
                 'update_page_route' => $updatePageRoute,
+                'request_token' => $requestToken,
                 'web_push' => $webPush,
             ]
         );

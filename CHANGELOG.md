@@ -1,8 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.9.6-DEV] - 2026-07-10
+## [0.9.6] - 2026-07-13
 - Changed: show notification a primary operation in contao 5.7
+- Fixed: build files from backend not working in contao 5.7
 
 ## [0.9.5] - 2026-07-10
 - Fixed: compatibility issue with contao 5.7

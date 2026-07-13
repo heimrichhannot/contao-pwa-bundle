@@ -46,7 +46,11 @@
             <h2 class="sub_headline">{{ 'huh.pwa.backend.control.notifications'|trans }}</h2>
             <div class="tl_tbox">
                 <p>
-                    <button id="huhPwaSendPushNotificationButton" class="tl_submit">Send unsend push notifications
+                    <button id="huhPwaSendPushNotificationButton"
+                            class="tl_submit"
+                            type="button"
+                            data-unsent-count-route="{{ unsent_notifications_route }}"
+                            data-send-notifications-route="{{ send_notifications_route }}">Send unsend push notifications
                     </button>
                 </p>
                 <p id="huhPwaSendPushNotificationStatus"></p>
@@ -58,7 +62,12 @@
         <div class="tl_tbox">
             <p>Rebuild manifest and serviceworker files</p>
             <p>
-                <button id="huhPwaRebuildFilesButton" class="tl_submit">Rebuild files</button>
+                <button id="huhPwaRebuildFilesButton"
+                        class="tl_submit"
+                        type="button"
+                        data-find-pages-route="{{ find_pages_route }}"
+                        data-update-page-route="{{ update_page_route }}"
+                        data-request-token="{{ request_token }}">Rebuild files</button>
             </p>
             <p id="huhPwaRebuildFilesStatus"></p>
         </div>
@@ -66,29 +75,4 @@
 
     <div class="tl_listing_container">
     </div>
-
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            const sendButton = document.querySelector('#huhPwaSendPushNotificationButton'),
-                  rebuildButton = document.querySelector('#huhPwaRebuildFilesButton');
-
-            if (sendButton) {
-                console.log("Found sendButton");
-                sendButton.addEventListener('click', () => {
-                    HuhPwaBackend.unsentCountRoute = '{{ unsent_notifications_route }}';
-                    HuhPwaBackend.sendNotificationsRoute = '{{ send_notifications_route }}';
-                    HuhPwaBackend.sendPushNotifications(sendButton);
-                });
-            }
-
-            if (rebuildButton) {
-                console.log("Found rebuildButton");
-                rebuildButton.addEventListener('click', () => {
-                    HuhPwaBackend.findPagesRoute = '{{ find_pages_route }}';
-                    HuhPwaBackend.updatePageRoute = '{{ update_page_route }}';
-                    HuhPwaBackend.rebuildFiles();
-                });
-            }
-        });
-    </script>
 {% endblock %}

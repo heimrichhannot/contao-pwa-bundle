@@ -3,6 +3,7 @@ let HuhPwaBackend = {
     sendNotificationsRoute: './contao/pwa/pushnotification/send',
     findPagesRoute: './contao/pwa/pages',
     updatePageRoute: '',
+    requestToken: '',
     unsentNotificationRequest: (url) => {
         return new Request.JSON({
             url: url,
@@ -89,57 +90,59 @@ let HuhPwaBackend = {
             this.button.disabled = false;
         });
     },
-    rebuildFiles: function() {
+    rebuildFiles: async function(button) {
         this.logger = document.querySelector('#huhPwaRebuildFilesStatus');
         this.logger.innerHTML = '';
-        url = this.findPagesRoute;
-        let request = new Request.JSON({
-            url: url,
-            method: 'get',
-            onFailure: () => {
-                HuhPwaBackend.addLogEntry('findPages failure');
-            },
-            onCancel: () => {
-                HuhPwaBackend.addLogEntry('findPages cancel');
-            },
-            onException: (headerName, value) => {
-                HuhPwaBackend.addLogEntry('findPages Exception: ' + headerName);
-            },
-        });
-        request.send(this.findPagesRoute).then((response) => {
+        button.disabled = true;
 
-            if (response.json.length < 1)
-            {
-                HuhPwaBackend.addLogEntry('No pages with PWA configuration found.');
+        try {
+            const findPagesResponse = await fetch(this.findPagesRoute, {
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!findPagesResponse.ok) {
+                throw new Error('Finding pages failed: ' + findPagesResponse.statusText);
+            }
+
+            const pages = await findPagesResponse.json();
+
+            if (pages.length < 1) {
+                await this.addLogEntry('No pages with PWA configuration found.');
                 return;
             }
-            HuhPwaBackend.addLogEntry('Found ' + response.json.length + ' page(s)').then(() => {
-                let updateRequest = new Request.JSON({
-                    url: this.updatePageRoute,
-                    method: 'post',
-                    onFailure: (xhr) => {
-                        console.log('Error: ', xhr);
-                        HuhPwaBackend.addLogEntry('Error update page files: ' + xhr.responseText);
+
+            await this.addLogEntry('Found ' + pages.length + ' page(s)');
+
+            for (const page of pages) {
+                const updatePageResponse = await fetch(this.updatePageRoute, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
-                    onCancel: () => {
-                        HuhPwaBackend.addLogEntry('Update page files canceled');
-                    },
-                    onException: (headerName, value) => {
-                        HuhPwaBackend.addLogEntry('Exception while update page files: ' + headerName);
-                    },
+                    body: new URLSearchParams({
+                        pageId: page.id,
+                        REQUEST_TOKEN: this.requestToken,
+                    }),
                 });
 
-                let promises = [];
-                response.json.forEach((page) => {
-                    promises.push(updateRequest.post('pageId=' + page.id).then(() => {
-                        return HuhPwaBackend.addLogEntry("Updated manifest and serviceworker for page '" + page.name + "' (ID: " + page.id + ")");
-                    }));
-                });
-                Promise.all(promises).then(() =>{
-                    return HuhPwaBackend.addLogEntry("Finished generating page files.");
-                });
-            });
-        });
+                if (!updatePageResponse.ok) {
+                    const message = await updatePageResponse.text();
+                    throw new Error('Updating page files failed: ' + (message || updatePageResponse.statusText));
+                }
+
+                await this.addLogEntry("Updated manifest and serviceworker for page '" + page.name + "' (ID: " + page.id + ")");
+            }
+
+            await this.addLogEntry('Finished generating page files.');
+        } catch (error) {
+            await this.addLogEntry(error.message);
+        } finally {
+            button.disabled = false;
+        }
     },
     addLogEntry: function(text) {
         return new Promise((resolve, reject) => {
@@ -158,3 +161,33 @@ let HuhPwaBackend = {
         });
     },
 };
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest('button');
+
+    if (!button) {
+        return;
+    }
+
+    if (button.id === 'huhPwaSendPushNotificationButton') {
+        HuhPwaBackend.unsentCountRoute = button.dataset.unsentCountRoute;
+        HuhPwaBackend.sendNotificationsRoute = button.dataset.sendNotificationsRoute;
+        HuhPwaBackend.sendPushNotifications(button);
+    }
+
+    if (button.id === 'huhPwaRebuildFilesButton') {
+        HuhPwaBackend.findPagesRoute = button.dataset.findPagesRoute;
+        HuhPwaBackend.updatePageRoute = button.dataset.updatePageRoute;
+        HuhPwaBackend.requestToken = button.dataset.requestToken;
+        HuhPwaBackend.rebuildFiles(button);
+    }
+});
+
+// Reset transient state before Turbo caches the page (Contao 5.7+ backend),
+// so the back button never restores a disabled button or stale log output.
+document.addEventListener('turbo:before-cache', () => {
+    document.querySelectorAll('#huhPwaSendPushNotificationButton, #huhPwaRebuildFilesButton')
+        .forEach((button) => { button.disabled = false; });
+    document.querySelectorAll('#huhPwaSendPushNotificationStatus, #huhPwaRebuildFilesStatus')
+        .forEach((status) => { status.innerHTML = ''; });
+});
