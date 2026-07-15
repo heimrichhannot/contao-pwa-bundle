@@ -20,7 +20,13 @@ services:
   HeimrichHannot\PwaBundle\:
     resource: ../src
     exclude:
-      - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model}
+      - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model,NotificationCenter}
+
+  HeimrichHannot\PwaBundle\Notification\PushIconResolver:
+    arguments:
+      $imageFactory: '@contao.image.factory'
+      $projectDir: '%kernel.project_dir%'
+    public: true
 
 # Sender
 

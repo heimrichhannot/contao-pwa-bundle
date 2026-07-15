@@ -27,6 +27,10 @@ class HeimrichHannotPwaExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__) . '/../config'));
         $loader->load('services.yaml');
 
+        if (interface_exists(\Terminal42\NotificationCenterBundle\Gateway\GatewayInterface::class)) {
+            $loader->load('services_notification_center.yaml');
+        }
+
         $configuration = new Configuration();
         $pwaConfig = $this->processConfiguration($configuration, $configs);
 
