@@ -67,7 +67,9 @@ readonly class ManifestGenerator
         $manifest->short_name = $config->pwaShortName;
         $manifest->description = $config->pwaDescription;
         $manifest->theme_color = '#' . $config->pwaThemeColor;
-        $manifest->background_color = '#' . $config->pwaBackgroundColor;
+        if ($config->pwaBackgroundColor) {
+            $manifest->background_color = '#' . $config->pwaBackgroundColor;
+        }
         $manifest->display = $config->pwaDisplay;
         $manifest->lang = $page->language;
         $manifest->dir = $config->pwaDirection;
