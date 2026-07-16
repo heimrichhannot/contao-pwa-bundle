@@ -11,14 +11,15 @@
 
 namespace HeimrichHannot\PwaBundle\Controller;
 
-use Symfony\Component\Routing\Attribute\Route;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\FrontendUser;
 use Contao\Model\Collection;
-use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\PwaBundle\Model\PwaPushSubscriberModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/_huh_pwa/notification/{config}', name: 'huh_pwa.notification.', defaults: ['_scope' => 'frontend', '_token_check' => false])]
 class NotificationController extends AbstractController
@@ -52,6 +53,9 @@ class NotificationController extends AbstractController
             return new Response('Missing parameters in request data', Response::HTTP_BAD_REQUEST);
         }
 
+        $user = $this->getUser();
+        $memberId = $user instanceof FrontendUser ? (int) $user->id : null;
+
         /** @var PwaPushSubscriberModel $subscriber */
         if (!$subscriber = PwaPushSubscriberModel::findByEndpoint($endpoint))
         {
@@ -61,6 +65,7 @@ class NotificationController extends AbstractController
             $subscriber->publicKey = $p256dh;
             $subscriber->authToken = $auth;
             $subscriber->pid = $pwaConfig->id;
+            $subscriber->member = $memberId ?? 0;
             $subscriber->save();
 
             return new Response('Subscription successfully created', Response::HTTP_OK);
@@ -69,6 +74,12 @@ class NotificationController extends AbstractController
         $subscriber->tstamp = time();
         $subscriber->publicKey = $p256dh;
         $subscriber->authToken = $auth;
+
+        if (null !== $memberId)
+        {
+            $subscriber->member = $memberId;
+        }
+
         $subscriber->save();
 
         return new Response('Subscription successfully updated', Response::HTTP_OK);

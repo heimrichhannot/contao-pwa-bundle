@@ -17,8 +17,8 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['endpoint'],
-			'format' => '%s',
+			'fields'      => ['endpoint', 'member'],
+			'showColumns' => true,
 		],
 		'sorting'           => [
 			'mode'         => DataContainer::MODE_SORTABLE,
@@ -47,6 +47,12 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 		],
 		'pid'                    => [
 			'foreignKey' => 'tl_pwa_configurations.title',
+			'sql'        => "int(10) unsigned NOT NULL default '0'",
+			'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
+		],
+		'member'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['member'],
+			'foreignKey' => 'tl_member.username',
 			'sql'        => "int(10) unsigned NOT NULL default '0'",
 			'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
 		],

@@ -12,13 +12,17 @@
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\DataContainer;
+
 use function Symfony\Component\String\u;
 
 class PwaPushSubscriberContainer
 {
     #[AsCallback(table: 'tl_pwa_pushsubscriber', target: 'list.label.label')]
-    public function onListLabelCallback(array $row, string $label)
+    public function onListLabelCallback(array $row, string $label, DataContainer $dataContainer, array $args): array
     {
-        return u($label)->truncate(80, "…")->toString();
+        $args[0] = u((string) ($args[0] ?? ''))->truncate(80, '…')->toString();
+
+        return $args;
     }
 }

@@ -20,6 +20,7 @@ use Contao\Model;
  * @property int $tstamp
  * @property int $dateAdded
  * @property int $lastSuccessfulSend
+ * @property int $member
  * @property string $endpoint
  * @property string $publicKey
  * @property string $authToken
