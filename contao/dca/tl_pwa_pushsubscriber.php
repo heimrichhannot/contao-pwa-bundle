@@ -17,8 +17,8 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 	],
 	'list'     => [
 		'label'             => [
-			'fields' => ['endpoint'],
-			'format' => '%s',
+			'fields'      => ['endpoint', 'member'],
+			'showColumns' => true,
 		],
 		'sorting'           => [
 			'mode'         => DataContainer::MODE_SORTABLE,
