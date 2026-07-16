@@ -50,6 +50,12 @@ $GLOBALS['TL_DCA']['tl_pwa_pushsubscriber'] = [
 			'sql'        => "int(10) unsigned NOT NULL default '0'",
 			'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
 		],
+		'member'                 => [
+			'label'      => &$GLOBALS['TL_LANG']['tl_pwa_pushsubscriber']['member'],
+			'foreignKey' => 'tl_member.username',
+			'sql'        => "int(10) unsigned NOT NULL default '0'",
+			'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
+		],
 		'tstamp'    => [
 			'label' => &$GLOBALS['TL_LANG']['tl_cleaner']['tstamp'],
 			'sql'   => "int(10) unsigned NOT NULL default '0'",
