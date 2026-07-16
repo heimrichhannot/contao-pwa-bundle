@@ -1,2 +1,7 @@
 pwa_push_subscription_popup:
   open: "Push-Benachrichtigungen"
+huh.pwa:
+  install:
+    not_supported: "Die Installationsaufforderung wird von Ihrem Browser nicht unterstützt."
+    not_available: "Die Installationsaufforderung ist derzeit nicht verfügbar."
+    ios_instructions: "Um diese App zu installieren, tippen Sie in Safari auf „Teilen“ und wählen Sie „Zum Home-Bildschirm“."

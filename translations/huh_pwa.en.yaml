@@ -1,2 +1,7 @@
 pwa_push_subscription_popup:
   open: "Push notifications"
+huh.pwa:
+  install:
+    not_supported: "Install prompt is not supported by your browser."
+    not_available: "Install prompt is not available at this time."
+    ios_instructions: "To install this app: tap the Share button in Safari, then choose 'Add to Home Screen'."

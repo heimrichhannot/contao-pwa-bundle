@@ -82,7 +82,12 @@ readonly class ConfigurationFileGenerator
                     'unsubscribe'   => $this->translator->trans('huh.pwa.pushnotifications.unsubscribe'),
                     'blocked'       => $this->translator->trans('huh.pwa.pushnotifications.blocked'),
                     'not_supported' => $this->translator->trans('huh.pwa.pushnotifications.not_supported'),
-                ]
+                ],
+                'install' => [
+                    'notSupported'    => $this->translator->trans('huh.pwa.install.not_supported'),
+                    'notAvailable'    => $this->translator->trans('huh.pwa.install.not_available'),
+                    'iosInstructions' => $this->translator->trans('huh.pwa.install.ios_instructions'),
+                ],
             ],
             'hideInstallPrompt' => (bool) $config->hideInstallPrompt,
         ];
