@@ -10,10 +10,13 @@
 namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model;
+use Contao\Model\Collection;
 
 /**
  * Class PwaSubscriberModel
  * @package HeimrichHannot\PwaBundle\Model
+ *
+ * @method static Collection|PwaPushSubscriberModel[]|PwaPushSubscriberModel|null findByEndpoint(string $value, array $options = [])
  *
  * @property int $id
  * @property int $pid
