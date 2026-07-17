@@ -66,17 +66,15 @@ readonly class ManifestGenerator
 
         $manifest->short_name = $config->pwaShortName;
         $manifest->description = $config->pwaDescription;
-        $manifest->theme_color = '#' . $config->pwaThemeColor;
-        if ($config->pwaBackgroundColor) {
-            $manifest->background_color = '#' . $config->pwaBackgroundColor;
-        }
+        $manifest->theme_color = $config->pwaThemeColor ? '#' . $config->pwaThemeColor : '';
+        $manifest->background_color = $config->pwaBackgroundColor ? '#' . $config->pwaBackgroundColor : '';
         $manifest->display = $config->pwaDisplay;
         $manifest->lang = $page->language;
         $manifest->dir = $config->pwaDirection;
         $manifest->orientation = $config->pwaOrientation;
         $manifest->start_url = $config->pwaStartUrl;
         $manifest->scope = $config->pwaScope;
-        $manifest->prefer_related_applications = (bool) $config->pwaPreferRelatedApplication;
+        $manifest->prefer_related_applications = (bool)$config->pwaPreferRelatedApplication;
 
         if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
             $manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);

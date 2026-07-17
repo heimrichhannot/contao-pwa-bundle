@@ -57,5 +57,7 @@ return [
         'control' => ['Management', 'Management tools for your Progressive Web App(s)'],
         'subscriber' => ['Subscribers', 'Subscribers of the push notifications for the configuration'],
         'pushNotifications' => ['Messages', 'Push messages of the configuration'],
+        'buildFilesError' => 'The PWA files could not be rebuilt: %s',
+        'buildFilesSuccess' => 'The PWA files for the configuration have been rebuilt.',
     ],
 ];
