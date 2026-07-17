@@ -13,16 +13,21 @@ namespace HeimrichHannot\PwaBundle\Generator;
 use Contao\FilesModel;
 use Contao\PageModel;
 use Contao\StringUtil;
+use HeimrichHannot\PwaBundle\Asset\IconBuilder;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Manifest\Manifest;
+use HeimrichHannot\PwaBundle\Manifest\ManifestIcon;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 readonly class ManifestGenerator
 {
     public function __construct(
         private string                $webDir,
-        private ManifestIconGenerator $iconGenerator
+        private ManifestIconGenerator $iconGenerator,
+        private readonly IconBuilder $iconBuilder,
+
     ) {}
 
     public function getDefaultManifestPath(): string
@@ -32,7 +37,7 @@ readonly class ManifestGenerator
 
     public function generateManifest(Manifest $manifest, string $filename, string $path): void
     {
-        if ($manifest->icons && $manifest->icons->isIconFilesMissing())
+        if ($manifest->icons instanceOf ManifestIcon && $manifest->icons->isIconFilesMissing())
         {
             $this->iconGenerator->generateIcons($manifest->icons);
         }
@@ -77,7 +82,9 @@ readonly class ManifestGenerator
         $manifest->prefer_related_applications = (bool)$config->pwaPreferRelatedApplication;
 
         if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
-            $manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);
+
+            $manifest->icons = $this->iconBuilder->buildForManifest($iconModel, [[180,180],[512,512]], Path::join($this->getDefaultManifestPath(), $config->id));
+//            $manifest->icons = $this->iconGenerator->createIconInstance($iconModel->path, $page->alias, true);
         }
 
         $applications = StringUtil::deserialize($config->pwaRelatedApplications);

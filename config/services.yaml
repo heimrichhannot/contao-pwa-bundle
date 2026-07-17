@@ -22,7 +22,13 @@ services:
     exclude:
       - ../src/{Contao,ContaoManager,DependencyInjection,Event,Manifest,Model}
 
-# Sender
+  HeimrichHannot\PwaBundle\Asset\IconBuilder:
+    autoconfigure: true
+    autowire: true
+    bind:
+      $imagine: '@contao.image.imagine'
+  
+  # Sender
 
   huh.pwa.sender.pushnotification:
     class: HeimrichHannot\PwaBundle\Sender\PushNotificationSender
