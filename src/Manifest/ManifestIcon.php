@@ -13,6 +13,7 @@ namespace HeimrichHannot\PwaBundle\Manifest;
 final class ManifestIcon
 {
     const SIZES_DEFAULT = [
+        '180x180',
         '192x192',
         '512x512',
     ];

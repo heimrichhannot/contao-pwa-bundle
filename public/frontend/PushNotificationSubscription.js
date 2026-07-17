@@ -98,7 +98,7 @@ export default class PushNotificationSubscription {
     }
 
     checkPermission() {
-        if (Notification.permission === 'denied') {
+        if ('Notification' in window && Notification.permission === 'denied') {
             document.dispatchEvent(new Event('huh_pwa_push_permission_denied'));
             this.pwa.debugLog('[Push Notification Subscription] Fired huh_pwa_push_permission_denied');
             return false;

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+- Changed: existing installations must rebuild their PWA files using the backend module's "rebuild files" button to generate the new 180x180 icon
+
 ## [0.9.6] - 2026-07-13
 - Changed: show notification a primary operation in contao 5.7
 - Fixed: build files from backend not working in contao 5.7

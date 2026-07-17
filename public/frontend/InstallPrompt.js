@@ -7,12 +7,36 @@ export default class InstallPrompt {
         this.supportInstall = ('BeforeInstallPromptEvent' in window);
     }
 
+    isIos() {
+        return /iphone|ipad|ipod/i.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    isStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches
+            || navigator.standalone === true;
+    }
+
     registerListener() {
         const installButtons = this.getInstallButtons();
         const messageElements = this.getNotSupportedMessage();
 
+        window.addEventListener('appinstalled', () => {
+            this.hideInstallButtons();
+        });
+
+        if (this.isStandalone()) {
+            this.hideInstallButtons();
+            messageElements.forEach((element) => {
+                element.classList.add('hidden');
+            });
+            return;
+        }
+
         if (this.supportInstall) {
             this.#registerBeforeInstallPromptListener();
+        } else if (this.isIos()) {
+            this.showIosInstructions();
         } else if (messageElements.length) {
             this.pwa.debugLog('[PWA Install] BeforeInstallPromptEvent not supported, showing not supported message');
             messageElements.forEach((element) => {
@@ -50,7 +74,22 @@ export default class InstallPrompt {
         return document.querySelectorAll('.huh-pwa-install-message');
     }
 
-    fireInstallPrompt() {
+    hideInstallButtons() {
+        this.getInstallButtons().forEach((element) => {
+            element.classList.add('hidden');
+        });
+    }
+
+    showIosInstructions() {
+        this.pwa.debugLog('[PWA Install] Showing iOS Add to Home Screen instructions');
+        this.getNotSupportedMessage().forEach((element) => {
+            element.classList.remove('hidden');
+            element.innerHTML = this.pwa.config.translations?.install?.iosInstructions
+                || "To install this app: tap the Share button in Safari, then choose 'Add to Home Screen'.";
+        });
+    }
+
+    async fireInstallPrompt() {
         this.pwa.debugLog('[PWA Install] Fire install prompt');
         if (this.supportInstall) {
             if (!this.deferredPrompt) {
@@ -64,10 +103,14 @@ export default class InstallPrompt {
 
             this.pwa.debugLog('[PWA Install] Deferred prompt is available, showing install prompt');
             this.deferredPrompt.prompt();
-            this.pwa.debugLog('[PWA Install] dispatch beforeinstallprompt event');
+            const choiceResult = await this.deferredPrompt.userChoice;
+            this.pwa.debugLog('[PWA Install] User choice outcome: ' + choiceResult.outcome);
+            this.deferredPrompt = null;
             this.getInstallButtons().forEach((element) => {
                 element.classList.add('disabled');
             });
+        } else if (this.isIos()) {
+            this.showIosInstructions();
         } else {
             this.pwa.debugLog('[PWA Install] Deferred prompt is not available, showing not supported message');
             this.getNotSupportedMessage().forEach((element) => {

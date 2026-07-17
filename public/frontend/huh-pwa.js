@@ -58,12 +58,13 @@ function initPush(pwa)
         return;
     }
 
-    pwa.pushSubscription.checkPermission();
-
-    if (!('PushManager' in window)) {
+    if (!('PushManager' in window) || !('Notification' in window)) {
         document.dispatchEvent(new Event('huh_pwa_push_not_supported'));
         pwa.debugLog('[SW Registration] Browser don\'t support push. Hide subscription button.');
+        return;
     }
+
+    pwa.pushSubscription.checkPermission();
 
     navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
         pwa.debugLog("[SW Registration] Got service worker registration");
