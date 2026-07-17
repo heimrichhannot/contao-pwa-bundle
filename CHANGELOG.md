@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Unreleased
-- Changed: existing installations must rebuild their PWA files using the backend module's "rebuild files" button to generate the new 180x180 icon
+## [0.9.7]
+- Added: enhance iOS PWA installation and push support ([#29](https://github.com/heimrichhannot/contao-pwa-bundle/pull/29))
+- Added: association of push subscriptions with logged-in frontend members ([#27](https://github.com/heimrichhannot/contao-pwa-bundle/pull/27))
+- Fixed: invalid `background_color` manifest entries when no background color is configured
+- Fixed: push notification initialization in browsers without the Push or Notification APIs ([#29](https://github.com/heimrichhannot/contao-pwa-bundle/pull/29))
 
 ## [0.9.6] - 2026-07-13
 - Changed: show notification a primary operation in contao 5.7
