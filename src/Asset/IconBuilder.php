@@ -95,6 +95,7 @@ class IconBuilder
 
     /**
      * @return ImageInterface[]
+     *
      * @throws \Throwable
      */
     private function doBuild(): array
@@ -119,6 +120,7 @@ class IconBuilder
         if ($this->emptyTargetDir) {
             return $this->buildWithEmptyTargetDir($image, $fileExtension, $resizer, $fs);
         }
+
         return $this->buildImages($this->targetDir, $image, $fileExtension, $resizer);
     }
 
@@ -223,8 +225,8 @@ class IconBuilder
                 $result[] = new Image(
                     Path::join(
                         $this->targetDir, basename(
-                        $generatedImage->getPath()
-                    )
+                            $generatedImage->getPath()
+                        )
                     ),
                     $this->imagine,
                     $fs,
@@ -249,11 +251,7 @@ class IconBuilder
                         $backupDir, $this->targetDir, true
                     );
                 } catch (\Throwable $rollbackException) {
-                    throw new \RuntimeException(
-                        sprintf(
-                            'Failed to restore the previous icon directory from "%s" after rebuilding failed.', $backupDir
-                        ), 0, $rollbackException
-                    );
+                    throw new \RuntimeException(sprintf('Failed to restore the previous icon directory from "%s" after rebuilding failed.', $backupDir), 0, $rollbackException);
                 }
             } elseif ($stagingPromoted) {
                 $this->removeQuietly($fs, $this->targetDir);

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Heimrich & Hannot PWA Bundle
+ * Heimrich & Hannot PWA Bundle.
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
@@ -11,10 +12,6 @@
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\Message;
-use Contao\PageModel;
-use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 
 class PageContainer
@@ -34,8 +31,7 @@ class PageContainer
 
         $list = [];
 
-        foreach ($configs as $config)
-        {
+        foreach ($configs as $config) {
             $list[$config->id] = $config->title;
         }
 

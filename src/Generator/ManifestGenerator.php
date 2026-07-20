@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Heimrich & Hannot PWA Bundle
+ * Heimrich & Hannot PWA Bundle.
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author Thomas Körner <t.koerner@heimrich-hannot.de>
@@ -21,14 +22,14 @@ use Symfony\Component\Filesystem\Filesystem;
 readonly class ManifestGenerator
 {
     public function __construct(
-        private string                $webDir,
+        private string $webDir,
         private IconBuilderFactory $iconBuilderFactory,
-
-    ) {}
+    ) {
+    }
 
     public function getDefaultManifestPath(): string
     {
-        return $this->webDir . '/pwa';
+        return $this->webDir.'/pwa';
     }
 
     public function generateManifest(Manifest $manifest, string $filename, string $path): void
@@ -36,16 +37,17 @@ readonly class ManifestGenerator
         $manifestJson = \json_encode($manifest->jsonSerialize(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
         $filesystem = new Filesystem();
-        $filesystem->dumpFile($path . '/' . $filename, $manifestJson);
+        $filesystem->dumpFile($path.'/'.$filename, $manifestJson);
     }
 
     /**
      * Generate the manifest of a page.
+     *
      * @throws \Throwable
      */
     public function generatePageManifest(PageModel $page): ?Manifest
     {
-        if ($page->addPwa !== PageContainer::ADD_PWA_YES || !$page->pwaConfiguration) {
+        if (PageContainer::ADD_PWA_YES !== $page->addPwa || !$page->pwaConfiguration) {
             return null;
         }
 
@@ -56,8 +58,7 @@ readonly class ManifestGenerator
         $icons = $this->iconBuilderFactory->createBuilderForManifestFromConfig($config)?->buildForManifest();
 
         $manifest = new Manifest();
-        $manifest->name = match ($config->pwaName)
-        {
+        $manifest->name = match ($config->pwaName) {
             PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
             PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $page->pageTitle,
             default => $page->title,
@@ -65,15 +66,15 @@ readonly class ManifestGenerator
 
         $manifest->short_name = $config->pwaShortName;
         $manifest->description = $config->pwaDescription;
-        $manifest->theme_color = $config->pwaThemeColor ? '#' . $config->pwaThemeColor : '';
-        $manifest->background_color = $config->pwaBackgroundColor ? '#' . $config->pwaBackgroundColor : '';
+        $manifest->theme_color = $config->pwaThemeColor ? '#'.$config->pwaThemeColor : '';
+        $manifest->background_color = $config->pwaBackgroundColor ? '#'.$config->pwaBackgroundColor : '';
         $manifest->display = $config->pwaDisplay;
         $manifest->lang = $page->language;
         $manifest->dir = $config->pwaDirection;
         $manifest->orientation = $config->pwaOrientation;
         $manifest->start_url = $config->pwaStartUrl;
         $manifest->scope = $config->pwaScope;
-        $manifest->prefer_related_applications = (bool)$config->pwaPreferRelatedApplication;
+        $manifest->prefer_related_applications = (bool) $config->pwaPreferRelatedApplication;
         $manifest->icons = $icons;
 
         $applications = StringUtil::deserialize($config->pwaRelatedApplications);
@@ -81,7 +82,7 @@ readonly class ManifestGenerator
             $manifest->addRelatedApplication($application['plattform'], $application['url'], $application['id']);
         }
 
-        $filename = $page->alias . '_manifest.json';
+        $filename = $page->alias.'_manifest.json';
         $this->generateManifest($manifest, $filename, $this->getDefaultManifestPath());
 
         return $manifest;

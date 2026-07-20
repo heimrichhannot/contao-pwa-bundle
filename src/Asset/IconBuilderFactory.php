@@ -11,8 +11,8 @@ readonly class IconBuilderFactory
 {
     public function __construct(
         private ImagineInterface $imagine,
-        private string           $projectDir,
-        private string           $webDir,
+        private string $projectDir,
+        private string $webDir,
     ) {
     }
 

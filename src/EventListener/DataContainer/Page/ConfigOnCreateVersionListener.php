@@ -13,11 +13,12 @@ readonly class ConfigOnCreateVersionListener
 {
     public function __construct(
         private AssetBuilder $assetBuilder,
-    ) {}
+    ) {
+    }
 
     public function __invoke(string $table, int $pid, int $version, array $row): void
     {
-        if ($row['type'] !== 'root' || $row['addPwa'] !== PageContainer::ADD_PWA_YES) {
+        if ('root' !== $row['type'] || PageContainer::ADD_PWA_YES !== $row['addPwa']) {
             return;
         }
 

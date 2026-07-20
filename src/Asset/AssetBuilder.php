@@ -11,9 +11,10 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 readonly class AssetBuilder
 {
     public function __construct(
-        private ManifestGenerator      $manifestGenerator,
-        private ServiceWorkerGenerator $serviceWorkerGenerator
-    ) {}
+        private ManifestGenerator $manifestGenerator,
+        private ServiceWorkerGenerator $serviceWorkerGenerator,
+    ) {
+    }
 
     public function buildForConfig(PwaConfigurationsModel $model): void
     {

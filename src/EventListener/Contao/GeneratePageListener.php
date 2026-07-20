@@ -21,17 +21,18 @@ readonly class GeneratePageListener
         private ConfigurationFileGenerator $configurationGenerator,
         private IconBuilderFactory $iconBuilderFactory,
         private Utils $utils,
-    ) {}
+    ) {
+    }
 
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
     {
         $rootPage = PageModel::findByPk($pageModel->rootId);
 
-        if (!$rootPage || $rootPage->type !== 'root') {
+        if (!$rootPage || 'root' !== $rootPage->type) {
             return;
         }
 
-        if ($rootPage->addPwa !== PageContainer::ADD_PWA_YES || !$rootPage->pwaConfiguration) {
+        if (PageContainer::ADD_PWA_YES !== $rootPage->addPwa || !$rootPage->pwaConfiguration) {
             return;
         }
 
@@ -43,8 +44,8 @@ readonly class GeneratePageListener
             return;
         }
 
-        $manifestUrl = \htmlspecialchars('/pwa/' . $rootPage->alias . '_manifest.json', \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
-        $themeColor = \htmlspecialchars('#' . $config->pwaThemeColor, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+        $manifestUrl = \htmlspecialchars('/pwa/'.$rootPage->alias.'_manifest.json', \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+        $themeColor = \htmlspecialchars('#'.$config->pwaThemeColor, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
 
         $appleHead = $this->appleHead($config, $rootPage);
 
@@ -79,7 +80,7 @@ readonly class GeneratePageListener
                     ->buildPathForFirstSize()
                 ;
                 $iconUrl = \htmlspecialchars($iconUrl, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
-                $appleHead[] = '<link rel="apple-touch-icon" href="' . $iconUrl . '">';
+                $appleHead[] = '<link rel="apple-touch-icon" href="'.$iconUrl.'">';
             } catch (\Throwable) {
                 $this->utils->container()->log(
                     sprintf('Failed to generate apple touch icon for PWA configuration ID %d', $config->id),
@@ -92,7 +93,8 @@ readonly class GeneratePageListener
             $appleHead[] = '<meta name="apple-mobile-web-app-capable" content="yes">';
         }
         $appleHead[] = '<meta name="apple-mobile-web-app-status-bar-style" content="default">';
-        $appleHead[] = '<meta name="apple-mobile-web-app-title" content="' . $appleMobileWebAppTitle . '">';
+        $appleHead[] = '<meta name="apple-mobile-web-app-title" content="'.$appleMobileWebAppTitle.'">';
+
         return \implode("\n", $appleHead);
     }
 }
