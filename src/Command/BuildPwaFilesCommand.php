@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Heimrich & Hannot PWA Bundle
+ * Heimrich & Hannot PWA Bundle.
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
@@ -29,31 +30,26 @@ class BuildPwaFilesCommand extends Command
         private readonly ContaoFramework $contaoFramework,
         private readonly ManifestGenerator $manifestGenerator,
         private readonly ServiceWorkerGenerator $serviceWorkerGenerator,
-        private readonly ConfigurationFileGenerator $configurationFileGenerator
+        private readonly ConfigurationFileGenerator $configurationFileGenerator,
     ) {
         parent::__construct();
     }
 
     /**
      * Executes the command.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->contaoFramework->initialize();
         $io = new SymfonyStyle($input, $output);
 
-        $io->title("Build PWA files");
+        $io->title('Build PWA files');
 
         $pages = PageModel::findAllWithActivePwaConfiguration();
 
-        if (null === $pages || ($pageNumber = $pages->count()) < 1)
-        {
-            $io->text("Found no pages with active PWA Configuration. ");
+        if (null === $pages || ($pageNumber = $pages->count()) < 1) {
+            $io->text('Found no pages with active PWA Configuration. ');
+
             return Command::SUCCESS;
         }
 
@@ -61,50 +57,53 @@ class BuildPwaFilesCommand extends Command
 
         $hasErrors = false;
 
-        foreach ($pages as $page)
-        {
-            $io->section("Creating files for page \"".$page->title."\" (ID: ".$page->id.")");
+        foreach ($pages as $page) {
+            $io->section('Creating files for page "'.$page->title.'" (ID: '.$page->id.')');
 
-            if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration))
-            {
-                $io->error("No valid configuration found. Skipping...");
+            if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
+                $io->error('No valid configuration found. Skipping...');
                 $hasErrors = true;
                 continue;
             }
-            $io->text("Use Configuration \"".$config->title."\" (ID: ".$config->id.")");
+            $io->text('Use Configuration "'.$config->title.'" (ID: '.$config->id.')');
 
-            if (!$this->manifestGenerator->generatePageManifest($page))
-            {
-                $io->error("Error on generating manifest file for page. Continue with next page...");
+            $message = '';
+            try {
+                $manifest = $this->manifestGenerator->generatePageManifest($page);
+            } catch (\Throwable $e) {
+                $message = ' '.$e->getMessage();
+                $manifest = null;
+            }
+            if (null === $manifest) {
+                $io->error('Error on generating manifest file for page.'.$message.' Continue with next page...');
                 $hasErrors = true;
                 continue;
             }
-            $io->text("Generated manifest file");
 
-            if (!$this->serviceWorkerGenerator->generatePageServiceworker($page))
-            {
-                $io->error("Error on generating service worker file for page. Continue with next page...");
+            $io->text('Generated manifest file');
+
+            if (!$this->serviceWorkerGenerator->generatePageServiceworker($page)) {
+                $io->error('Error on generating service worker file for page. Continue with next page...');
                 $hasErrors = true;
                 continue;
             }
-            $io->text("Generated service worker file");
+            $io->text('Generated service worker file');
 
-            if (!$this->configurationFileGenerator->generateConfigurationFile($page))
-            {
-                $io->error("Error on generating configuration file for page. Continue with next page...");
+            if (!$this->configurationFileGenerator->generateConfigurationFile($page)) {
+                $io->error('Error on generating configuration file for page. Continue with next page...');
                 $hasErrors = true;
                 continue;
             }
-            $io->text("Generated configuration file");
+            $io->text('Generated configuration file');
         }
 
-        if ($hasErrors)
-        {
-            $io->warning("Finished with error!");
+        if ($hasErrors) {
+            $io->warning('Finished with error!');
+
             return Command::FAILURE;
         }
 
-        $io->success("Successfully created PWA files!");
+        $io->success('Successfully created PWA files!');
 
         return Command::SUCCESS;
     }

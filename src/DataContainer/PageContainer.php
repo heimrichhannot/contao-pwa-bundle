@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Heimrich & Hannot PWA Bundle
+ * Heimrich & Hannot PWA Bundle.
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
@@ -11,10 +12,6 @@
 namespace HeimrichHannot\PwaBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\Message;
-use Contao\PageModel;
-use HeimrichHannot\PwaBundle\Generator\ManifestGenerator;
-use HeimrichHannot\PwaBundle\Generator\ServiceWorkerGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 
 class PageContainer
@@ -25,40 +22,6 @@ class PageContainer
     public const ADD_PWA_YES = 'yes';
     public const ADD_PWA_INHERIT = 'inherit';
 
-    public function __construct(
-        private readonly ManifestGenerator      $manifestGenerator,
-        private readonly ServiceWorkerGenerator $serviceWorkerGenerator
-    ) {}
-
-    #[AsCallback(self::TABLE, 'config.oncreate_version')]
-    public function onCreateVersionCallback(string $table, int $pid, int $version, array $row): void
-    {
-        if ($row['type'] !== 'root' || $row['addPwa'] !== self::ADD_PWA_YES) {
-            return;
-        }
-
-        if (!$page = PageModel::findByPk($row['id'])) {
-            return;
-        }
-
-        if (!PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
-            return;
-        }
-
-        try
-        {
-            $this->manifestGenerator->generatePageManifest($page);
-        }
-        catch (\Exception $e)
-        {
-            Message::addError(
-                str_replace('%error%', $e->getMessage(), $GLOBALS['TL_LANG']['ERR']['huhPwaGenerateManifest'])
-            );
-        }
-
-        $this->serviceWorkerGenerator->generatePageServiceworker($page);
-    }
-
     #[AsCallback(self::TABLE, 'fields.pwaConfiguration.options')]
     public function getPwaConfigurationsAsOptions(): array
     {
@@ -68,8 +31,7 @@ class PageContainer
 
         $list = [];
 
-        foreach ($configs as $config)
-        {
+        foreach ($configs as $config) {
             $list[$config->id] = $config->title;
         }
 

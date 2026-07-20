@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Heimrich & Hannot PWA Bundle
+ * Heimrich & Hannot PWA Bundle.
  *
  * @copyright 2025 Heimrich & Hannot GmbH
  * @author    Thomas Körner <t.koerner@heimrich-hannot.de>
@@ -19,11 +20,11 @@ class Manifest implements \JsonSerializable
         'browser',
     ];
     public const ICONS_VALUE = [
-        "src" => "",
-        "type" => "",
-        "sizes" => "",
+        'src' => '',
+        'type' => '',
+        'sizes' => '',
     ];
-    public const DIR_VALUES = ["ltr", "rtl", "auto"];
+    public const DIR_VALUES = ['ltr', 'rtl', 'auto'];
     public const ORIENTATION_VALUES = [
         'any',
         'natural',
@@ -52,18 +53,23 @@ class Manifest implements \JsonSerializable
     private array $related_applications = [];
     public ?string $start_url = null;
     public ?string $scope = null;
-    public ?ManifestIcon $icons = null;
-    /** @var string Valid CSS color. RGB-Colors with # at the beginning */
+    public ?array $icons = null;
+    /**
+     * @var string Valid CSS color. RGB-Colors with # at the beginning
+     */
     public ?string $background_color = null;
-    /** @var string Valid CSS color. RGB-Colors with # at the beginning */
+    /**
+     * @var string Valid CSS color. RGB-Colors with # at the beginning
+     */
     public ?string $theme_color = null;
     public ?string $display = null;
 
     /**
-     * Specify data which should be serialized to JSON
+     * Specify data which should be serialized to JSON.
      *
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @see https://php.net/manual/en/jsonserializable.jsonserialize.php
      * which is a value of any type other than a resource.
+     *
      * @throws \ReflectionException
      */
     public function jsonSerialize(): ?array
@@ -72,17 +78,14 @@ class Manifest implements \JsonSerializable
         $classProperties = $reflectionClass->getProperties(\ReflectionProperty::IS_PUBLIC);
 
         $manifestProperties = [];
-        foreach ($classProperties as $property)
-        {
-            if ($this->{$property->getName()})
-            {
+        foreach ($classProperties as $property) {
+            if ($this->{$property->getName()}) {
                 $manifestProperties[$property->getName()] = $this->{$property->getName()};
             }
         }
 
         $classMethods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
-        foreach ($classMethods as $method)
-        {
+        foreach ($classMethods as $method) {
             if (!\str_starts_with($method->getName(), 'get')) {
                 continue;
             }
@@ -98,11 +101,6 @@ class Manifest implements \JsonSerializable
             }
         }
 
-        if ($this->icons)
-        {
-            $manifestProperties['icons'] = $this->icons->toArray();
-        }
-
         return $manifestProperties;
     }
 
@@ -111,20 +109,12 @@ class Manifest implements \JsonSerializable
         return $this->related_applications;
     }
 
-    /**
-     * @param string $plattform
-     * @param string|null $url
-     * @param null|string $id
-     * @param null|string $min_version
-     * @param array|null $fingerprints
-     * @return bool
-     */
     public function addRelatedApplication(
-        string  $plattform,
-        ?string  $url = null,
+        string $plattform,
+        ?string $url = null,
         ?string $id = null,
         ?string $min_version = null,
-        ?array  $fingerprints = null
+        ?array $fingerprints = null,
     ): bool {
         if (empty($plattform)) {
             return false;
@@ -137,10 +127,18 @@ class Manifest implements \JsonSerializable
         $application = [];
         $application['plattform'] = $plattform;
 
-        if ($url) $application['url'] = $url;
-        if ($id) $application['id'] = $id;
-        if ($min_version) $application['min_version'] = $min_version;
-        if ($fingerprints) $application['fingerprints'] = $fingerprints;
+        if ($url) {
+            $application['url'] = $url;
+        }
+        if ($id) {
+            $application['id'] = $id;
+        }
+        if ($min_version) {
+            $application['min_version'] = $min_version;
+        }
+        if ($fingerprints) {
+            $application['fingerprints'] = $fingerprints;
+        }
 
         $this->related_applications[] = $application;
 

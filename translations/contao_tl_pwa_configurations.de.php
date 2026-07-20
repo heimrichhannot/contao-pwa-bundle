@@ -57,5 +57,7 @@ return [
         'control' => ['Verwaltung', 'Verwaltungswerkzeuge für Ihre Progressive Web App(s)'],
         'subscriber' => ['Abonnenten', 'Abonnenten der Push Notifications für die Konfiguration'],
         'pushNotifications' => ['Nachrichten', 'Push-Nachrichten der Konfiguration'],
+        'buildFilesError' => 'Die PWA-Dateien konnten nicht neu erstellt werden: %s',
+        'buildFilesSuccess' => 'Die PWA-Dateien für die Konfiguration wurden neu erstellt.',
     ],
 ];
