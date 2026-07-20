@@ -3,6 +3,7 @@
 namespace HeimrichHannot\PwaBundle\EventListener\Contao;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\FilesModel;
 use Contao\LayoutModel;
 use Contao\PageModel;
@@ -11,6 +12,7 @@ use HeimrichHannot\PwaBundle\Asset\IconBuilderFactory;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 #[AsHook('generatePage', priority: 5)]
 readonly class GeneratePageListener
@@ -18,6 +20,7 @@ readonly class GeneratePageListener
     public function __construct(
         private ConfigurationFileGenerator $configurationGenerator,
         private IconBuilderFactory $iconBuilderFactory,
+        private Utils $utils,
     ) {}
 
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
@@ -77,7 +80,12 @@ readonly class GeneratePageListener
                 ;
                 $iconUrl = \htmlspecialchars($iconUrl, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
                 $appleHead[] = '<link rel="apple-touch-icon" href="' . $iconUrl . '">';
-            } catch (\Exception) {
+            } catch (\Throwable) {
+                $this->utils->container()->log(
+                    sprintf('Failed to generate apple touch icon for PWA configuration ID %d', $config->id),
+                    __METHOD__,
+                    ContaoContext::ERROR
+                );
             }
         }
         if (\in_array($config->pwaDisplay, ['standalone', 'fullscreen'], true)) {

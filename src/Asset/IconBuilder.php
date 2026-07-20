@@ -99,7 +99,7 @@ class IconBuilder
      */
     private function doBuild(): array
     {
-        if (!isset($this->sizes)) {
+        if (empty($this->sizes)) {
             throw new \LogicException('No icon sizes defined');
         }
 
@@ -184,6 +184,7 @@ class IconBuilder
             'jpg' => 'image/jpeg',
             'wbmp' => 'image/vnd.wap.wbmp',
             'svg' => 'image/svg+xml',
+            'ico' => 'image/x-icon',
         ];
 
         return $mapping[$format] ?? 'image/'.$format;

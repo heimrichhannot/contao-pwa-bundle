@@ -10,11 +10,11 @@ use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsCallback(table: 'tl_pwa_configurations', target: 'config.onsubmit')]
-class ConfigOnSubmitListener
+readonly class ConfigOnSubmitListener
 {
     public function __construct(
-        private readonly RequestStack $requestStack,
-        private readonly AssetBuilder $assetBuilder,
+        private RequestStack $requestStack,
+        private AssetBuilder $assetBuilder,
     ) {
     }
 
@@ -32,7 +32,7 @@ class ConfigOnSubmitListener
 
         try {
             $this->assetBuilder->buildForConfig($config);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Message::addError(sprintf(
                 $GLOBALS['TL_LANG']['tl_pwa_configurations']['buildFilesError'],
                 $e->getMessage(),
