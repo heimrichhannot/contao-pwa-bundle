@@ -73,12 +73,19 @@ class BuildPwaFilesCommand extends Command
             }
             $io->text("Use Configuration \"".$config->title."\" (ID: ".$config->id.")");
 
-            if (!$this->manifestGenerator->generatePageManifest($page))
-            {
-                $io->error("Error on generating manifest file for page. Continue with next page...");
+            $message = '';
+            try {
+                $manifest = $this->manifestGenerator->generatePageManifest($page);
+            } catch (\Throwable $e) {
+                $message = ' '.$e->getMessage();
+                $manifest = null;
+            }
+            if (null === $manifest) {
+                $io->error("Error on generating manifest file for page.".$message." Continue with next page...");
                 $hasErrors = true;
                 continue;
             }
+
             $io->text("Generated manifest file");
 
             if (!$this->serviceWorkerGenerator->generatePageServiceworker($page))

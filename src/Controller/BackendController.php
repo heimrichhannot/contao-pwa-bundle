@@ -134,9 +134,15 @@ class BackendController extends AbstractController
             return new Response('Page does not have a valid PWA configuration', Response::HTTP_I_AM_A_TEAPOT);
         }
 
-        if (!$this->manifestGenerator->generatePageManifest($page)) {
-            return new Response(\sprintf('Manifest generate failed for page with ID %s', $page->id), Response::HTTP_INTERNAL_SERVER_ERROR);
+
+        try {
+            if (!$this->manifestGenerator->generatePageManifest($page)) {
+                return new Response(\sprintf('Manifest generate failed for page with ID %s', $page->id), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (\Throwable $e) {
+            return new Response(\sprintf('Manifest generate failed for page with ID %s: %s', $page->id, $e->getMessage()), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
 
         if (!$this->serviceWorkerGenerator->generatePageServiceworker($page)) {
             return new JsonResponse(['message' => 'Service worker generation failed for page with ID ' . $page->id], Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -41,6 +41,7 @@ readonly class ManifestGenerator
 
     /**
      * Generate the manifest of a page.
+     * @throws \Throwable
      */
     public function generatePageManifest(PageModel $page): ?Manifest
     {
@@ -51,6 +52,8 @@ readonly class ManifestGenerator
         if (!$config = PwaConfigurationsModel::findByPk($page->pwaConfiguration)) {
             return null;
         }
+
+        $icons = $this->iconBuilderFactory->createBuilderForManifestFromConfig($config)?->buildForManifest();
 
         $manifest = new Manifest();
         $manifest->name = match ($config->pwaName)
@@ -71,7 +74,7 @@ readonly class ManifestGenerator
         $manifest->start_url = $config->pwaStartUrl;
         $manifest->scope = $config->pwaScope;
         $manifest->prefer_related_applications = (bool)$config->pwaPreferRelatedApplication;
-        $manifest->icons = $this->iconBuilderFactory->createBuilderForManifestFromConfig($config)?->buildForManifest();
+        $manifest->icons = $icons;
 
         $applications = StringUtil::deserialize($config->pwaRelatedApplications);
         foreach ($applications as $application) {

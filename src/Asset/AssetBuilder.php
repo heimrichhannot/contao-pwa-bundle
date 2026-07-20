@@ -23,7 +23,11 @@ readonly class AssetBuilder
         }
 
         foreach ($pages as $page) {
-            $this->manifestGenerator->generatePageManifest($page);
+            try {
+                $this->manifestGenerator->generatePageManifest($page);
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(sprintf('Failed to generate manifest for page ID %d: %s', $page->id, $e->getMessage()), 0, $e);
+            }
             $result = $this->serviceWorkerGenerator->generatePageServiceworker($page);
             if (false === $result) {
                 throw new \RuntimeException(sprintf('Failed to generate service worker for page ID %d', $page->id));
