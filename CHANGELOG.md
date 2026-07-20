@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2026-07-20
+- Added: IconBuilder and -Factory to generate icons for various cases including manifest ([#30](https://github.com/heimrichhannot/contao-pwa-bundle/pull/30))
+- Added: AssetBuilder for abstracting and centralizing service worker and manifest generation
+- Removed: ManifestIcon and ManifestIconGenerator classes (use IconBuilder and -Factory instead)
+
 ## [0.9.7]
 - Added: enhance iOS PWA installation and push support ([#29](https://github.com/heimrichhannot/contao-pwa-bundle/pull/29))
 - Added: association of push subscriptions with logged-in frontend members ([#27](https://github.com/heimrichhannot/contao-pwa-bundle/pull/27))

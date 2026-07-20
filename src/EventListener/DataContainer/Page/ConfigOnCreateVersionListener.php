@@ -4,9 +4,9 @@ namespace HeimrichHannot\PwaBundle\EventListener\DataContainer\Page;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Message;
+use Contao\PageModel;
 use HeimrichHannot\PwaBundle\Asset\AssetBuilder;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
-use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 
 #[AsCallback(table: 'tl_page', target: 'config.oncreate_version')]
 readonly class ConfigOnCreateVersionListener
@@ -21,13 +21,13 @@ readonly class ConfigOnCreateVersionListener
             return;
         }
 
-        $config = PwaConfigurationsModel::findByPk($row['pwaConfiguration']);
-        if (null === $config) {
+        $page = PageModel::findByPk($pid);
+        if (null === $page) {
             return;
         }
 
         try {
-            $this->assetBuilder->buildForConfig($config);
+            $this->assetBuilder->buildForPage($page);
         } catch (\RuntimeException $e) {
             Message::addError(sprintf(
                 $GLOBALS['TL_LANG']['tl_pwa_configurations']['buildFilesError'],
