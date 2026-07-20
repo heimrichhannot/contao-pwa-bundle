@@ -42,32 +42,8 @@ readonly class GeneratePageListener
 
         $manifestUrl = \htmlspecialchars('/pwa/' . $rootPage->alias . '_manifest.json', \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
         $themeColor = \htmlspecialchars('#' . $config->pwaThemeColor, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
-        $appleMobileWebAppTitle = $config->pwaShortName ?: match ($config->pwaName) {
-            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
-            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $rootPage->pageTitle,
-            default => $rootPage->title,
-        };
-        $appleMobileWebAppTitle = \htmlspecialchars((string) $appleMobileWebAppTitle, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
 
-        $appleHead = [];
-        if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
-            $iconUrl = $this->iconBuilderFactory->createIconBuilder()
-                ->setEmptyTargetDirOnBuild(false)
-                ->setTargetDir('assets/images/huh_pwa/app_icons', true)
-                ->setSizes([[180, 180]])
-                ->setFile($iconModel)
-                ->buildPathForFirstSize()
-            ;
-
-            $iconUrl = \htmlspecialchars($iconUrl, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
-            $appleHead[] = '<link rel="apple-touch-icon" href="' . $iconUrl . '">';
-        }
-        if (\in_array($config->pwaDisplay, ['standalone', 'fullscreen'], true)) {
-            $appleHead[] = '<meta name="apple-mobile-web-app-capable" content="yes">';
-        }
-        $appleHead[] = '<meta name="apple-mobile-web-app-status-bar-style" content="default">';
-        $appleHead[] = '<meta name="apple-mobile-web-app-title" content="' . $appleMobileWebAppTitle . '">';
-        $appleHead = \implode("\n", $appleHead);
+        $appleHead = $this->appleHead($config, $rootPage);
 
         $script = <<<HTML
         <link rel="manifest" href="$manifestUrl">
@@ -77,5 +53,38 @@ readonly class GeneratePageListener
         HTML;
 
         $GLOBALS['TL_HEAD']['huh_pwa'] = $script;
+    }
+
+    private function appleHead(PwaConfigurationsModel $config, PageModel $rootPage): string
+    {
+        $appleMobileWebAppTitle = $config->pwaShortName ?: match ($config->pwaName) {
+            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
+            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $rootPage->pageTitle,
+            default => $rootPage->title,
+        };
+
+        $appleMobileWebAppTitle = \htmlspecialchars((string) $appleMobileWebAppTitle, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+
+        $appleHead = [];
+        if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
+            try {
+                $iconUrl = $this->iconBuilderFactory->createIconBuilder()
+                    ->setEmptyTargetDirOnBuild(false)
+                    ->setTargetDir('assets/images/huh_pwa/app_icons', true)
+                    ->setSizes([[180, 180]])
+                    ->setFile($iconModel)
+                    ->buildPathForFirstSize()
+                ;
+                $iconUrl = \htmlspecialchars($iconUrl, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+                $appleHead[] = '<link rel="apple-touch-icon" href="' . $iconUrl . '">';
+            } catch (\Exception) {
+            }
+        }
+        if (\in_array($config->pwaDisplay, ['standalone', 'fullscreen'], true)) {
+            $appleHead[] = '<meta name="apple-mobile-web-app-capable" content="yes">';
+        }
+        $appleHead[] = '<meta name="apple-mobile-web-app-status-bar-style" content="default">';
+        $appleHead[] = '<meta name="apple-mobile-web-app-title" content="' . $appleMobileWebAppTitle . '">';
+        return \implode("\n", $appleHead);
     }
 }

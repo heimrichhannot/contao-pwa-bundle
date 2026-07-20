@@ -98,13 +98,13 @@ class IconBuilder
             throw new \LogicException('No source file defined');
         }
 
+        $fs = new Filesystem();
         $resizer = new Resizer($this->tmpDir);
-        $image = new Image($this->file->path, $this->imagine);
+        $image = new Image($this->file->getAbsolutePath(), $this->imagine, $fs);
 
         $options = (new ResizeOptions())->setTargetPath($this->targetDir);
         $fileExtension = strtolower(pathinfo($this->file->path, PATHINFO_EXTENSION));
 
-        $fs = new Filesystem();
         if ($this->emptyTargetDir) {
             $fs->remove($this->targetDir);
         }
