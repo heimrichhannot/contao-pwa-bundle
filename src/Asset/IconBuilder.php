@@ -4,46 +4,130 @@ namespace HeimrichHannot\PwaBundle\Asset;
 
 use Contao\FilesModel;
 use Contao\Image\Image;
+use Contao\Image\ImageInterface;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeOptions;
 use Contao\Image\Resizer;
 use Imagine\Image\ImagineInterface;
-use Symfony\Component\DependencyInjection\Attribute\Target;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
 class IconBuilder
 {
+    private array $sizes;
+    private string $targetDir;
+    private FilesModel $file;
+    private bool $emptyTargetDir = false;
+
     public function __construct(
         private readonly ImagineInterface $imagine,
-        private readonly ParameterBagInterface $parameterBag,
-    ) {}
+        private readonly string $tmpDir,
+        private readonly string $publicDir,
+    ) {
+    }
 
-    public function buildForManifest(FilesModel $source, array $sizes, string $targetDir): array
+    public function setSizes(array $sizes): self
     {
-        $resizer = new Resizer(Path::join($this->parameterBag->get('kernel.project_dir'), '/var/pwa/manifest_icon/'));
-        $image = new Image($source->path, $this->imagine);
+        $this->sizes = $sizes;
+        return $this;
+    }
 
-        $options = (new ResizeOptions())->setTargetPath($targetDir);
+    /**
+     * @param string $targetDir The path where the icons should be stored
+     * @param bool $isRelative Set true if path is relative to public dir
+     * @return $this
+     */
+    public function setTargetDir(string $targetDir, bool $isRelative = false): self
+    {
+        if ($isRelative) {
+            $targetDir = Path::join($this->publicDir, $targetDir);
+        }
 
+        $this->targetDir = $targetDir;
+        return $this;
+    }
+
+    public function setFile(FilesModel $file): self
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function setEmptyTargetDirOnBuild(bool $emptyTargetDir = true): self
+    {
+        $this->emptyTargetDir = $emptyTargetDir;
+        return $this;
+    }
+
+    public function buildForManifest(): array
+    {
+        $images = $this->doBuild();
         $result = [];
 
-        foreach ($sizes as $size) {
+        foreach ($images as $image) {
+            $result[] = [
+                'src' => '/'.$image->getUrl($this->publicDir),
+                'sizes' => "{$image->getDimensions()->getSize()->getWidth()}x{$image->getDimensions()->getSize()->getHeight()}",
+                'type' => $this->getMimeFromFormat(strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION))),
+            ];
+        }
+
+        return $result;
+    }
+
+    public function buildPathForFirstSize(): string
+    {
+        $images = $this->doBuild();
+        return '/'.$images[0]->getUrl($this->publicDir);
+    }
+
+    /**
+     * @return ImageInterface[]
+     */
+    private function doBuild(): array
+    {
+        if (!isset($this->sizes)) {
+            throw new \LogicException('No icon sizes defined');
+        }
+
+        if (!isset($this->targetDir)) {
+            throw new \LogicException('No target directory defined');
+        }
+
+        if (!isset($this->file)) {
+            throw new \LogicException('No source file defined');
+        }
+
+        $resizer = new Resizer($this->tmpDir);
+        $image = new Image($this->file->path, $this->imagine);
+
+        $options = (new ResizeOptions())->setTargetPath($this->targetDir);
+        $fileExtension = strtolower(pathinfo($this->file->path, PATHINFO_EXTENSION));
+
+        $fs = new Filesystem();
+        if ($this->emptyTargetDir) {
+            $fs->remove($this->targetDir);
+        }
+
+        $result = [];
+        foreach ($this->sizes as $size) {
             $config = (new ResizeConfiguration())
                 ->setWidth($size[0])
                 ->setHeight($size[1])
-                ->setMode(ResizeConfiguration::MODE_BOX);
+                ->setMode(ResizeConfiguration::MODE_CROP);
 
-            $options->setTargetPath(Path::join($targetDir, $size[0] . 'x' . $size[1] . '.' . pathinfo($source->path, PATHINFO_EXTENSION)));
 
-            $resizedImage = $resizer->resize($image, $config, $options);
-            $format = strtolower(pathinfo($resizedImage->getPath(), PATHINFO_EXTENSION));
+            $fileName = $this->file->hash. '_' . $size[0] . 'x' . $size[1] . '.' . $fileExtension;
+            $filePath = Path::join($this->targetDir, $fileName);
 
-            $result[] = [
-                'src' => $resizedImage->getPath(),
-                'sizes' => "{$size[0]}x{$size[1]}",
-                'type' => $this->getMimeFromFormat($format),
-            ];
+            if (file_exists($filePath)) {
+                $result[] = new Image($filePath, $this->imagine, $fs);
+                continue;
+            }
+
+            $options->setTargetPath($filePath);
+
+            $result[] = $resizer->resize($image, $config, $options);
         }
 
         return $result;

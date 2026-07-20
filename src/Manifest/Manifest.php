@@ -52,7 +52,7 @@ class Manifest implements \JsonSerializable
     private array $related_applications = [];
     public ?string $start_url = null;
     public ?string $scope = null;
-    public ManifestIcon|array|null $icons = null;
+    public array|null $icons = null;
     /** @var string Valid CSS color. RGB-Colors with # at the beginning */
     public ?string $background_color = null;
     /** @var string Valid CSS color. RGB-Colors with # at the beginning */
@@ -96,11 +96,6 @@ class Manifest implements \JsonSerializable
             if (!\is_null($value)) {
                 $manifestProperties[\lcfirst(\substr($method->getName(), 3))] = $value;
             }
-        }
-
-        if ($this->icons instanceOf ManifestIcon)
-        {
-            $manifestProperties['icons'] = $this->icons->toArray();
         }
 
         return $manifestProperties;

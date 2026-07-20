@@ -7,9 +7,9 @@ use Contao\FilesModel;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
+use HeimrichHannot\PwaBundle\Asset\IconBuilderFactory;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
-use HeimrichHannot\PwaBundle\Generator\ManifestIconGenerator;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 
 #[AsHook('generatePage', priority: 5)]
@@ -17,7 +17,7 @@ readonly class GeneratePageListener
 {
     public function __construct(
         private ConfigurationFileGenerator $configurationGenerator,
-        private ManifestIconGenerator $manifestIconGenerator,
+        private IconBuilderFactory $iconBuilderFactory,
     ) {}
 
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
@@ -51,8 +51,14 @@ readonly class GeneratePageListener
 
         $appleHead = [];
         if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
-            $icon = $this->manifestIconGenerator->createIconInstance($iconModel->path, $rootPage->alias);
-            $iconUrl = '/' . $icon->getIconsPath() . '/' . $icon->generateIconName('180x180');
+            $iconUrl = $this->iconBuilderFactory->createIconBuilder()
+                ->setEmptyTargetDirOnBuild(false)
+                ->setTargetDir('assets/images/huh_pwa/app_icons', true)
+                ->setSizes([[180, 180]])
+                ->setFile($iconModel)
+                ->buildPathForFirstSize()
+            ;
+
             $iconUrl = \htmlspecialchars($iconUrl, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
             $appleHead[] = '<link rel="apple-touch-icon" href="' . $iconUrl . '">';
         }
