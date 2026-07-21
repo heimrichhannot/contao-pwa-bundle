@@ -30,3 +30,4 @@ huh.pwa:
       files: "Dateien"
       notifications: "Benachrichtigungen"
       authentication: "Authentifizierung (VAPID-Schlüssel)"
+      version: "Version"

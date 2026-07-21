@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\PwaBundle\Controller\BackendRoute;
 
+use Composer\InstalledVersions;
 use Contao\CoreBundle\Controller\AbstractBackendController;
 use Contao\Message;
 use Minishlink\WebPush\VAPID;
@@ -61,6 +62,8 @@ class AdministrationController extends AbstractBackendController
         $findPagesRoute = $this->generateUrl('huh_pwa.backend.pages', $params);
         $updatePageRoute = $this->generateUrl('huh_pwa.backend.pages.update', $params);
 
+        $version = InstalledVersions::getPrettyVersion('heimrichhannot/contao-pwa-bundle');
+
 
         return $this->render(
             '@Contao/backend/administration.html.twig',
@@ -78,6 +81,7 @@ class AdministrationController extends AbstractBackendController
                 'update_page_route' => $updatePageRoute,
                 'request_token' => $requestToken,
                 'web_push' => $webPush,
+                'installed_version' => $version,
             ]
         );
     }

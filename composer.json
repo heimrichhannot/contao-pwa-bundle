@@ -7,6 +7,7 @@
         "php": "^8.2",
         "ext-json": "*",
         "ext-fileinfo": "*",
+        "composer-runtime-api": "^2.0",
         "contao/core-bundle": "^5.3",
         "doctrine/dbal": "^3.0 || ^4.0",
         "heimrichhannot/contao-utils-bundle": "^3.0",

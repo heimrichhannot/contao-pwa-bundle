@@ -73,6 +73,15 @@
         </div>
     </div>
 
-    <div class="tl_listing_container">
+    <div class="maintenance_inactive">
+        <h2 class="sub_headline">{{ 'huh.pwa.backend.control.version'|trans }}</h2>
+        <div class="tl_tbox">
+            <p>{{ installed_version }}</p>
+            <p>{{ 'backend.admin.installed_version_notice'|trans([], 'huh_pwa')|raw }}</p>
+        </div>
     </div>
+
+{#    <div class="tl_listing_container">#}
+{#        Test#}
+{#    </div>#}
 {% endblock %}

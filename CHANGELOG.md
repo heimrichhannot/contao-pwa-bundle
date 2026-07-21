@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.1] - 2026-07-21
+- Changed: add version notice to admin dashboard
+
 ## [0.10.0] - 2026-07-20
 - Added: IconBuilder and -Factory to generate icons for various cases including manifest ([#30](https://github.com/heimrichhannot/contao-pwa-bundle/pull/30))
 - Added: AssetBuilder for abstracting and centralizing service worker and manifest generation
