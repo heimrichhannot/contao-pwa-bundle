@@ -65,6 +65,13 @@ huh_pwa:
         privateKey: "YOUR_PRIVATE_KEY"
 ```
 
+**The subject must be a real contact address.** Use a `mailto:` address or an
+`https:` URL on a domain that exists. Apple's push service rejects reserved
+domains such as `example.invalid`, `example.test` or `localhost` with
+`403 BadJwtToken`, while Chrome and Firefox accept them. Push then works on
+desktop and Android but never arrives on iPhones. The bundle writes an error to
+the system log when it detects such a subject.
+
 ## Usage
 
 ### Content Elements

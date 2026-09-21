@@ -162,7 +162,42 @@ class PushNotificationSender
             return false;
         }
 
+        $this->checkVapidSubject((string) $this->bundleConfig['vapid']['subject'], $log);
+
         return true;
+    }
+
+    /**
+     * Apple's push service rejects a VAPID subject it does not consider a real contact
+     * with "403 BadJwtToken", while Chrome and Firefox accept it. The result is push
+     * that works everywhere except on iOS, which is hard to diagnose from the outside.
+     * This only warns: an otherwise working setup keeps sending to the other services.
+     */
+    private function checkVapidSubject(string $subject, LoggerInterface $log): void
+    {
+        $advice = ' Use a real contact address, for example "mailto:webmaster@your-domain.example" or "https://your-domain.example". Apple rejects anything else with "BadJwtToken", so push works in Chrome and Firefox but never reaches iOS.';
+
+        if (!str_starts_with($subject, 'mailto:') && !str_starts_with($subject, 'https://')) {
+            $log->error('The VAPID subject "' . $subject . '" is neither a mailto: nor an https: URL.' . $advice, ['function' => __FUNCTION__]);
+            return;
+        }
+
+        $host = str_starts_with($subject, 'mailto:')
+            ? substr(strrchr($subject, '@') ?: '', 1)
+            : (string) parse_url($subject, PHP_URL_HOST);
+
+        if ($host === '') {
+            $log->error('The VAPID subject "' . $subject . '" has no host part.' . $advice, ['function' => __FUNCTION__]);
+            return;
+        }
+
+        // Reserved names from RFC 2606 and RFC 6761; they can never resolve.
+        $reserved = ['invalid', 'test', 'example', 'localhost', 'local'];
+        $tld = strtolower((string) strrchr($host, '.'));
+
+        if (in_array(ltrim($tld, '.'), $reserved, true) || in_array(strtolower($host), $reserved, true)) {
+            $log->error('The VAPID subject "' . $subject . '" uses the reserved domain "' . $host . '".' . $advice, ['function' => __FUNCTION__]);
+        }
     }
 
     /**
