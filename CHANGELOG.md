@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.2] - 2026-09-21
+- Added: vapid subject check
+
 ## [0.10.1] - 2026-07-21
 - Changed: add version notice to admin dashboard
 
