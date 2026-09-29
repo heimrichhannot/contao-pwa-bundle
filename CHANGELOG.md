@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.3] - 2026-09-29
+- Fixed: push subscription buttons compatibility issue with turbo
+
 ## [0.10.2] - 2026-09-21
 - Added: vapid subject check
 

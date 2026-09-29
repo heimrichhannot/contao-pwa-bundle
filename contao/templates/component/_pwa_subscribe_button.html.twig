@@ -1,5 +1,6 @@
 {% set button_attrs = attrs()
     .addClass(['huhPwaWebSubscription'])
+    .set('type', 'button')
     .set('disabled', 'disabled')
     .mergeWith(button_attrs|default) %}
 
