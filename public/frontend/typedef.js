@@ -1,6 +1,11 @@
 /**
  * Konfiguration für die Push-Benachrichtigungs-Übersetzungen.
  * @typedef {object} PwaPushNotificationTranslations
+ * @property {string} wait - Meldung während der Statusprüfung.
+ * @property {string} retry - Beschriftung zum erneuten Prüfen.
+ * @property {string} initialization_failed - Hinweis bei fehlgeschlagener Statusprüfung.
+ * @property {string} install_required - Beschriftung für die erforderliche Installation.
+ * @property {string} install_required_help - Installationsanleitung für iPhone und iPad.
  * @property {string} subscribe - Text für den "Abonnieren"-Button/Aktion.
  * @property {string} unsubscribe - Text für den "Abbestellen"-Button/Aktion.
  * @property {string} blocked - Meldung, wenn Benachrichtigungen durch den Browser blockiert sind.
