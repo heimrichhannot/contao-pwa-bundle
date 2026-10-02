@@ -18,68 +18,58 @@ export default class PushNotificationSubscription {
         }
     }
 
-    subscribe() {
-        this.pwa.debugLog('[Push Notification Subscription] Trying to Subscribe');
+    busy = false;
 
-        navigator.serviceWorker.ready.then((registration) => {
-            fetch('/_huh_pwa/vapid.pub')
-                .then((response) => {
-                    return response.text();
-                })
-                .then((publicKey) => {
-                    return registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: PushNotificationSubscription.urlBase64ToUint8Array(publicKey),
-                    });
-                })
-                .then((subscription) => {
-                    this.pwa.debugLog('[Push Notification Subscription] Successful Subscribed', subscription.endpoint);
-
-                    return fetch(this.subscribePath, {
-                        method: 'post',
-                        headers: {
-                            'Content-type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            subscription: subscription,
-                        }),
-                    });
-                }).then(() => {
-                    this.setIsSubscribed();
-                }).catch((reason) => {
-                    document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', {
-                        detail: { reason: reason }
-                    }));
-                });
-        });
+    async subscribe() {
+        const config = this.pwa.config;
+        const subscribePath = this.subscribePath;
+        try {
+            // Request permission during the click, before worker/network awaits.
+            if (Notification.permission !== 'granted' && await Notification.requestPermission() !== 'granted') {
+                throw new Error('Notification permission was not granted');
+            }
+            const registration = await this.pwa.getRegistration();
+            const keyResponse = await fetch('/_huh_pwa/vapid.pub', { signal: AbortSignal.timeout(15000) });
+            if (!keyResponse.ok) throw new Error('Failed to fetch the push public key');
+            const subscription = await this.pwa.withTimeout(registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: PushNotificationSubscription.urlBase64ToUint8Array(await keyResponse.text()),
+            }), 'Push subscription timed out');
+            const response = await fetch(subscribePath, {
+                method: 'post',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ subscription }),
+                signal: AbortSignal.timeout(15000),
+            });
+            if (!response.ok) throw new Error('Failed to save the push subscription');
+            if (config === this.pwa.config) this.setIsSubscribed();
+        } catch (reason) {
+            this.checkPermission();
+            document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', { detail: { reason } }));
+        }
     }
 
-    unsubscribe() {
-        this.pwa.debugLog('[Push Notification Subscription] Trying to unsubscribe');
-
-        navigator.serviceWorker.ready.then((registration) => {
-            return registration.pushManager.getSubscription();
-        }).then((subscription) => {
-            return subscription.unsubscribe().then(() => {
-                this.pwa.debugLog('[Push Notification Subscription] Successful Unsubscribed', subscription.endpoint);
-
-                return fetch(this.unsubscribePath, {
+    async unsubscribe() {
+        const config = this.pwa.config;
+        const unsubscribePath = this.unsubscribePath;
+        try {
+            const registration = await this.pwa.getRegistration();
+            const subscription = await this.pwa.withTimeout(registration.pushManager.getSubscription(), 'Push subscription check timed out');
+            if (subscription) {
+                const removed = await this.pwa.withTimeout(subscription.unsubscribe(), 'Push unsubscription timed out');
+                if (!removed) throw new Error('Failed to remove the push subscription');
+                const response = await fetch(unsubscribePath, {
                     method: 'post',
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        subscription: subscription,
-                    }),
+                    headers: { 'Content-type': 'application/json' },
+                    body: JSON.stringify({ subscription }),
+                    signal: AbortSignal.timeout(15000),
                 });
-            });
-        }).then(() => {
-            this.setIsUnsubscribed();
-        }).catch((reason) => {
-            document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', {
-                detail: {'reason': reason}
-            }));
-        });
+                if (!response.ok) throw new Error('Failed to save the push unsubscription');
+            }
+            if (config === this.pwa.config) this.setIsUnsubscribed();
+        } catch (reason) {
+            document.dispatchEvent(new CustomEvent('huh_pwa_push_unsubscription_failed', { detail: { reason } }));
+        }
     }
     setIsUnsubscribed(context = null) {
         if (!this.checkPermission()) return;
@@ -106,15 +96,20 @@ export default class PushNotificationSubscription {
         return true;
     }
 
-    changeSubscriptionStatus(event) {
-        this.pwa.debugLog("[Push Notification Subscription] CHANGE Subscription state");
+    async changeSubscriptionStatus(event) {
+        if (this.busy || !this.pwa.checkPushSupport()) return;
+        if (!['subscribe', 'unsubscribe'].includes(event.detail)) return;
 
-        if (!this.checkPermission()) return;
-
-        if (event.detail === 'subscribe') {
-            this.subscribe();
-        } else if (event.detail === 'unsubscribe') {
-            this.unsubscribe();
+        this.pwa.invalidateStatus();
+        this.busy = true;
+        document.dispatchEvent(new Event('huh_pwa_push_busy'));
+        try {
+            if (event.detail === 'subscribe') await this.subscribe();
+            else await this.unsubscribe();
+        } finally {
+            this.busy = false;
+            // Read the actual browser state, including partially failed operations.
+            await this.pwa.refreshStatus();
         }
     }
 

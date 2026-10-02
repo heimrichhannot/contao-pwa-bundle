@@ -11,3 +11,7 @@
         <span class="label">{{ button_label }}</span>
     {% endblock %}
 </button>
+
+{% block button_help %}
+    <p{{ attrs().set('data-huh-pwa-push-help').set('role', 'status').set('hidden') }}></p>
+{% endblock %}
