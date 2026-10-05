@@ -302,14 +302,21 @@ class HuhPwaServiceWorker {
             if (!sameOrigin) {
                 continue;
             }
+            let focusable = client;
+            if (client.url !== url.href && typeof client.navigate === 'function') {
+                try {
+                    focusable = await client.navigate(url.href) || client;
+                } catch (e) {
+                    // An uncontrolled client refuses to navigate. Focusing it still
+                    // brings the app forward, which beats opening nothing at all:
+                    // an installed app already running ignores openWindow().
+                    this.log(event, 'Could not navigate the open window: ' + e.message);
+                }
+            }
             try {
-                // An uncontrolled client rejects navigate(); fall through to a new window.
-                const navigated = client.url !== url.href && typeof client.navigate === 'function'
-                    ? await client.navigate(url.href)
-                    : client;
-                return await (navigated || client).focus();
+                return await focusable.focus();
             } catch (e) {
-                this.log(event, 'Could not reuse an open window: ' + e.message);
+                this.log(event, 'Could not focus the open window: ' + e.message);
                 break;
             }
         }

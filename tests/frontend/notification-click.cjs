@@ -31,6 +31,9 @@ function run(windows, { startUrl = '/', jumpTo } = {}) {
                     client.navigate = async target => { calls.navigated.push(target); client.url = target; return client }
                 } else if (navigate === 'throws') {
                     client.navigate = async () => { throw new Error('not controlled') }
+                } else if (navigate === 'unfocusable') {
+                    client.navigate = async () => { throw new Error('not controlled') }
+                    client.focus = async () => { throw new Error('cannot focus') }
                 }
                 return client
             })
@@ -66,9 +69,15 @@ async function verify() {
     assert.deepEqual(calls.navigated, [], 'the current page is not reloaded')
     assert.deepEqual(calls.focused, [target])
 
-    // An uncontrolled client rejects navigate(); a window still has to open.
+    // An uncontrolled client rejects navigate(). Opening a window instead would be
+    // ignored by an app that is already running, so the app is focused anyway.
     ;({ calls } = await run([['https://example.org/', 'throws']], { jumpTo: target }))
-    assert.deepEqual(calls.opened, [target], 'a failed reuse falls back to a new window')
+    assert.deepEqual(calls.focused, ['https://example.org/'], 'the app is brought forward')
+    assert.deepEqual(calls.opened, [], 'and no window is opened on top of it')
+
+    // A client that cannot even be focused must not swallow the click.
+    ;({ calls } = await run([['https://example.org/', 'unfocusable']], { jumpTo: target }))
+    assert.deepEqual(calls.opened, [target], 'a window opens when the client is unusable')
 
     // Without a target the click still has to reach the app.
     ;({ calls } = await run([], { startUrl: '/' }))
