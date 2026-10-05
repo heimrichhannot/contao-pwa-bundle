@@ -83,6 +83,7 @@ readonly class ConfigurationFileGenerator
                     'initialization_failed' => $this->translator->trans('huh.pwa.pushnotifications.initialization_failed'),
                     'install_required' => $this->translator->trans('huh.pwa.pushnotifications.install_required'),
                     'install_required_help' => $this->translator->trans('huh.pwa.pushnotifications.install_required_help'),
+                    'permission_blocked_by_browser' => $this->translator->trans('huh.pwa.pushnotifications.permission_blocked_by_browser'),
                     'subscribe'     => $this->translator->trans('huh.pwa.pushnotifications.subscribe'),
                     'unsubscribe'   => $this->translator->trans('huh.pwa.pushnotifications.unsubscribe'),
                     'blocked'       => $this->translator->trans('huh.pwa.pushnotifications.blocked'),

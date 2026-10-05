@@ -3,6 +3,7 @@ const BUTTON_SELECTOR = '.huhPwaWebSubscription';
 export default class PushSubscriptionButtons {
     #connected = false;
     #state = null;
+    #notice = null;
     #helpId = 0;
 
     /**
@@ -22,7 +23,11 @@ export default class PushSubscriptionButtons {
         document.addEventListener('huh_pwa_push_checking', () => this.#setState('checking'));
         document.addEventListener('huh_pwa_push_busy', this.bindElements.bind(this));
         // A failed (un)subscription leaves the clicked button disabled; restore the current state.
-        document.addEventListener('huh_pwa_push_subscription_failed', this.bindElements.bind(this));
+        document.addEventListener('huh_pwa_push_subscription_failed', (event) => {
+            // Keep explaining a silent browser block until the next attempt or state change.
+            this.#notice = event.detail?.code === 'permission_blocked_by_browser' ? event.detail.code : null;
+            this.bindElements();
+        });
         document.addEventListener('huh_pwa_push_unsubscription_failed', this.bindElements.bind(this));
     }
 
@@ -108,23 +113,29 @@ export default class PushSubscriptionButtons {
             return;
         }
         button.disabled = true;
+        this.#notice = null;
         document.dispatchEvent(new CustomEvent('huh_pwa_push_changeSubscriptionState', { detail: this.subscriptionAction }));
     }
 
     #setState(state) {
         this.#state = state;
+        // The status refresh after a failed subscription passes through these states.
+        if (!['checking', 'subscribe'].includes(state)) this.#notice = null;
         this.bindElements();
     }
 
     #render(button) {
         const translations = this.pwa.config.translations.pushnotifications;
+        // A button can override single texts, e.g. data-text-subscribe="Activate" for "subscribe".
+        const text = (key) => button.dataset['text' + key.replace(/(?:^|_)(\w)/g, (match, char) => char.toUpperCase())] ?? translations[key];
         const label = button.querySelector('.label');
         let help = button.nextElementSibling;
         if (!help?.matches('[data-huh-pwa-push-help]')) {
             help = null;
         }
-        const message = this.#state === 'install_required' ? translations.install_required_help
-            : this.#state === 'error' ? translations.initialization_failed : null;
+        const message = this.#state === 'install_required' ? text('install_required_help')
+            : this.#state === 'error' ? text('initialization_failed')
+            : this.#notice ? text(this.#notice) : null;
         // Also support custom button templates which predate the help element.
         if (message && !help) {
             help = document.createElement('p');
@@ -155,7 +166,7 @@ export default class PushSubscriptionButtons {
             case 'unsubscribe': {
                 const subscribed = this.#state === 'unsubscribe';
                 button.disabled = this.pwa.pushSubscription.busy;
-                if (label) label.textContent = subscribed ? translations.unsubscribe : translations.subscribe;
+                if (label) label.textContent = subscribed ? text('unsubscribe') : text('subscribe');
                 button.classList.toggle('subscribed', subscribed);
                 button.classList.toggle('unsubscribed', !subscribed);
                 button.classList.remove('blocked');
@@ -165,15 +176,15 @@ export default class PushSubscriptionButtons {
             case 'install_required':
             case 'error':
                 button.disabled = this.#state !== 'error';
-                if (label) label.textContent = this.#state === 'checking' ? translations.wait
-                    : this.#state === 'install_required' ? translations.install_required : translations.retry;
+                if (label) label.textContent = this.#state === 'checking' ? text('wait')
+                    : this.#state === 'install_required' ? text('install_required') : text('retry');
                 button.classList.remove('unsubscribed', 'subscribed', 'blocked');
                 button.classList.add(this.#state === 'install_required' ? 'install-required' : this.#state);
                 break;
             case 'blocked':
             case 'not_supported':
                 button.disabled = true;
-                if (label) label.textContent = this.#state === 'blocked' ? translations.blocked : translations.not_supported;
+                if (label) label.textContent = this.#state === 'blocked' ? text('blocked') : text('not_supported');
                 button.classList.add('blocked');
                 button.classList.remove('unsubscribed', 'subscribed');
                 break;

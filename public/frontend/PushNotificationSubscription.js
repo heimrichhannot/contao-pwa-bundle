@@ -25,8 +25,9 @@ export default class PushNotificationSubscription {
         const subscribePath = this.subscribePath;
         try {
             // Request permission during the click, before worker/network awaits.
-            if (Notification.permission !== 'granted' && await Notification.requestPermission() !== 'granted') {
-                throw new Error('Notification permission was not granted');
+            if (Notification.permission !== 'granted') {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') throw PushNotificationSubscription.permissionError(permission);
             }
             const registration = await this.pwa.getRegistration();
             const keyResponse = await fetch('/_huh_pwa/vapid.pub', { signal: AbortSignal.timeout(15000) });
@@ -45,7 +46,9 @@ export default class PushNotificationSubscription {
             if (config === this.pwa.config) this.setIsSubscribed();
         } catch (reason) {
             this.checkPermission();
-            document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', { detail: { reason } }));
+            document.dispatchEvent(new CustomEvent('huh_pwa_push_subscription_failed', {
+                detail: { reason, code: reason?.code ?? null },
+            }));
         }
     }
 
@@ -111,6 +114,18 @@ export default class PushNotificationSubscription {
             // Read the actual browser state, including partially failed operations.
             await this.pwa.refreshStatus();
         }
+    }
+
+    /**
+     * The stored permission stays "default" when the browser denied the request
+     * without asking, e.g. Chrome after the prompt was dismissed several times.
+     */
+    static permissionError(permission) {
+        const error = new Error('Notification permission was not granted');
+        error.code = permission === 'denied' && Notification.permission === 'default'
+            ? 'permission_blocked_by_browser'
+            : 'permission_not_granted';
+        return error;
     }
 
     static urlBase64ToUint8Array(base64String) {

@@ -226,6 +226,26 @@ async function runPwaStatusChecks() {
             await settled();
             assert(failureEvents === 1, 'HTTP failure was ignored');
             assertState(translations.subscribe, false);
+            serverStatus = 200;
+        });
+        await check('silent browser block explains the site settings', async () => {
+            registration = ready(false);
+            Notification.permission = 'default';
+            Notification.requestPermission = async () => 'denied';
+            await refresh();
+            buttons()[0].click();
+            await settled();
+            assertState(translations.subscribe, false);
+            assert(buttons().every((button) => !button.nextElementSibling.hidden && button.nextElementSibling.textContent === translations.permission_blocked_by_browser), 'Missing browser block help');
+        });
+        await check('dismissed prompt clears the browser block help', async () => {
+            Notification.requestPermission = async () => 'default';
+            buttons()[0].click();
+            await settled();
+            assertState(translations.subscribe, false);
+            assert(buttons().every((button) => button.nextElementSibling.hidden), 'Browser block help remained visible');
+            Notification.permission = 'granted';
+            Notification.requestPermission = async () => 'granted';
         });
         return { passed: results.length, checks: results };
     } finally {

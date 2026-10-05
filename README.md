@@ -89,6 +89,16 @@ By default, the popup opens on button click, but you can also set it to open aut
 A template for bootstrap 5 modals is included.
 The templates are prepared to easily create variant of them without overriding greater parts of the template.
 
+#### Subscribe button texts
+
+The subscribe button (`@Contao/component/_pwa_subscribe_button.html.twig`) takes its labels and hints from the PWA configuration. A single button can override any of them with a `data-text-*` attribute named after the translation key (`subscribe`, `unsubscribe`, `wait`, `retry`, `blocked`, `not_supported`, `install_required`, `install_required_help`, `initialization_failed`, `permission_blocked_by_browser`):
+
+```twig
+{{ include('@Contao/component/_pwa_subscribe_button.html.twig', {
+    button_attrs: attrs().set('data-text-subscribe', 'Activate').set('data-text-wait', 'One moment…'),
+}) }}
+```
+
 ### Regenerating Files
 
 You can regenerate all manifest and service worker files at once from:
@@ -110,8 +120,10 @@ To support custom controls, the bundle provides events and event listeners that 
 | huh_pwa_push_permission_denied     | Fired if push notifications are blocked in the browser                                                   |
 | huh_pwa_push_isSubscribed          | Fired when subscribed to push notifications (on page load or when subscribing)                           |
 | huh_pwa_push_isUnsubscribed        | Fired when unsubscribed from push notifications (on page load or when unsubscribing)                     |
-| huh_pwa_push_subscription_failed   | Fired when subscription to push notifications fails. Error reason can be found in event.detail.reason    |
+| huh_pwa_push_subscription_failed   | Fired when subscription to push notifications fails. Error reason can be found in event.detail.reason, a machine-readable code in event.detail.code (see below) |
 | huh_pwa_push_unsubscription_failed | Fired when unsubscribing from push notifications fails. Error reason can be found in event.detail.reason |
+
+`event.detail.code` of `huh_pwa_push_subscription_failed` is `permission_blocked_by_browser` when the browser denied the permission request without showing a prompt (the stored permission is still `default`, e.g. Chrome blocks a site for some days after its prompt was dismissed several times), `permission_not_granted` when the user did not allow notifications, and `null` for other failures. The default subscribe button shows a hint for `permission_blocked_by_browser`.
 
 #### Listeners
 
