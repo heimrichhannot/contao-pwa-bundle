@@ -12,6 +12,7 @@ namespace HeimrichHannot\PwaBundle\Generator;
 
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\PageModel;
+use HeimrichHannot\PwaBundle\Asset\FrontendAssetUrls;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Model\PwaConfigurationsModel;
 use Psr\Log\LoggerInterface;
@@ -31,6 +32,7 @@ readonly class ServiceWorkerGenerator
         private TwigEnvironment       $twig,
         private UrlGeneratorInterface $router,
         private ContentUrlGenerator $contentUrlGenerator,
+        private FrontendAssetUrls $frontendAssetUrls,
     ) {}
 
     public function generatePageServiceworker(PageModel $page): bool
@@ -66,7 +68,7 @@ readonly class ServiceWorkerGenerator
             $offlinePage = $this->contentUrlGenerator->generate($offlinePageModel, referenceType: UrlGeneratorInterface::RELATIVE_PATH);
         }
 
-        $serviceworkerClass = '/bundles/heimrichhannotpwa/frontend/huh-pwa-serviceworker.js';
+        $serviceworkerClass = $this->frontendAssetUrls->getUrl('huh-pwa-serviceworker.js');
 
         try
         {

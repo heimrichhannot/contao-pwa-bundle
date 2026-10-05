@@ -83,7 +83,7 @@ class HuhPwa {
     getRegistration() {
         if (!this.#registration) {
             const path = this.config.serviceWorker.path;
-            const options = {};
+            const options = { updateViaCache: 'none' };
             if (this.config.serviceWorker.scope) options.scope = this.config.serviceWorker.scope;
             const pending = this.withTimeout(
                 // A synchronous browser error must follow the same failure path.

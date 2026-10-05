@@ -3,6 +3,7 @@
 namespace HeimrichHannot\PwaBundle\EventListener\Contao;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use HeimrichHannot\PwaBundle\Asset\FrontendAssetUrls;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 
 #[AsHook('initializeSystem')]
@@ -10,6 +11,7 @@ readonly class AttachAssetsOnInitListener
 {
     public function __construct(
         private Utils $utils,
+        private FrontendAssetUrls $frontendAssetUrls,
     ) {}
 
     public function __invoke(): void
@@ -27,18 +29,14 @@ readonly class AttachAssetsOnInitListener
 
     public function attachFrontendAssets(): void
     {
+        $importMap = json_encode([
+            'imports' => $this->frontendAssetUrls->getImportMap(),
+        ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+
         $GLOBALS['TL_HEAD']['huh_pwa_imports'] = <<<HTML
         
-        <script type="importmap">
-        {
-            "imports": {
-                "@hundh/pwa/bundle": "/bundles/heimrichhannotpwa/frontend/huh-pwa.js",
-                "@hundh/pwa/serviceworker": "/bundles/heimrichhannotpwa/frontend/huh-pwa-serviceworker.js",
-                "@hundh/pwa/InstallPrompt": "/bundles/heimrichhannotpwa/frontend/InstallPrompt.js",
-                "@hundh/pwa/PushNotificationSubscription": "/bundles/heimrichhannotpwa/frontend/PushNotificationSubscription.js",
-                "@hundh/pwa/PushSubscriptionButtons": "/bundles/heimrichhannotpwa/frontend/PushSubscriptionButtons.js"
-            }
-        }
+        <script type="importmap" data-turbo-track="reload">
+        {$importMap}
         </script>
         <script type="module">import '@hundh/pwa/bundle';</script>
 
