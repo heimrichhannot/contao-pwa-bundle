@@ -100,11 +100,9 @@ self.addEventListener('pushsubscriptionchange', /** @param {PushSubscriptionChan
 {% block noticiationclick %}
 self.addEventListener('notificationclick', function (event) {
     SW.log(event, 'Start notification clicked event');
-    if (event.notification && event.notification.data && event.notification.data.clickJumpTo !== undefined) {
+    if (event.notification) {
         event.notification.close();
-        event.waitUntil(
-            clients.openWindow(event.notification.data.clickJumpTo)
-        );
     }
+    event.waitUntil(SW.notificationClickEvent(event, clients));
 });
 {% endblock %}

@@ -257,6 +257,66 @@ class HuhPwaServiceWorker {
         }
     }
 
+    /**
+     * Opens what a clicked notification points at. An installed app or an already
+     * open tab of the same origin is navigated and focused; a new window is opened
+     * only when there is none, because openWindow() always creates a new browsing
+     * context and would hand the link to the browser while the installed app stays
+     * in the background. Without a target the start URL opens, so that a click
+     * never does nothing.
+     *
+     * @param {NotificationEvent} event
+     * @param {Clients} clients
+     * @returns {Promise<?WindowClient>}
+     */
+    async notificationClickEvent(event, clients) {
+        const data = event.notification ? event.notification.data : null;
+        const jumpTo = data ? data.clickJumpTo : undefined;
+        const target = jumpTo === undefined || jumpTo === null || jumpTo === '' ? this.startUrl : jumpTo;
+        if (!target) {
+            this.log(event, 'Notification has no target and no start URL.');
+            return null;
+        }
+
+        let url;
+        try {
+            url = new URL(target, self.location.origin);
+        } catch (e) {
+            this.log(event, 'Notification target is not a valid URL: ' + target);
+            return null;
+        }
+
+        let windows = [];
+        try {
+            windows = await clients.matchAll({type: 'window', includeUncontrolled: true});
+        } catch (e) {
+            this.log(event, 'Could not list open windows: ' + e.message);
+        }
+
+        for (const client of windows) {
+            let sameOrigin = false;
+            try {
+                sameOrigin = new URL(client.url).origin === url.origin;
+            } catch (e) {
+            }
+            if (!sameOrigin) {
+                continue;
+            }
+            try {
+                // An uncontrolled client rejects navigate(); fall through to a new window.
+                const navigated = client.url !== url.href && typeof client.navigate === 'function'
+                    ? await client.navigate(url.href)
+                    : client;
+                return await (navigated || client).focus();
+            } catch (e) {
+                this.log(event, 'Could not reuse an open window: ' + e.message);
+                break;
+            }
+        }
+
+        return clients.openWindow(url.href);
+    }
+
     notificationTitle(payload) {
         let title = this.pageTitle;
         if (typeof payload.title === 'string') {

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 - Fixed: Frontend scripts and the service worker class are loaded with a content-hash version, so browsers no longer run outdated cached code after an update.
 - Fixed: Push subscription buttons offer a retry when the browser status cannot be checked and refresh after navigation or returning to the app.
 - Added: iPhone and iPad users see installation guidance before enabling push notifications.
+- Fixed: Clicking a notification now opens the installed app instead of a separate browser window when the app is already open.
+- Fixed: Clicking a notification without a target page opens the start page instead of doing nothing.
 
 ## [0.10.3] - 2026-09-29
 - Fixed: push subscription buttons compatibility issue with turbo
