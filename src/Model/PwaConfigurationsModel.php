@@ -10,6 +10,8 @@
 namespace HeimrichHannot\PwaBundle\Model;
 
 use Contao\Model;
+use Contao\PageModel;
+use Contao\StringUtil;
 
 /**
  * Class PwaConfigurationsModel
@@ -50,4 +52,19 @@ class PwaConfigurationsModel extends Model
     public const PWA_NAME_PAGETITLE = 'title';
     public const PWA_NAME_META_PAGETITLE = 'pageTitle';
     public const PWA_NAME_OPTIONS = [self::PWA_NAME_PAGETITLE, self::PWA_NAME_META_PAGETITLE, self::PWA_NAME_CUSTOM];
+
+    /**
+     * Return the app name as plain text.
+     *
+     * Contao stores backend input entity-encoded (e.g. "(" as "&#40;"), so the value is
+     * decoded here. Encode it for the target context (HTML, JSON, JavaScript) on output.
+     */
+    public function getAppName(PageModel $rootPage): string
+    {
+        return StringUtil::decodeEntities(match ($this->pwaName) {
+            self::PWA_NAME_CUSTOM => $this->pwaCustomName,
+            self::PWA_NAME_META_PAGETITLE => $rootPage->pageTitle,
+            default => $rootPage->title,
+        });
+    }
 }

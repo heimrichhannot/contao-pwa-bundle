@@ -45,13 +45,6 @@ readonly class ServiceWorkerGenerator
             return false;
         }
 
-        $title = match ($config->pwaName)
-        {
-            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
-            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $page->pageTitle,
-            default => $page->title,
-        };
-
         if ($config->serviceWorkerTemplate)
         {
             $template = '@Contao/' . $config->serviceWorkerTemplate . '.js.twig';
@@ -75,7 +68,7 @@ readonly class ServiceWorkerGenerator
             $workerPath = $this->webDir . '/' . $fileName;
             $workerJs = $this->twig->render($template, [
                 'supportPush' => (bool) $config->supportPush,
-                'pageTitle' => $title,
+                'pageTitle' => $config->getAppName($page),
                 'version' => date('YmdHis'),
                 'alias' => $page->alias,
                 'debug' => (bool) $config->addDebugLog,

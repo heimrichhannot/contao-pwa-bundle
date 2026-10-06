@@ -36,8 +36,9 @@ class DefaultNotification extends AbstractNotification
         if ($notificationsModel)
         {
             $this->setModel($notificationsModel);
-            $this->setTitle($notificationsModel->title);
-            $this->setBody($notificationsModel->body);
+            // Contao stores input entity-encoded (e.g. "(" as "&#40;"), but push notifications are plain text
+            $this->setTitle(StringUtil::decodeEntities($notificationsModel->title));
+            $this->setBody(StringUtil::decodeEntities($notificationsModel->body));
             if ($notificationsModel->icon)
             {
                 $this->setIconFromModel($notificationsModel->icon, $notificationsModel->iconSize);

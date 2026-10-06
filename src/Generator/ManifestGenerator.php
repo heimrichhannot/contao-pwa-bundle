@@ -58,14 +58,9 @@ readonly class ManifestGenerator
         $icons = $this->iconBuilderFactory->createBuilderForManifestFromConfig($config)?->buildForManifest();
 
         $manifest = new Manifest();
-        $manifest->name = match ($config->pwaName) {
-            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
-            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $page->pageTitle,
-            default => $page->title,
-        };
-
-        $manifest->short_name = $config->pwaShortName;
-        $manifest->description = $config->pwaDescription;
+        $manifest->name = $config->getAppName($page);
+        $manifest->short_name = StringUtil::decodeEntities($config->pwaShortName);
+        $manifest->description = StringUtil::decodeEntities($config->pwaDescription);
         $manifest->theme_color = $config->pwaThemeColor ? '#'.$config->pwaThemeColor : '';
         $manifest->background_color = $config->pwaBackgroundColor ? '#'.$config->pwaBackgroundColor : '';
         $manifest->display = $config->pwaDisplay;

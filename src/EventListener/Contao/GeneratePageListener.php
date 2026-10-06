@@ -8,6 +8,7 @@ use Contao\FilesModel;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
+use Contao\StringUtil;
 use HeimrichHannot\PwaBundle\Asset\IconBuilderFactory;
 use HeimrichHannot\PwaBundle\DataContainer\PageContainer;
 use HeimrichHannot\PwaBundle\Generator\ConfigurationFileGenerator;
@@ -61,13 +62,8 @@ readonly class GeneratePageListener
 
     private function appleHead(PwaConfigurationsModel $config, PageModel $rootPage): string
     {
-        $appleMobileWebAppTitle = $config->pwaShortName ?: match ($config->pwaName) {
-            PwaConfigurationsModel::PWA_NAME_CUSTOM => $config->pwaCustomName,
-            PwaConfigurationsModel::PWA_NAME_META_PAGETITLE => $rootPage->pageTitle,
-            default => $rootPage->title,
-        };
-
-        $appleMobileWebAppTitle = \htmlspecialchars((string) $appleMobileWebAppTitle, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
+        $appleMobileWebAppTitle = StringUtil::decodeEntities($config->pwaShortName) ?: $config->getAppName($rootPage);
+        $appleMobileWebAppTitle = \htmlspecialchars($appleMobileWebAppTitle, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8');
 
         $appleHead = [];
         if ($iconModel = FilesModel::findByUuid($config->pwaIcons)) {
