@@ -91,7 +91,7 @@ class PushNotificationSender
                         $subscriber->endpoint,
                         $subscriber->publicKey,
                         $subscriber->authToken
-                    ), json_encode($payload));
+                    ), json_encode($payload, \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES));
             }
             catch (\ErrorException $e)
             {

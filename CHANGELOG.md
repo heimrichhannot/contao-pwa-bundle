@@ -2,11 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- Changed: The content text of push notifications can now be up to 500 characters long instead of 128.
 - Added: Subscribe buttons can override single labels and hints with `data-text-*` attributes, so custom prompts can reuse the button instead of reimplementing it.
 - Added: When the browser blocks the notification permission request without asking, the subscribe button explains how to allow notifications instead of silently resetting. `huh_pwa_push_subscription_failed` carries a `code` in its detail.
+- Added: iPhone and iPad users see installation guidance before enabling push notifications.
 - Fixed: Frontend scripts and the service worker class are loaded with a content-hash version, so browsers no longer run outdated cached code after an update.
 - Fixed: Push subscription buttons offer a retry when the browser status cannot be checked and refresh after navigation or returning to the app.
-- Added: iPhone and iPad users see installation guidance before enabling push notifications.
 - Fixed: Clicking a notification now opens the installed app instead of a separate browser window when the app is already open.
 - Fixed: Clicking a notification without a target page opens the start page instead of doing nothing.
 

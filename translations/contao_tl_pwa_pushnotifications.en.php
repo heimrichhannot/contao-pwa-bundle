@@ -3,7 +3,7 @@
 return [
     'tl_pwa_pushnotifications' => [
         'title' => ['Title', 'The title of the notification.'],
-        'body' => ['Content', 'A short content text for the notification.'],
+        'body' => ['Content', 'The content text of the notification (max. 500 characters). Depending on the device, only the first ~100 characters are visible without expanding the notification, so put the most important information first.'],
         'icon' => ['Icon', 'The image should be shown next to the notification.'],
         'iconSize' => ['Icon size', 'Size of the image.'],
         'sent' => ['Sent', 'Select if message is already sent.'],

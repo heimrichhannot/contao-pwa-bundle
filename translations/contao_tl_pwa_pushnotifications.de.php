@@ -3,7 +3,7 @@
 return [
     'tl_pwa_pushnotifications' => [
         'title' => ['Titel', 'Titel der Banachrichtigung'],
-        'body' => ['Inhalt', 'Kurzer Inhaltstext der Banchrichtigung'],
+        'body' => ['Inhalt', 'Inhaltstext der Benachrichtigung (max. 500 Zeichen). Je nach Gerät sind ohne Aufklappen nur die ersten ca. 100 Zeichen sichtbar, das Wichtigste gehört daher an den Anfang.'],
         'icon' => ['Icon', 'Das Bild das neben der Banchrichtigung angezeigt werden soll.'],
         'iconSize' => ['Icon-Bildgröße', 'Geben Sie hier die Bildgröße an, welche das Icon haben soll.'],
         'sent' => ['Gesendet', 'Geben Sie hier an, ob die Nachricht bereits gesendet wurde.'],
